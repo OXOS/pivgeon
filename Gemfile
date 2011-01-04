@@ -1,6 +1,7 @@
 source 'http://rubygems.org'
 
 gem 'rails', '3.0.3'
+gem 'mail', '2.2.14'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -29,3 +30,10 @@ gem 'rails', '3.0.3'
 # group :development, :test do
 #   gem 'webrat'
 # end
+
+
+group :test do
+  gem 'shoulda', :git => "git://github.com/thoughtbot/shoulda.git"
+  gem 'mocha'
+  gem 'test-unit'
+end
