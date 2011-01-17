@@ -2,30 +2,32 @@ require 'test_helper'
 
 class StoriesControllerTest < ActionController::TestCase
   
-  context "A incomming message" do
+  context "A controller" do
   
-    context "creates new story" do
+    context "when story is created" do
       
-      setup do
-        Story.stubs(:create_story).returns(true)
+      setup do 
+        Story.expects(:create).with(incoming_params['message']).returns(mock('new?'=>false))
       end
       
-      should "and handle proper response status" do
-        Story.stubs(:create_story).returns(true)
-        post :create, mail_params
+      should "render :success" do
+        post :create, incoming_params
         assert_response :success
       end
       
     end
     
-    context "does not create new story" do
-      
-      setup do
-        Story.stubs(:create_story).returns(false)
+    context "when story is not created" do
+                              
+      should "render :failed when story is not valid" do        
+        Story.expects(:create).with(incoming_params['message']).returns(mock('new?'=>true))
+        post :create, incoming_params
+        assert_response :error
       end
       
-      should "and handle proper response status" do
-        post :create, mail_params
+      should "render :failed when an error is raised" do
+        Story.expects(:create).with(incoming_params['message']).raises(ActiveResource::ConnectionError,"")
+        post :create, incoming_params
         assert_response :error
       end
       
