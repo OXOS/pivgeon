@@ -6,40 +6,30 @@ class StoryTest < ActiveSupport::TestCase
     
     setup do
       set_users()
-      stub_story_headers({'X-TrackerToken'=>'12345678'})
+      @params = incoming_params("wojciech@example.com","daniel@example.com")
     end
-    
-#    context "should validate" do
-#      
-#      should "presence of story type" do
-#        story = Story.new(story_attrs)
-#        test_presence_of(story,"story_type")      
-#      end
-#      
-#      should "presence of name" do
-#        story = Story.new(story_attrs)
-#        test_presence_of(story,"name")      
-#      end
-#      
-#      should "presence of requested_by" do
-#        story = Story.new(story_attrs)
-#        test_presence_of(story,"requested_by")      
-#      end
-#      
-#      should "presence of owned_by" do
-#        story = Story.new(story_attrs)
-#        test_presence_of(story,"owned_by")      
-#      end
-#      
-#    end
     
     should "create new story and post to pivotaltracker" do
       mock_request
-      assert Story.create(incoming_params['message'])
+      assert Story.create(@params['message'])
     end
     
     should "parse incoming message" do
-      assert_equal story_attrs, Story.parse_incoming_message(incoming_params['message'])
+      assert_equal story_attrs, Story.parse_message_and_set_token(@params['message'])
+    end
+    
+    should "set token in headers" do
+      message = incoming_params("wojciech@example.com","daniel@example.com")['message']
+      Story.parse_message_and_set_token(message)
+      assert_equal '12345678', Story.headers['X-TrackerToken']
+      
+      message = incoming_params("faked_from@example.com","faked_to@example.com")['message']
+      Story.parse_message_and_set_token(message)
+      assert Story.headers['X-TrackerToken'].blank?
+      
+      message = incoming_params("daniel@example.com","wojciech@example.com")['message']
+      Story.parse_message_and_set_token(message)
+      assert_equal '87654321', Story.headers['X-TrackerToken']
     end
     
     should "get username related to email" do

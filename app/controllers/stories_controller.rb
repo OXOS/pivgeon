@@ -5,16 +5,13 @@ class StoriesController < ApplicationController
   def create
     begin      
       story = Story.create(params[:message])
-      if story.new? 
-        render :text => 'failed', :status => 500
+      if story.new?                      
+        render(:nothing => true, :status => 403)
       else
-        render :text => 'success', :status => 200
-      end
-      
+        render(:nothing => true)
+      end      
     rescue ActiveResource::ConnectionError => error
-      render :text => 'failed', :status => error.response.code
-
-    end
+      render(:nothing => true, :status => error.response.code)
+    end        
   end
-
 end

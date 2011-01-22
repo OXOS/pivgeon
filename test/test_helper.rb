@@ -30,7 +30,7 @@ class ActiveSupport::TestCase
     Story.stubs(:headers).returns(headers)
   end
   
-  def incoming_params
+  def incoming_params from, to
     {"html"=>"", 
      "plain"=>"", 
      "disposable"=>"", 
@@ -38,7 +38,7 @@ class ActiveSupport::TestCase
      "signature"=>"60d30a03373fb7366e49920b333cf44e", 
      "subject"=>"Story 1", 
      "to"=>"<dfba89c3c1ec17e81304@cloudmailin.net>", 
-     "message"=>"Received: (wp-smtpd smtp.wp.pl 22222 invoked from network); 11 Jan 2011 13:45:23 +0100\r\nReceived: from out.poczta.wp.pl (HELO localhost) ([222.22.222.222])\r\n(envelope-sender <wojciech@example.com>)\r\n          by smtp.wp.pl (WP-SMTPD) with SMTP\r\nfor <daniel@example.com>; 11 Jan 2011 13:45:23 +0100\r\nDate: Tue, 11 Jan 2011 13:45:23 +0100\r\nFrom: =?ISO-8859-2?Q?wojciech?= <wojciech@example.com>\r\nTo: daniel <daniel@example.com>\r\nCc: dfba89c3c1ec17e81304 <dfba89c3c1ec17e81304@cloudmailin.net>\r\nSubject: Story 1\r\nMessage-ID: <4d2c50e315e556.43793632@wp.pl>\r\nMIME-Version: 1.0\r\nContent-Type: text/plain; charset=iso-8859-2\r\nContent-Transfer-Encoding: 8bit\r\nContent-Disposition: inline\r\n"}
+     "message"=>"Received: (wp-smtpd smtp.wp.pl 22222 invoked from network); 11 Jan 2011 13:45:23 +0100\r\nReceived: from out.poczta.wp.pl (HELO localhost) ([222.22.222.222])\r\n(envelope-sender <#{from}>)\r\n          by smtp.wp.pl (WP-SMTPD) with SMTP\r\nfor <#{to}>; 11 Jan 2011 13:45:23 +0100\r\nDate: Tue, 11 Jan 2011 13:45:23 +0100\r\nFrom: =?ISO-8859-2?Q?wojciech?= <#{from}>\r\nTo: daniel <#{to}>\r\nCc: dfba89c3c1ec17e81304 <dfba89c3c1ec17e81304@cloudmailin.net>\r\nSubject: Story 1\r\nMessage-ID: <4d2c50e315e556.43793632@wp.pl>\r\nMIME-Version: 1.0\r\nContent-Type: text/plain; charset=iso-8859-2\r\nContent-Transfer-Encoding: 8bit\r\nContent-Disposition: inline\r\n"}
   end
   
   def story_attrs
