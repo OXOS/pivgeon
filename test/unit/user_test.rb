@@ -1,8 +1,14 @@
 require 'test_helper'
 
 class UserTest < ActiveSupport::TestCase
-  # Replace this with your real tests.
-  test "the truth" do
-    assert true
+  
+  context "A new user" do
+    
+    should validate_presence_of(:name)
+    should validate_presence_of(:token)
+    should validate_presence_of(:email)
+    
+    
   end
+  
 end

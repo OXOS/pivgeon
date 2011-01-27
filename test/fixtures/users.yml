@@ -1,11 +1,11 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-one:
-  name: MyString
-  token: MyString
-  email: MyString
+wojciech:
+  name: wojciech
+  token: 12345678
+  email: wojciech@example.com
 
-two:
-  name: MyString
-  token: MyString
-  email: MyString
+daniel:
+  name: daniel
+  token: 87654321
+  email: daniel@example.com
