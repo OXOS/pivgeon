@@ -46,7 +46,28 @@ class StoriesControllerTest < ActionController::TestCase
       end
       
     end
-               
+    
+    
+    context "when tries to create new user" do
+      
+      should "send email with link for confirmation" do
+        
+      end
+      
+      context "and received user's confirmation" do
+        
+        should "create new user" do
+          
+        end
+        
+        should "send email with confirmation that new user has been created" do
+          
+        end
+        
+      end
+      
+    end
+    
   end
 
 end
