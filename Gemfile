@@ -37,4 +37,5 @@ group :test do
   gem 'shoulda', :git => "git://github.com/thoughtbot/shoulda.git"
   gem 'mocha'
   gem 'test-unit'
+  gem 'ruby-debug19'
 end
