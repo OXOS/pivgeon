@@ -3,44 +3,33 @@ class Story < ActiveResource::Base
   
   attr_accessor :story_type, :name, :requested_by, :owned_by
   
-  def self.create(message)
-    params = parse_message_and_set_token(message)
-    super(params)
+  def self.create(attrs = {})
+    token = attrs.delete(:token)
+    set_token(token)
+    super(attrs)
+  end
+  
+  def self.parse_message(message)
+    mail = Mail.new(message)
+    user_from = find_user(mail.from.first)
+    user_to = find_user(mail.to.first)
+    {}.tap do |params| 
+      params[:story_type]   = "chore"
+      params[:name]         = mail.subject
+      params[:requested_by] = (user_from ? user_from.name : nil)
+      params[:owned_by]     = (user_to ? user_to.name : nil)
+      params[:token]        = (user_from ? user_from.token : nil)
+    end 
   end
   
   protected
   
-  def self.parse_message_and_set_token(message)
-    mail = Mail.new(message)
-    set_token(mail.from.first)
-    {}.tap do |params| 
-      params[:story_type]   = "chore"
-      params[:name]         = mail.subject
-      params[:requested_by] = get_user_name(mail.from.first)
-      params[:owned_by]     = get_user_name(mail.to.first)
-    end 
+  def self.find_user(email)
+    User.find_by_email(email)
   end
-  
-  def self.get_user_name(email)
-    if user = GEEPIVO_USERS[email]
-      return user['name']
-    else
-      return ""
-    end
-  end
-  
-  # FIXME: this is not best way to set token. 
-  # token should be specified while creating new instance by setting header or as a query param
-  # unfortunately rails does not provide it yet 
-  def self.set_token user_email    
-    Rails.logger.info "############################ calling set_token(#{user_email})"
-    if user = GEEPIVO_USERS[user_email]      
-      Rails.logger.info "############################ --------------- set self.headers['X-TrackerToken'] = #{user['token']}"
-      self.headers['X-TrackerToken'] = user['token'] if user['token']
-    else
-      Rails.logger.info "############################ --------------- set self.headers['X-TrackerToken'] = ''"
-      self.headers['X-TrackerToken'] = ""
-    end
+
+  def self.set_token(token)
+    self.headers['X-TrackerToken'] = token
   end
     
 end
