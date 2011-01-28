@@ -2,38 +2,34 @@ require 'test_helper'
 
 class StoryTest < ActiveSupport::TestCase
   
-  context "A model" do
+  fixtures(:all)
+  
+  context "it" do
     
     setup do
-      set_users()
-      @params = incoming_params("wojciech@example.com","daniel@example.com")
+      @incomming_message = incoming_params("wojciech@example.com","daniel@example.com")['message']
+      @attrs = new_story_attrs("wojciech@example.com","daniel@example.com","12345678")      
     end
     
     should "create new story and post to pivotaltracker" do
       mock_request
-      assert Story.create(@params['message'])
+      assert_false(Story.create(@attrs).new?)
     end
     
     should "parse incoming message" do
-      assert_equal story_attrs, Story.parse_message_and_set_token(@params['message'])
+      assert_equal({:story_type=>"chore",:name=>"Story 1", :requested_by=>"wojciech", :owned_by=>"daniel", :token=>"12345678"}, Story.parse_message(@incomming_message))
     end
     
     should "set token in headers" do
-      message = incoming_params("wojciech@example.com","daniel@example.com")['message']
-      Story.parse_message_and_set_token(message)
+      Story.set_token("12345678")
       assert_equal '12345678', Story.headers['X-TrackerToken']
       
-      message = incoming_params("faked_from@example.com","faked_to@example.com")['message']
-      Story.parse_message_and_set_token(message)
+      Story.set_token('')
       assert Story.headers['X-TrackerToken'].blank?
-      
-      message = incoming_params("daniel@example.com","wojciech@example.com")['message']
-      Story.parse_message_and_set_token(message)
-      assert_equal '87654321', Story.headers['X-TrackerToken']
     end
     
     should "get username related to email" do
-      assert_equal "wojciech", Story.get_user_name("wojciech@example.com")
+      assert_equal users(:wojciech), Story.find_user("wojciech@example.com")
     end
                 
   end
@@ -42,9 +38,9 @@ class StoryTest < ActiveSupport::TestCase
     
   def mock_request()
     ActiveResource::HttpMock.respond_to do |mock|
-      mock.post "/services/v3/projects/147449/stories.xml", 
+      mock.post("/services/v3/projects/147449/stories.xml", 
                 {"Content-Type"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
-                pivotal_response
+                pivotal_response)
     end
   end
 
