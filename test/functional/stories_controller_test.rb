@@ -35,7 +35,7 @@ class StoriesControllerTest < ActionController::TestCase
 
         context "and exception is not raised" do
           
-          should "render status code 500" do
+          should "render status code 403" do
             Story.expects(:create).with(@params['message']).returns(mock('new?'=>true))          
             post :create, @params
             assert_response 403
