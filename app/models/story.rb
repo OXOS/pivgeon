@@ -9,13 +9,12 @@ class Story < ActiveResource::Base
     super(attrs)
   end
   
-  def self.parse_message(message)
-    mail = Mail.new(message)
-    user_from = find_user(mail.from.first)
-    user_to = find_user(mail.to.first)
+  def self.parse_message(message)   
+    user_from = find_user(message.from.first)
+    user_to = find_user(message.to.first)
     {}.tap do |params| 
       params[:story_type]   = "chore"
-      params[:name]         = mail.subject
+      params[:name]         = message.subject
       params[:requested_by] = (user_from ? user_from.name : nil)
       params[:owned_by]     = (user_to ? user_to.name : nil)
       params[:token]        = (user_from ? user_from.token : nil)

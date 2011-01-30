@@ -40,3 +40,5 @@ module Geepivodev
     config.filter_parameters += [:password]
   end
 end
+
+CLOUDMAILIN_EMAIL_ADDRESS = "b06e829748e4a3c9cea9@cloudmailin.net"

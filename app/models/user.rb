@@ -5,10 +5,9 @@ class User < ActiveRecord::Base
   
   
   def self.parse_message(message)
-    mail = Mail.new(message)
-    name,token = parse_subject(mail.subject)
+    name,token = parse_subject(message.subject)
     {}.tap do |params| 
-      params[:email] = mail.from
+      params[:email] = message.from.first
       params[:name]  = name
       params[:token] = token
     end 

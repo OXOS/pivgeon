@@ -17,7 +17,8 @@ class StoryTest < ActiveSupport::TestCase
     end
     
     should "parse incoming message" do
-      assert_equal({:story_type=>"chore",:name=>"Story 1", :requested_by=>"wojciech", :owned_by=>"daniel", :token=>"12345678"}, Story.parse_message(@incomming_message))
+      message = Mail.new(@incomming_message)
+      assert_equal({:story_type=>"chore",:name=>"Story 1", :requested_by=>"wojciech", :owned_by=>"daniel", :token=>"12345678"}, Story.parse_message(message))
     end
     
     should "set token in headers" do
