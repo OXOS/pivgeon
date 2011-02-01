@@ -17,7 +17,8 @@ class ApiController < ApplicationController
   protected
   
   def create_user(message)
-    attrs = User.parse_message(message)
+    attrs = User.parse_message(message)    
+    Rails.logger.info("User.create(#{attrs.inspect}).new_record?    ")
     if User.create(attrs).new_record?                      
       render(:nothing => true, :status => 403)
     else

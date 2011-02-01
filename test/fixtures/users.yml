@@ -1,11 +1,9 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 wojciech:
-  name: wojciech
   token: 12345678
   email: wojciech@example.com
 
 daniel:
-  name: daniel
   token: 87654321
   email: daniel@example.com
