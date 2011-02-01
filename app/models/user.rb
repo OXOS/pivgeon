@@ -4,17 +4,10 @@ class User < ActiveRecord::Base
   
   
   def self.parse_message(message)
-    name,token = parse_subject(message.subject)
     {}.tap do |params| 
       params[:email] = message.from.first
-      params[:token] = token
+      params[:token] = message.subject
     end 
-  end
-  
-  protected    
-  
-  def self.parse_subject(subject)
-    subject.split(",")
   end
 
 end
