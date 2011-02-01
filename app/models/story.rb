@@ -1,21 +1,22 @@
 class Story < ActiveResource::Base
   self.site = "http://www.pivotaltracker.com/services/v3/projects/147449/"
   
-  attr_accessor :story_type, :name, :requested_by, :owned_by
+  attr_accessor :story_type, :name, :requested_by, :owned_by, :description
   
   def self.create(message)
     params = parse_message_and_set_token(message)
     super(params)
   end
   
-  protected
+#  protected
   
-  def self.parse_message_and_set_token(message)
-    mail = Mail.new(message)
+  def self.parse_message_and_set_token(attrs={})
+    mail = Mail.new(attrs['message'])
     set_token(mail.from.first)
     {}.tap do |params| 
       params[:story_type]   = "chore"
-      params[:name]         = mail.subject
+      params[:name]         = mail.subject      
+      params[:description]  = attrs['plain']
       params[:requested_by] = get_user_name(mail.from.first)
       params[:owned_by]     = get_user_name(mail.to.first)
     end 

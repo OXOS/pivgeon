@@ -31,8 +31,8 @@ class ActiveSupport::TestCase
   end
   
   def incoming_params from, to
-    {"html"=>"", 
-     "plain"=>"", 
+    {"html"=>"description<br/>", 
+     "plain"=>"description", 
      "disposable"=>"", 
      "from"=>"wojciech@example.com", 
      "signature"=>"60d30a03373fb7366e49920b333cf44e", 
@@ -42,7 +42,7 @@ class ActiveSupport::TestCase
   end
   
   def story_attrs
-    {:story_type=>"chore",:name=>"Story 1", :requested_by=>"wojciech", :owned_by=>"daniel"}
+    {:story_type=>"chore",:name=>"Story 1", :description=>"description", :requested_by=>"wojciech", :owned_by=>"daniel"}
   end
   
   def test_presence_of(elem,param)

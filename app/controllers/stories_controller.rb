@@ -4,7 +4,7 @@ class StoriesController < ApplicationController
 
   def create
     begin      
-      story = Story.create(params[:message])
+      story = Story.create(params)
       if story.new?                      
         render(:nothing => true, :status => 403)
       else
