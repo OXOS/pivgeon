@@ -1,7 +1,7 @@
 class Story < HyperactiveResource
   self.site = "http://www.pivotaltracker.com/services/v3/projects/147449/"
   
-  attr_accessor :story_type, :name, :requested_by, :owned_by, :project_id
+  attr_accessor :story_type, :name, :requested_by, :owned_by, :project_id, :description
   
   def self.create(attrs = {})
     token = attrs.delete(:token)
@@ -14,7 +14,7 @@ class Story < HyperactiveResource
     {}.tap do |params| 
       params[:story_type]   = "chore"
       params[:name]         = message.subject            
-      params[:description]  = message.body
+      params[:description]  = attrs['plain']
       params[:owned_by]     = message.to.first
       params[:token]        = find_user_token(message.from.first),
       params[:project_id]   = project_id  
