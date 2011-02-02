@@ -38,4 +38,6 @@ group :test do
   gem 'mocha'
   gem 'test-unit'
   gem 'ruby-debug19'
+  gem 'rspec'
+  gem 'rspec-rails'
 end
