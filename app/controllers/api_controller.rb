@@ -28,6 +28,7 @@ class ApiController < ApplicationController
   
   def create_story(message)
     attrs = Story.parse_message(message)
+    attrs[:description] = params[:plain]
     if Story.create(attrs).new?                      
       render(:nothing => true, :status => 403)
     else

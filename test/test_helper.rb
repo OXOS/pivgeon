@@ -44,7 +44,7 @@ class ActiveSupport::TestCase
   
 
   def new_story_attrs(requested_by,owned_by,token)
-    {:story_type=>"chore",:name=>"Story 1", :description=>"description", :requested_by=>requested_by, :owned_by=>owned_by, :token=>token}
+    {:story_type=>"chore",:name=>"Story 1", :description=>"description", :requested_by=>requested_by, :owned_by=>owned_by, :token=>token, :project_id=>"147449"}
   end
   
   def test_presence_of(elem,param)
@@ -61,7 +61,7 @@ class ActiveSupport::TestCase
     </story>"
   end
   
-  def pivotal_response
+  def pivotal_story_response
     '<?xml version="1.0" encoding="UTF-8"?>
     <story>
       <id type="integer">100001</id>
@@ -76,6 +76,39 @@ class ActiveSupport::TestCase
       <owned_by>daniel</owned_by>
       <created_at type="datetime">2008/12/10 00:00:00 UTC</created_at>
     </story>'
+  end
+  
+  def pivotal_memberships_response
+    '<?xml version="1.0" encoding="UTF-8"?>
+    <memberships type="array">
+      <membership>
+        <id>1</id>
+        <person>
+          <email>wojciech@example.com</email>
+          <name>wojciech</name>
+          <initials>WK</initials>
+        </person>
+        <role>Owner</role>
+        <project>
+          <id>147449</id>
+          <name>Project 1</name>
+        </project>
+      </membership>
+      <membership>
+        <id>2</id>
+        <person>
+          <email>daniel@example.com</email>
+          <name>daniel</name>
+          <initials>DS</initials>
+        </person>
+        <role>Member</role>
+        <project>
+          <id>147449</id>
+          <name>Project 1</name>
+        </project>
+      </membership>
+    </memberships>
+  '
   end
   
 end
