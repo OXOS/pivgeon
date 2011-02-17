@@ -1,5 +1,5 @@
 class Story < HyperactiveResource
-  self.site = "http://www.pivotaltracker.com/services/v3/projects/147449/"
+  self.site = "http://www.pivotaltracker.com/services/v3/projects/:project_id"
   
   attr_accessor :story_type, :name, :requested_by, :owned_by, :project_id, :description
   
