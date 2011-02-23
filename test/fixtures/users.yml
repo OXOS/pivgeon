@@ -1,9 +1,19 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
+not_activated_user:
+  token: 12345678
+  email: wojciech@example.com
+  activation_code: 12345678 
+  status: 0
+
 wojciech:
   token: 12345678
   email: wojciech@example.com
+  activation_code: 567890
+  status: 1
 
 daniel:
   token: 87654321
   email: daniel@example.com
+  activation_code: 98765453
+  status: 1
