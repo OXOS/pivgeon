@@ -12,7 +12,7 @@ class StoryTest < ActiveSupport::TestCase
       @attrs = new_story_attrs("wojciech@example.com","daniel@example.com","12345678")      
     end
     
-    should "create new story and send request to pivotal" do            
+    should "create new story and send send request to pivotal" do      
       assert_false(Story.create(@attrs).new?)
     end
     

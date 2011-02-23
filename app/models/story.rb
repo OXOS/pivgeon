@@ -36,7 +36,7 @@ class Story < HyperactiveResource
   
   def set_story_owner()
     Membership.headers['X-TrackerToken'] = Story.token
-    memberships = Membership.find(:all,:params=>{:project_id=>self.project_id})    
+    memberships = Membership.find(:all,:params=>{:project_id=>self.prefix_options[:project_id]})    
     member = if memberships.blank?
       ""
     else
