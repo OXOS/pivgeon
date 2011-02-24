@@ -1,8 +1,21 @@
 require 'test_helper'
 
 class UsersControllerTest < ActionController::TestCase
+  
+  fixtures :all
+  
   # Replace this with your real tests.
-  test "the truth" do
-    assert true
+  context "User" do
+    
+    should "activate his account" do
+      user = users(:not_activated_user)
+      
+      assert !user.status
+      
+      get :confirm, :id=>user.activation_code
+      assert_response :success
+      assert assigns(:user).status
+    end
+    
   end
 end

@@ -13,7 +13,7 @@ class ApiController < ApplicationController
   protected
   
   def create_user(message)
-    attrs = User.parse_message(message)  
+    attrs = User.parse_message(message)      
     user = User.create(attrs)
     if user.new_record?
       Rails.logger.info "@@@@@@@@@@@@@@@@@ errors #{user.errors.full_messages}"

@@ -15,6 +15,11 @@ class User < ActiveRecord::Base
     end 
   end
   
+  def activate!
+    self.status = true
+    self.save
+  end
+  
   protected
 
   def generate_activation_code
@@ -22,7 +27,6 @@ class User < ActiveRecord::Base
   end
   
   def send_registration_confirmation
-    self.activation_code = activation_code    
     UserMailer.registration_confirmation(self).deliver
   end
   
