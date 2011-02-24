@@ -16,7 +16,6 @@ class ApiController < ApplicationController
     attrs = User.parse_message(message)      
     user = User.create(attrs)
     if user.new_record?
-      Rails.logger.info "@@@@@@@@@@@@@@@@@ errors #{user.errors.full_messages}"
       render(:nothing => true, :status => 403)
     else
       render(:nothing => true)
