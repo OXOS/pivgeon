@@ -1,6 +1,7 @@
 class ApiController < ApplicationController
   skip_before_filter :verify_authenticity_token  
 
+  
   def create
     message = Mail.new(params[:message])    
     if direct_sent_to_cloudmailin?(message)
@@ -10,37 +11,31 @@ class ApiController < ApplicationController
     end   
   end
   
+  
   protected
   
   def create_user(message)
     attrs = User.parse_message(message)      
     user = User.create(attrs)
-    if user.new_record?
-      render(:nothing => true, :status => 403)
-    else
-      render(:nothing => true)
-    end
+    render_proper_status(user.new_record?)
   end
   
   def create_story(message)
     attrs = Story.parse_message(message)
     attrs[:description] = params[:plain]
-    if Story.create(attrs).new?                      
-      render(:nothing => true, :status => 403)
+    story = Story.create(attrs)
+    render_proper_status(story.new?)     
+  end
+  
+  def render_proper_status(new_record=true)
+    if new_record
+      render(:nothing => true, :status => 403)            
     else
       render(:nothing => true)
-    end      
+    end 
   end
   
-  def handle_connection_error &block
-    begin
-      yield
-    rescue ActiveResource::ConnectionError => error
-      render(:nothing => true, :status => error.response.code) and return
-    end
-  end
-  
-  def direct_sent_to_cloudmailin? message
+  def direct_sent_to_cloudmailin?(message)
     return message.to.first == CLOUDMAILIN_EMAIL_ADDRESS
   end
   

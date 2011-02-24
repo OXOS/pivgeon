@@ -10,26 +10,6 @@ class ActiveSupport::TestCase
 #  fixtures :all
 
   # Add more helper methods to be used by all tests here...
-  
-  def set_users
-    new_settings = {
-      'wojciech@example.com' => {
-                                  'name' => 'wojciech',
-                                  'token' => '12345678'
-                                },
-      'daniel@example.com' => {
-                                  'name' => 'daniel',
-                                  'token' => '87654321'
-                                }                          
-    }    
-    Object.send(:remove_const, 'GEEPIVO_USERS')
-    Object.const_set('GEEPIVO_USERS',new_settings)
-  end
-  
-  def stub_story_headers headers
-    Story.stubs(:headers).returns(headers)
-  end
-  
 
   def incoming_params from, to, subject="Story 1"
     {"html"=>"description<br/>", 

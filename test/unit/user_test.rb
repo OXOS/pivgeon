@@ -16,6 +16,11 @@ class UserTest < ActiveSupport::TestCase
       end
     end
     
+    should "parse incoming message" do
+      message = Mail.new(incoming_params("wojciech@example.com","cloudmailin@example.com","12345678")['message'])
+      assert_equal({:email=>"wojciech@example.com",:token=>"12345678"}, User.parse_message(message))
+    end
+    
     context "when created" do
       should validate_presence_of(:token)
       
@@ -44,12 +49,7 @@ class UserTest < ActiveSupport::TestCase
         assert @user.save
       end
     end
-    
-    should "parse incoming message" do
-      message = Mail.new(incoming_params("wojciech@example.com","cloudmailin@example.com","12345678")['message'])
-      assert_equal({:email=>"wojciech@example.com",:token=>"12345678"}, User.parse_message(message))
-    end
-    
+            
   end
   
   protected
