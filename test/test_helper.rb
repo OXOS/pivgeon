@@ -91,4 +91,11 @@ class ActiveSupport::TestCase
   '
   end
   
+  def pivotal_memberships_response_with_no_records
+    '<?xml version="1.0" encoding="UTF-8"?>
+    <memberships type="array">
+    </memberships>
+  '
+  end
+  
 end

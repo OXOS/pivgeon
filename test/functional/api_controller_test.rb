@@ -15,7 +15,7 @@ class ApiControllerTest < ActionController::TestCase
       should "create story" do
         user = users(:wojciech)
         Story.expects(:create).returns(mock('Story','new?'=>false))
-        post :create, incoming_params(user.email,"daniel@example.com")
+        post :create, incoming_params(user.email,"daniel@example.com","12345:Subject")
         assert_response :success
       end
       
@@ -27,10 +27,8 @@ class ApiControllerTest < ActionController::TestCase
     context "who sends email to somebody else and cc to cloudmailin" do
     
         should "not create new story" do
-          Story.expects(:create).raises(ActiveResource::ConnectionError,"")
-          ActiveResource::ConnectionError.any_instance.stubs(:response).returns(mock("response",:code=>401))
-          post :create, incoming_params("annonymous@example.com","daniel@example.com")
-          assert_response 401
+          post :create, incoming_params("annonymous@example.com","daniel@example.com","12345:subject")
+          assert_response 403
         end
         
     end

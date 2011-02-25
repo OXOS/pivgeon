@@ -7,7 +7,7 @@ class ApiController < ApplicationController
     if direct_sent_to_cloudmailin?(message)
       create_user(message)
     else
-      handle_connection_error{ create_story(message) }
+      handle_exceptions{ create_story(message) }
     end   
   end
   
@@ -28,8 +28,8 @@ class ApiController < ApplicationController
   end
   
   def render_proper_status(new_record=true)
-    if new_record
-      render(:nothing => true, :status => 403)            
+    if new_record      
+      render(:text => "Invalid data", :status => 403)
     else
       render(:nothing => true)
     end 
