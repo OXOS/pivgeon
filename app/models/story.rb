@@ -50,8 +50,8 @@ class Story < HyperactiveResource
     Story.token = user.token
   end
   
-  def set_story_owner()    
-    memberships = get_memberships_for_project()
+  def set_story_owner()        
+    memberships = get_memberships_for_project()    
     unless memberships.blank? 
       member = memberships.select{|m| m.person.email == self.owned_by}.first    
       member = member.try(:person).try(:name) unless member.blank?
@@ -61,7 +61,7 @@ class Story < HyperactiveResource
     end    
   end
     
-  def before_save    
+  def before_save
     set_token()
     set_story_owner()    
   end
