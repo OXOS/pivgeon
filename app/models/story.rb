@@ -1,7 +1,8 @@
 class Story < HyperactiveResource
   self.site = "http://www.pivotaltracker.com/services/v3/projects/:project_id"
   
-  attr_accessor :story_type, :name, :requested_by, :owned_by, :description    
+  self.columns = [:story_type, :name, :requested_by, :owned_by, :description  ]
+
 
   validates(:name, :presence=>true)
   validates(:owned_by, :presence=>true)  
@@ -40,6 +41,11 @@ class Story < HyperactiveResource
   def get_memberships_for_project
     Membership.token = Story.token
     Membership.find(:all,:params=>{:project_id=>self.prefix_options[:project_id]})    
+  end
+  
+  def owned_by=(owner)
+    self.attributes["owned_by"] = owner
+    super(owner)
   end
   
   protected
