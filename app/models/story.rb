@@ -55,9 +55,9 @@ class Story < HyperactiveResource
     unless memberships.blank? 
       member = memberships.select{|m| m.person.email == self.owned_by}.first    
       member = member.try(:person).try(:name) unless member.blank?
-      self.attributes['owned_by']= member
+      self.owned_by = member
     else
-      self.attributes['owned_by']= nil
+      self.owned_by = nil
     end    
   end
     

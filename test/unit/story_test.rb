@@ -43,7 +43,7 @@ class StoryTest < ActiveSupport::TestCase
       Story.expects(:token).returns("12345678")
       story = Story.new(:owned_by=>"daniel@example.com", :project_id=>"147449")      
       story.send("set_story_owner")
-      assert_equal "daniel", story.attributes['owned_by']
+      assert_equal "daniel", story.owned_by
     end
     
     should "find user by email" do
@@ -69,6 +69,82 @@ class StoryTest < ActiveSupport::TestCase
       assert_false(Story.create(@attrs).new?)
     end
     
+    context "when created" do
+      
+      context "by existing user" do
+        
+        setup do
+          @user = users(:wojciech)          
+        end
+        
+        context "for not existing member" do
+
+          should "not be created" do
+            attrs = new_story_attrs(@user.email,"annonymous@example.com","12345678")
+            story = Story.create(attrs)
+            assert(story.new?)
+          end
+
+        end
+
+        context "for existing member" do
+          
+          setup do
+            @member = users(:daniel)
+            @attrs = new_story_attrs(@user.email,@member.email,"12345678")
+          end
+
+          context "with valid data" do
+
+            should "be successfully saved" do               
+              assert_false(Story.create(@attrs).new?)
+            end
+
+          end
+
+          context "with invalid data" do
+            
+            context "like missed project_id" do
+              
+              should "not be saved" do 
+                attrs = new_story_attrs(@user.email,@member.email,"12345678").merge(:project_id=>"")
+                assert_raises(ActiveResource::ServerError) do
+                  Story.create(attrs)
+                end
+              end
+              
+            end
+            
+            context "like wrong project_id" do
+              
+              should "not be saved" do 
+                attrs = new_story_attrs(@user.email,@member.email,"12345678").merge(:project_id=>"404404404")
+                assert_raises(ActiveResource::ResourceNotFound) do
+                  Story.create(attrs)
+                end
+              end
+              
+            end
+             
+          end
+
+        end              
+        
+        context "by not existing user" do
+          
+          should "not be created" do
+            attrs = new_story_attrs("annonymous@example.com","daniel@example.com","12345678")
+            assert_raises(SecurityError) do
+              Story.create(attrs)
+            end
+          end
+        end
+        
+      end
+      
+    end
+    
+    
   end
   
   protected
@@ -86,11 +162,20 @@ class StoryTest < ActiveSupport::TestCase
       mock.post("/services/v3/projects//stories.xml", 
                 {"Content-Type"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
                 nil,
-                500)        
+                500)
+      mock.post("/services/v3/projects/404404404/stories.xml", 
+                {"Content-Type"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
+                nil,
+                404)    
+       mock.get("/services/v3/projects/404404404/memberships.xml", 
+                {"Accept"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
+                pivotal_memberships_response,
+                201)     
       mock.get("/services/v3/projects//memberships.xml", 
                 {"Accept"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
-                pivotal_memberships_response_with_no_records,
+                nil,
                 500)               
+              
     end
   end
   
