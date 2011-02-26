@@ -51,6 +51,13 @@ class StoryTest < ActiveSupport::TestCase
       assert Story.valid_subject_format?("12345:12345")
     end
     
+    should "parse subject" do      
+      assert_equal( {:name=>"Fwd: some text",:project_id=>"147449"}, Story.parse_subject("147449:Fwd: some text") )
+      assert_equal( {:name=>" some text",:project_id=>"147449"}, Story.parse_subject("147449: some text") )
+      assert_equal( {:name=>"RE:some text",:project_id=>"147449"}, Story.parse_subject("147449:RE:some text") )
+      assert_equal( {:name=>":RE:some text",:project_id=>"147449"}, Story.parse_subject("147449::RE:some text") )
+    end
+    
     should "set story owner" do
       Story.expects(:token).returns("12345678")
       story = Story.new(:owned_by=>"daniel@example.com", :project_id=>"147449")      

@@ -9,14 +9,23 @@ class Story < HyperactiveResource
   
   def self.parse_message(message)    
     raise(ArgumentError) unless valid_subject_format?(message.subject)
+    parsed_subject = Story.parse_subject(message.subject)
     {}.tap do |params| 
       params[:story_type]   = "chore"
-      params[:name]         = message.subject.split(":")[1]
+      params[:name]         = parsed_subject[:name]
       params[:description]  = message.body.to_s
       params[:requested_by] = message.from.first
       params[:owned_by]     = message.to.first      
-      params[:project_id]   = message.subject.split(":")[0]
+      params[:project_id]   = parsed_subject[:project_id]
     end 
+  end
+  
+  def self.parse_subject(subject)
+    match = subject.match(/(^\d+):(.+)/)
+    {}.tap do |subject|
+      subject[:project_id] = match[1]
+      subject[:name] = match[2]      
+    end    
   end
   
   def self.valid_subject_format?(subject)
