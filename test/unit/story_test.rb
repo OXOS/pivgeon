@@ -37,7 +37,19 @@ class StoryTest < ActiveSupport::TestCase
         
       end
       
-    end    
+    end
+    
+    should "valididate subject format" do
+      assert !Story.valid_subject_format?("12345")
+      assert !Story.valid_subject_format?("12345:")
+      assert !Story.valid_subject_format?(":12345")
+      assert !Story.valid_subject_format?("asdada:12345")
+      assert !Story.valid_subject_format?("asdada:asdada")      
+      assert !Story.valid_subject_format?("")
+      assert !Story.valid_subject_format?("asdadads")
+      assert Story.valid_subject_format?("12345:adasdad")
+      assert Story.valid_subject_format?("12345:12345")
+    end
     
     should "set story owner" do
       Story.expects(:token).returns("12345678")
