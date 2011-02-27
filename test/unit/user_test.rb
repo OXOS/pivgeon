@@ -30,6 +30,21 @@ class UserTest < ActiveSupport::TestCase
       assert_equal inactive_users.sort, User.inactive.map(&:id).sort
     end
     
+    should "find or create and send email" do
+      assert_difference("User.count") do
+        assert_difference('ActionMailer::Base.deliveries.count', 1) do
+          User.find_or_create_and_send_email(:email=>"new_user@example.com",:token=>"134131231")
+        end
+      end
+      
+      inactive_user = users(:not_activated_user)
+      assert_no_difference("User.count") do
+        assert_difference('ActionMailer::Base.deliveries.count', 1) do
+          User.find_or_create_and_send_email(:email=>inactive_user.email,:token=>"134131231")
+        end
+      end
+    end
+    
     context "when created" do
       
       should validate_presence_of(:token)    
