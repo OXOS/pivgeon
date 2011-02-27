@@ -20,6 +20,16 @@ class UserTest < ActiveSupport::TestCase
       assert_equal({:email=>"wojciech@example.com",:token=>"12345678"}, User.parse_message(message))
     end
     
+    should "scope active users" do
+      active_users = [users(:daniel).id,users(:wojciech).id]
+      assert_equal active_users.sort, User.active.map(&:id).sort
+    end
+    
+    should "scope inactive users" do
+      inactive_users = [users(:not_activated_user).id]
+      assert_equal inactive_users.sort, User.inactive.map(&:id).sort
+    end
+    
     context "when created" do
       
       should validate_presence_of(:token)    
