@@ -99,10 +99,7 @@ class StoryTest < ActiveSupport::TestCase
       assert Story.headers['X-TrackerToken'].blank?
     end
     
-    should "create new story and send send request to pivotal" do      
-      assert_false(Story.create(@attrs).new?)
-    end
-    
+       
     context "when created" do
       
       context "by existing user" do

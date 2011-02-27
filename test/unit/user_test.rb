@@ -16,6 +16,15 @@ class UserTest < ActiveSupport::TestCase
       end
     end
     
+    should "be activeted" do            
+      user = User.create(:email=>"somebody@example.com",:token=>"123123131")
+      assert_false user.new_record?
+      assert_false user.status
+      
+      user.activate!
+      assert user.status
+    end
+    
     should "parse incoming message" do
       message = Mail.new(incoming_params("wojciech@example.com","cloudmailin@example.com","12345678")['message'])
       assert_equal({:email=>"wojciech@example.com",:token=>"12345678"}, User.parse_message(message))
