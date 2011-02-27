@@ -2,18 +2,18 @@
 
 not_activated_user:
   token: 12345678
-  email: wojciech@example.com
+  email: inactive@example.com
   activation_code: 12345678 
-  status: 0
+  status: false
 
 wojciech:
   token: 12345678
   email: wojciech@example.com
   activation_code: 567890
-  status: 1
+  status: true
 
 daniel:
   token: 87654321
   email: daniel@example.com
   activation_code: 98765453
-  status: 1
+  status: true

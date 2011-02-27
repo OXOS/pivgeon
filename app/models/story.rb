@@ -1,9 +1,8 @@
 class Story < HyperactiveResource
   self.site = "http://www.pivotaltracker.com/services/v3/projects/:project_id"
   
-  self.columns = [:story_type, :name, :requested_by, :owned_by, :description  ]
-
-
+  self.columns = [:story_type, :name, :requested_by, :owned_by, :description  ]  
+  
   validates(:name, :presence=>true)
   validates(:owned_by, :presence=>true)  
   
@@ -41,7 +40,7 @@ class Story < HyperactiveResource
   end    
   
   def find_user_by_email(email)
-    user = User.find_by_email(email)
+    user = User.active.find_by_email(email)
     raise(SecurityError) if user.blank?
     user
   end

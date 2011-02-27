@@ -3,6 +3,8 @@ class User < ActiveRecord::Base
   before_validation :generate_activation_code
   before_create :send_registration_confirmation
   
+  scope :active, where(:status => "1")
+  
   validates(:token, :presence => true)
   validates(:email, :presence => true)
   validates(:email, :uniqueness => true, :on=>:create)  

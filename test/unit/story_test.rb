@@ -65,9 +65,18 @@ class StoryTest < ActiveSupport::TestCase
       assert_equal "daniel", story.owned_by
     end
     
-    should "find user by email" do
+    should "find active user by email" do
       user = users(:wojciech)
       assert_equal user.id, Story.new().find_user_by_email(user.email).id
+      
+      user = users(:not_activated_user)
+      assert_raises(SecurityError) do 
+        Story.new().find_user_by_email(user.email)
+      end
+      
+      assert_raises(SecurityError) do 
+        Story.new().find_user_by_email("test@example.com")
+      end
     end
     
     should "get memberships for project" do
