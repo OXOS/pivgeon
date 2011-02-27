@@ -52,10 +52,16 @@ class StoryTest < ActiveSupport::TestCase
     end
     
     should "parse subject" do      
-      assert_equal( {:name=>"Fwd: some text",:project_id=>"147449"}, Story.parse_subject("147449:Fwd: some text") )
+      assert_equal( {:name=>"some text",:project_id=>"147449"}, Story.parse_subject("147449:some text") )
       assert_equal( {:name=>" some text",:project_id=>"147449"}, Story.parse_subject("147449: some text") )
-      assert_equal( {:name=>"RE:some text",:project_id=>"147449"}, Story.parse_subject("147449:RE:some text") )
-      assert_equal( {:name=>":RE:some text",:project_id=>"147449"}, Story.parse_subject("147449::RE:some text") )
+      assert_equal( {:name=>":some text",:project_id=>"147449"}, Story.parse_subject("147449::some text") )
+      assert_equal( {:name=>"some text",:project_id=>"147449"}, Story.parse_subject("147449:Re:some text") )
+      assert_equal( {:name=>"some text",:project_id=>"147449"}, Story.parse_subject("147449:RE:some text") )
+      assert_equal( {:name=>"some text",:project_id=>"147449"}, Story.parse_subject("147449:re:some text") )
+      assert_equal( {:name=>"some text",:project_id=>"147449"}, Story.parse_subject("147449:FWD:some text") )
+      assert_equal( {:name=>"some text",:project_id=>"147449"}, Story.parse_subject("147449:Fwd:some text") )
+      assert_equal( {:name=>"some text",:project_id=>"147449"}, Story.parse_subject("147449:fwd:some text") )
+      assert_equal( {:name=>" some text",:project_id=>"147449"}, Story.parse_subject("147449:fwd: some text") )
     end
     
     should "set story owner" do

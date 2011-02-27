@@ -20,10 +20,10 @@ class Story < HyperactiveResource
   end
   
   def self.parse_subject(subject)
-    match = subject.match(/(^\d+):(.+)/)
+    match = subject.match(/(^\d+):(Re:|re:|RE:|Fwd:|FWD:|fwd:)?(.+)/)
     {}.tap do |subject|
       subject[:project_id] = match[1]
-      subject[:name] = match[2]      
+      subject[:name] = match[3]      
     end    
   end
   
@@ -77,6 +77,6 @@ class Story < HyperactiveResource
     
   def before_save
     set_token()
-    set_story_owner()    
+    set_story_owner()
   end
 end
