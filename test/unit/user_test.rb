@@ -5,17 +5,7 @@ class UserTest < ActiveSupport::TestCase
   fixtures :all
   
   context "User" do
-    
-    should validate_presence_of(:token)    
-    should validate_presence_of(:email)
-    should validate_uniqueness_of(:email)
-    
-    should "create new user" do
-      assert_difference("User.count") do
-        User.create(:email=>"test@example.com", :token=>"12345678")
-      end
-    end
-    
+                   
     should "be activeted" do            
       user = User.create(:email=>"somebody@example.com",:token=>"123123131")
       assert_false user.new_record?
@@ -31,7 +21,20 @@ class UserTest < ActiveSupport::TestCase
     end
     
     context "when created" do
-      should validate_presence_of(:token)
+      
+      should validate_presence_of(:token)    
+      should validate_presence_of(:email)
+      should validate_uniqueness_of(:email)
+      
+      context "with valid params" do
+        
+        should "be successfully saved" do
+          assert_difference("User.count") do
+            User.create(:email=>"test@example.com", :token=>"12345678")
+          end
+        end
+        
+      end
       
       should "generate activation code" do
         user = User.create(valid_params)
