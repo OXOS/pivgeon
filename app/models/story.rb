@@ -28,7 +28,7 @@ class Story < HyperactiveResource
   end
   
   def self.valid_subject_format?(subject)
-    !subject.match(/\d+:.+/).blank?
+    !subject.match(/^\d+:.+/).blank?
   end
    
   def self.token()

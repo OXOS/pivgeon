@@ -49,6 +49,7 @@ class StoryTest < ActiveSupport::TestCase
       assert !Story.valid_subject_format?("asdadads")
       assert Story.valid_subject_format?("12345:adasdad")
       assert Story.valid_subject_format?("12345:12345")
+      assert !Story.valid_subject_format?("sadada12345:12345")
     end
     
     should "parse subject" do      
