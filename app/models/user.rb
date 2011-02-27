@@ -4,6 +4,7 @@ class User < ActiveRecord::Base
   before_create :send_registration_confirmation
   
   scope :active, where(:status => "1")
+  scope :inactive, where(:status => "0")
   
   validates(:token, :presence => true)
   validates(:email, :presence => true)
@@ -17,6 +18,19 @@ class User < ActiveRecord::Base
     end 
   end
   
+  def self.find_or_create_and_send_email(attrs={})
+    if user = User.inactive.find_by_email(attrs[:email])
+      user.send_registration_confirmation
+      user
+    else
+      create(attrs)
+    end
+  end
+  
+  def send_registration_confirmation
+    UserMailer.registration_confirmation(self).deliver
+  end
+  
   def activate!
     self.status = true
     self.save
@@ -27,9 +41,5 @@ class User < ActiveRecord::Base
   def generate_activation_code
     self.activation_code = (0..16).map{ rand(36).to_s(36) }.join
   end
-  
-  def send_registration_confirmation
-    UserMailer.registration_confirmation(self).deliver
-  end
-  
+      
 end

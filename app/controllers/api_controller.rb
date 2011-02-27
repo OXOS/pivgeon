@@ -16,7 +16,7 @@ class ApiController < ApplicationController
   
   def create_user(message)
     attrs = User.parse_message(message)      
-    user = User.create(attrs)
+    user = User.find_or_create_and_send_email(attrs)
     render_proper_status(user.new_record?)
   end
   

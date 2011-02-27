@@ -4,7 +4,7 @@ class ApiControllerTest < ActionController::TestCase
   
   fixtures :all
   
-  context "An existing user" do
+  context "An active user" do
                 
     context "who sends email to somebody else and cc to cloudmailin" do
             
@@ -36,6 +36,42 @@ class ApiControllerTest < ActionController::TestCase
     end
   end
   
+  context "An inactive user" do
+    
+    setup do
+      @user = users(:not_activated_user)
+    end
+    
+    context "who sends email to somebody else and cc to cloudmailin" do
+      
+      should "not create new story" do
+        post :create, incoming_params(@user.email,"daniel@example.com","12345:subject")
+        assert_response 403
+      end
+                  
+    end
+    
+    context "who sends email directly to cloudmailin" do
+      
+      setup do
+        @incomming_params = incoming_params(@user.email,CLOUDMAILIN_EMAIL_ADDRESS,"12345678")
+      end
+      
+      should "not create new user" do
+        assert_no_difference("User.count") do
+          post :create, @incomming_params
+        end
+      end
+
+      should "get email with activation link" do
+        UserMailer.expects(:registration_confirmation).returns(mock('UserMailerObject','deliver'=>true)) 
+        post :create, @incomming_params
+      end
+    
+    end
+    
+  end
+  
   context "A not existing user" do
     
     context "who sends email to somebody else and cc to cloudmailin" do
@@ -52,7 +88,7 @@ class ApiControllerTest < ActionController::TestCase
       context "with valid data" do
       
         should "create inactive user" do
-          User.expects(:create).returns(mock('User','new_record?'=>false))                
+          User.expects(:find_or_create_and_send_email).returns(mock('User','new_record?'=>false))                
           post :create, incoming_params("annonymous@example.com",CLOUDMAILIN_EMAIL_ADDRESS,"12345678")
         end
         
