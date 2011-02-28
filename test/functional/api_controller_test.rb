@@ -14,7 +14,7 @@ class ApiControllerTest < ActionController::TestCase
       end
       
       should "create story" do                
-        Project.expects(:find_project_by_name).with("GeePivoMailin").returns(mock("Project",:id=>"12345"))
+        Project.expects(:find_project_by_name).with("GeePivoMailin","12345678").returns(mock("Project",:id=>"12345"))
         person = mock("Member",:name=>"daniel")
         Story.expects(:find_owner).returns(mock("Owner",:person=>person))
         Story.expects(:create).returns(mock('Story','new?'=>false))
@@ -30,7 +30,8 @@ class ApiControllerTest < ActionController::TestCase
       end
       
       context "when email recipient is not project member" do
-        should "not create story" do     
+        should "not create story" do  
+          Project.expects(:find_project_by_name).returns(nil)
           post :create, valid_params(@user.email,"annonymous@example.com","[GeePivoMailin] Subject")
           assert_response 403, "Invalid data"
         end

@@ -29,8 +29,7 @@ class Story < HyperactiveResource
   def self.find_owner(owner_email, project)
     memberships = project.memberships.membership
     if memberships.count > 0
-      member = memberships.select{|m| m.person.email == self.owned_by}.first    
-      member = member.try(:person).try(:name) unless member.blank?
+      member = memberships.select{|m| m.person.email == owner_email}.first    
       member
     else
       nil

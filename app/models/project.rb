@@ -7,9 +7,7 @@ class Project < HyperactiveResource
   
   def self.find_project_by_name(name,token)
     Project.token = token  
-    project = Project.find(:all).select{|p| p.name == name }
-    raise(ArgumentError) if project.blank?
-    project
+    Project.find(:all).select{|p| p.name == name }.first
   end
   
 end

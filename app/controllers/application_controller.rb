@@ -4,10 +4,12 @@ class ApplicationController < ActionController::Base
   protected
   
   rescue_from(ArgumentError) do |exception|
+    Rails.logger.info("############### raised ArgumentError")
     render(:text => "Invalid data", :status => 403) and return
   end
   
   rescue_from(SecurityError) do |exception|
+    Rails.logger.info("############### SecurityError")
     render(:text => "Access denied", :status => 403) and return
   end
   

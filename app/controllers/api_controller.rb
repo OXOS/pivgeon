@@ -25,7 +25,7 @@ class ApiController < ApplicationController
   
   def create_story(message)    
     attrs = {:owned_by=>@owner.person.name,:project_id=>@project.id,:name=>@parsed_subject[:subject],:story_type=>"chore",:description=>params[:plain]}   
-    Story.token = @user.token
+    Story.token = @user.token    
     story = Story.create(attrs)
     render_proper_status(story.new?)     
   end
@@ -62,7 +62,7 @@ class ApiController < ApplicationController
   def find_story_owner
     unless direct_sent_to_cloudmailin?(@message)
       @parsed_subject = Story.parse_subject(@message.subject)
-      @project = Project.find_project_by_name(@parsed_subject[:project_name])
+      @project = Project.find_project_by_name(@parsed_subject[:project_name],@user.token)
       raise(ArgumentError) if @project.blank?
 
       @owner = Story.find_owner(@message.to.first,@project)
