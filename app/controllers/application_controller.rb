@@ -3,18 +3,20 @@ class ApplicationController < ActionController::Base
   
   protected
   
-  def handle_exceptions &block
-    begin
-      yield
-    rescue ActiveResource::ConnectionError => error
-      render(:text => error.response.body, :status => error.response.code) and return
-    rescue ActiveResource::ServerError => error
-      render(:text => error.response.body, :status => error.response.code) and return
-    rescue ArgumentError => error
-      render(:text => "Invalid data", :status => 403) and return
-    rescue SecurityError => error
-      render(:text => "Access denied", :status => 403) and return
-    end
+  rescue_from(ArgumentError) do |exception|
+    render(:text => "Invalid data", :status => 403) and return
   end
+  
+  rescue_from(SecurityError) do |exception|
+    render(:text => "Access denied", :status => 403) and return
+  end
+  
+#  rescue_from(ActiveResource::ConnectionError) do |exception|
+#    render(:text => exception.response.body, :status => exception.response.code) and return
+#  end
+#  
+#  rescue_from(ActiveResource::ConnectionError) do |exception|
+#    render(:text => exception.response.body, :status => exception.response.code) and return
+#  end
   
 end

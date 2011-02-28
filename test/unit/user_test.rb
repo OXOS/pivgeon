@@ -16,7 +16,7 @@ class UserTest < ActiveSupport::TestCase
     end
     
     should "parse incoming message" do
-      message = Mail.new(incoming_params("wojciech@example.com","cloudmailin@example.com","12345678")['message'])
+      message = Mail.new(valid_params("wojciech@example.com","cloudmailin@example.com","12345678")['message'])
       assert_equal({:email=>"wojciech@example.com",:token=>"12345678"}, User.parse_message(message))
     end
     
@@ -62,13 +62,13 @@ class UserTest < ActiveSupport::TestCase
       end
       
       should "generate activation code" do
-        user = User.create(valid_params)
+        user = User.create(:email=>"test@example.com",:token=>"2345678")
         assert !user.activation_code.blank?
       end
       
       should "send confirmation email" do
         assert_difference "ActionMailer::Base.deliveries.count" do
-          user = User.create(valid_params)
+          user = User.create(:email=>"test@example.com",:token=>"2345678")
         end
       end
       
@@ -87,12 +87,6 @@ class UserTest < ActiveSupport::TestCase
       end
     end
             
-  end
-  
-  protected
-  
-  def valid_params
-    {:email=>"test@example.com",:token=>"2345678"}
   end
   
 end

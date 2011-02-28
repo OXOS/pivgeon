@@ -10,25 +10,28 @@ class ApiControllerTest < ActionController::TestCase
             
       setup do        
         @user = users(:wojciech)
+        @owner = users(:daniel)
       end
       
-      should "create story" do        
+      should "create story" do                
+        Project.expects(:find_project_by_name).with("GeePivoMailin").returns(mock("Project",:id=>"12345"))
+        person = mock("Member",:name=>"daniel")
+        Story.expects(:find_owner).returns(mock("Owner",:person=>person))
         Story.expects(:create).returns(mock('Story','new?'=>false))
-        post :create, incoming_params(@user.email,"daniel@example.com","12345:Subject")
+        post :create, valid_params(@user.email,"daniel@example.com","[GeePivoMailin] Subject")
         assert_response :success
       end
       
       context "with invalid subject format" do
-        should "get error raised" do          
-          post :create, incoming_params(@user.email,"daniel@example.com",":Subject")
+        should "not create story" do          
+          post :create, valid_params(@user.email,"daniel@example.com","Subject")
           assert_response 403, "Invalid data"
         end
       end
       
       context "when email recipient is not project member" do
-        should "get error raised" do     
-          Membership.expects(:find).raises(ActiveResource::ConnectionError)
-          post :create, incoming_params(@user.email,"annonymous@example.com","1234:Subject")
+        should "not create story" do     
+          post :create, valid_params(@user.email,"annonymous@example.com","[GeePivoMailin] Subject")
           assert_response 403, "Invalid data"
         end
       end
@@ -45,7 +48,7 @@ class ApiControllerTest < ActionController::TestCase
     context "who sends email to somebody else and cc to cloudmailin" do
       
       should "not create new story" do
-        post :create, incoming_params(@user.email,"daniel@example.com","12345:subject")
+        post :create, valid_params(@user.email,"daniel@example.com","[GeePivoMailin] subject")
         assert_response 403
       end
                   
@@ -54,7 +57,7 @@ class ApiControllerTest < ActionController::TestCase
     context "who sends email directly to cloudmailin" do
       
       setup do
-        @incomming_params = incoming_params(@user.email,CLOUDMAILIN_EMAIL_ADDRESS,"12345678")
+        @incomming_params = valid_params(@user.email,CLOUDMAILIN_EMAIL_ADDRESS,"[GeePivoMailin] Story 1")
       end
       
       should "not create new user" do
@@ -77,7 +80,7 @@ class ApiControllerTest < ActionController::TestCase
     context "who sends email to somebody else and cc to cloudmailin" do
     
       should "not create new story" do
-        post :create, incoming_params("annonymous@example.com","daniel@example.com","12345:subject")
+        post :create, valid_params("annonymous@example.com","daniel@example.com","[GeePivoMailin] subject")
         assert_response 403
       end
         
@@ -89,12 +92,12 @@ class ApiControllerTest < ActionController::TestCase
       
         should "create inactive user" do
           User.expects(:find_or_create_and_send_email).returns(mock('User','new_record?'=>false))                
-          post :create, incoming_params("annonymous@example.com",CLOUDMAILIN_EMAIL_ADDRESS,"12345678")
+          post :create, valid_params("annonymous@example.com",CLOUDMAILIN_EMAIL_ADDRESS,"12345678")
         end
         
         should "get email with activation link" do
           UserMailer.expects(:registration_confirmation).returns(mock('UserMailerObject','deliver'=>true)) 
-          post :create, incoming_params("annonymous@example.com",CLOUDMAILIN_EMAIL_ADDRESS,"12345678")
+          post :create, valid_params("annonymous@example.com",CLOUDMAILIN_EMAIL_ADDRESS,"12345678")
         end
         
       end

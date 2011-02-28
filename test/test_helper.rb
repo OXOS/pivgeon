@@ -13,7 +13,7 @@ class ActiveSupport::TestCase
 
   # Add more helper methods to be used by all tests here...
 
-  def incoming_params from, to, subject="Story 1"
+  def valid_params(from, to, subject="[GeePivoMailin] Story 1")
     {"html"=>"description<br/>", 
      "plain"=>"description", 
      "disposable"=>"", 
@@ -25,8 +25,8 @@ class ActiveSupport::TestCase
   end
   
 
-  def new_story_attrs(requested_by,owned_by,token)
-    {:story_type=>"chore",:name=>"Story 1", :description=>"description", :requested_by=>requested_by, :owned_by=>owned_by, :token=>token, :project_id=>"147449"}
+  def new_story_attrs(owned_by)
+    {:story_type=>"chore",:name=>"Story 1", :description=>"description", :owned_by=>owned_by, :project_id=>"147449"}
   end
   
   def test_presence_of(elem,param)
@@ -90,6 +90,59 @@ class ActiveSupport::TestCase
         </project>
       </membership>
     </memberships>
+  '
+  end
+  
+  def pivotal_projects_response
+    ' <?xml version="1.0" encoding="UTF-8"?>
+    <projects type="array">
+      <project>
+        <id>147449</id>
+        <name>GeePivoMailin</name>
+        <iteration_length type="integer">2</iteration_length>
+        <week_start_day>Monday</week_start_day>
+        <point_scale>0,1,2,3</point_scale>
+        <velocity_scheme>Average of 4 iterations</velocity_scheme>
+        <current_velocity>10</current_velocity>
+        <initial_velocity>10</initial_velocity>
+        <number_of_done_iterations_to_show>12</number_of_done_iterations_to_show>
+        <labels>shields,transporter</labels>
+        <allow_attachments>true</allow_attachments>
+        <public>false</public>
+        <use_https>true</use_https>
+        <bugs_and_chores_are_estimatable>false</bugs_and_chores_are_estimatable>
+        <commit_mode>false</commit_mode>
+        <last_activity_at type="datetime">2010/01/16 17:39:10 CST</last_activity_at>
+        <memberships>
+          <membership>
+            <id>1</id>
+            <person>
+              <email>wojciech@example.com</email>
+              <name>wojciech</name>
+              <initials>WK</initials>
+            </person>
+            <role>Owner</role>
+            <project>
+              <id>147449</id>
+              <name>Project 1</name>
+            </project>
+          </membership>
+          <membership>
+            <id>2</id>
+            <person>
+              <email>daniel@example.com</email>
+              <name>daniel</name>
+              <initials>DS</initials>
+            </person>
+            <role>Member</role>
+            <project>
+              <id>147449</id>
+              <name>Project 1</name>
+            </project>
+          </membership>
+        </memberships>
+      </project>      
+    </projects>
   '
   end
   

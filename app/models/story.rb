@@ -6,29 +6,16 @@ class Story < HyperactiveResource
   validates(:name, :presence=>true)
   validates(:owned_by, :presence=>true)  
   
-  def self.parse_message(message)    
-    raise(ArgumentError) unless valid_subject_format?(message.subject)
-    parsed_subject = Story.parse_subject(message.subject)
-    {}.tap do |params| 
-      params[:story_type]   = "chore"
-      params[:name]         = parsed_subject[:name]
-      params[:description]  = message.body.to_s
-      params[:requested_by] = message.from.first
-      params[:owned_by]     = message.to.first      
-      params[:project_id]   = parsed_subject[:project_id]
-    end 
-  end
-  
   def self.parse_subject(subject)
-    match = subject.match(/(^\d+):(Re:|re:|RE:|Fwd:|FWD:|fwd:)?(.+)/)
+    match = subject.match(/^\s*\[(.+?)\](\s*Re:\s*|\s*re:\s*|\s*RE:\s*|\s*Fwd:\s*|\s*FWD:\s*|\s*fwd:\s*)?(.+)/)
     {}.tap do |subject|
-      subject[:project_id] = match[1]
-      subject[:name] = match[3]      
+      subject[:project_name] = match[1]
+      subject[:subject] = match[3]      
     end    
   end
   
   def self.valid_subject_format?(subject)
-    !subject.match(/^\d+:.+/).blank?
+    !subject.match(/^\s*\[.+?\].+/).blank?
   end
    
   def self.token()
@@ -37,46 +24,21 @@ class Story < HyperactiveResource
   
   def self.token=(token)
     self.headers['X-TrackerToken'] = (token ? token : "")
-  end    
-  
-  def find_user_by_email(email)
-    user = User.active.find_by_email(email)
-    raise(SecurityError) if user.blank?
-    user
   end
   
-  # get to pivotaltracker for all project memberships
-  def get_memberships_for_project
-    Membership.token = Story.token
-    Membership.find(:all,:params=>{:project_id=>self.prefix_options[:project_id]})    
+  def self.find_owner(owner_email, project)
+    memberships = project.memberships.membership
+    if memberships.count > 0
+      member = memberships.select{|m| m.person.email == self.owned_by}.first    
+      member = member.try(:person).try(:name) unless member.blank?
+      member
+    else
+      nil
+    end    
   end
   
   def owned_by=(owner)
     self.attributes["owned_by"] = owner
     super(owner)
-  end
-  
-  protected
-  
-  def set_token()
-    user_email = self.attributes.delete('requested_by')
-    user = find_user_by_email(user_email)
-    Story.token = user.token
-  end
-  
-  def set_story_owner()        
-    memberships = get_memberships_for_project()    
-    unless memberships.blank? 
-      member = memberships.select{|m| m.person.email == self.owned_by}.first    
-      member = member.try(:person).try(:name) unless member.blank?
-      self.owned_by = member
-    else
-      self.owned_by = nil
-    end    
-  end
-    
-  def before_save
-    set_token()
-    set_story_owner()
   end
 end
