@@ -55,7 +55,20 @@ class StoryTest < ActiveSupport::TestCase
     end
     
     should "find owner" do
-      flunk("implement me")
+      project = Project.find_project_by_name("GeePivoMailin","12345678")
+      
+      owner = Story.find_owner("daniel@example.com",project)
+      assert_equal "daniel", owner.person.name
+      assert_equal "DS", owner.person.initials
+      
+      owner = Story.find_owner("annonymous@example.com",project)
+      assert_equal nil, owner
+    end
+    
+    should "set owned_by" do
+      story = Story.new
+      story.owned_by = "daniel"
+      assert_equal "daniel", story.owned_by
     end
 
   end

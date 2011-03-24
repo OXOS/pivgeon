@@ -58,7 +58,7 @@ class ApiControllerTest < ActionController::TestCase
     context "who sends email directly to cloudmailin" do
       
       setup do
-        @incomming_params = valid_params(@user.email,CLOUDMAILIN_EMAIL_ADDRESS,"[GeePivoMailin] Story 1")
+        @incomming_params = valid_params(@user.email,CLOUDMAILIN_EMAIL_ADDRESS,"12345678")
       end
       
       should "not create new user" do
