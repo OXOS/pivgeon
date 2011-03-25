@@ -6,11 +6,13 @@ class ApiController < ApplicationController
   before_filter :find_user
   before_filter :find_story_owner
   
-  def create    
-    if direct_sent_to_cloudmailin?(@message)
-      create_user(@message)
-    else
-      create_story(@message)
+  def create   
+    handle_exception do
+      if direct_sent_to_cloudmailin?(@message)
+        create_user(@message)
+      else
+        create_story(@message)
+      end
     end
   end
   
@@ -43,31 +45,39 @@ class ApiController < ApplicationController
   end
   
   def parse_message
-    @message = Mail.new(params[:message])
+    handle_exception do
+      @message = Mail.new(params[:message])
+    end
   end
   
   def validate_subject
-    unless direct_sent_to_cloudmailin?(@message)
-      raise(ArgumentError) unless Story.valid_subject_format?(@message.subject)
+    handle_exception do
+      unless direct_sent_to_cloudmailin?(@message)
+        raise(ArgumentError) unless Story.valid_subject_format?(@message.subject)
+      end
     end
   end
   
   def find_user
-    unless direct_sent_to_cloudmailin?(@message)
-      @user = User.active.find_by_email(@message.from.first)
-      raise(SecurityError) if @user.blank?
+    handle_exception do
+      unless direct_sent_to_cloudmailin?(@message)
+        @user = User.active.find_by_email(@message.from.first)
+        raise(SecurityError) if @user.blank?
+      end
     end
   end
   
   def find_story_owner
-    unless direct_sent_to_cloudmailin?(@message)
-      @parsed_subject = Story.parse_subject(@message.subject)
-      @project = Project.find_project_by_name(@parsed_subject[:project_name],@user.token)
-      raise(ArgumentError) if @project.blank?
+    handle_exception do
+      unless direct_sent_to_cloudmailin?(@message)
+        @parsed_subject = Story.parse_subject(@message.subject)
+        @project = Project.find_project_by_name(@parsed_subject[:project_name],@user.token)
+        raise(ArgumentError) if @project.blank?
 
-      @owner = Story.find_owner(@message.to.first,@project)
-      raise(ArgumentError) if @owner.blank?
+        @owner = Story.find_owner(@message.to.first,@project)
+        raise(ArgumentError) if @owner.blank?
+      end
     end
-  end
+  end  
   
 end

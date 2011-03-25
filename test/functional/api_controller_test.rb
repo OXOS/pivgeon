@@ -1,4 +1,4 @@
-require 'test_helper'
+require File.expand_path(File.dirname(__FILE__))+ '/../test_helper'
 
 class ApiControllerTest < ActionController::TestCase
   
@@ -34,6 +34,26 @@ class ApiControllerTest < ActionController::TestCase
           Project.expects(:find_project_by_name).returns(nil)
           post :create, valid_params(@user.email,"annonymous@example.com","[GeePivoMailin] Subject")
           assert_response 403, "Invalid data"
+        end
+      end
+      
+      context "when pivotal tracker respond client error" do
+        should "not create story" do          
+          [ActiveResource::ForbiddenAccess,ActiveResource::UnauthorizedAccess,ActiveResource::BadRequest,ActiveResource::ResourceNotFound].each do |e|
+            Project.stubs(:find_project_by_name).raises(e.new('',''))
+            post :create, valid_params(@user.email,"annonymous@example.com","[GeePivoMailin] Subject")
+            assert_response 500
+          end
+        end
+      end
+      
+      context "when pivotal tracker respond connection error" do
+        should "not create story" do          
+          [ActiveResource::TimeoutError,ActiveResource::ServerError].each do |e|
+            Project.stubs(:find_project_by_name).raises(e.new(''))
+            post :create, valid_params(@user.email,"annonymous@example.com","[GeePivoMailin] Subject")
+            assert_response 403
+          end
         end
       end
       
