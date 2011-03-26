@@ -6,7 +6,7 @@ class UserTest < ActiveSupport::TestCase
   
   context "User" do
                    
-    should "be activeted" do            
+    should "be activated" do            
       user = User.create(:email=>"somebody@example.com",:token=>"123123131")
       assert_false user.new_record?
       assert_false user.status

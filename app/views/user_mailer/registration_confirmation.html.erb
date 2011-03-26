@@ -1,2 +1,1 @@
-
-Please, confirm your registration: <%= link_to @activation_link, @activation_link %>
+To complete the registration process use link <%= link_to user_confirmation_url(:id=>@activation_link), user_confirmation_url(:id=>@activation_link) %>

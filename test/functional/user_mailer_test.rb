@@ -10,7 +10,7 @@ class UserMailerTest < ActionMailer::TestCase
       email =  UserMailer.registration_confirmation(user).deliver!
       assert !ActionMailer::Base.deliveries.empty?
       assert_equal "wojciech@example.com", email.to.first
-      assert_equal "GeePivoMailin: registration confirmation", email.subject
+      assert_equal "GeePivoMailin: new user confirmation", email.subject
       assert_match /http:\/\/geepivomailindev.heroku.com\/users\/confirm\//, email.encoded
     end
   end
