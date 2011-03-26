@@ -1,14 +1,36 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Geepivodev</title>
-  <%= stylesheet_link_tag :all %>
-  <%= javascript_include_tag :defaults %>
-  <%= csrf_meta_tag %>
-</head>
-<body>
-
-<%= yield %>
-
-</body>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>GeePivoMailin</title>
+    <style type="text/css">
+      body{
+        background-color: gray;
+        color: black;
+        margin: 0px;
+        padding: 20px;        
+       text-align: center;
+      }
+      #box{
+        width: 65%;
+        height: 300px;
+        border: 3px solid orange;
+        background: #eee;
+        text-align: center;
+        margin: auto;
+        -moz-border-radius: 15px;
+        border-radius: 15px;
+        font-size: 14px;
+      }
+      h2{
+        width: 65%;
+        text-align: left;
+        margin: auto; 
+        margin-bottom: 2px;
+      }
+    </style>
+  </head>
+  <body>
+    <%= yield %>
+  </body>
 </html>
