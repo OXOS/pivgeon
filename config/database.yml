@@ -21,6 +21,6 @@ test:
 
 production:
   <<: *db
-  database: geepivomailin_profuction
+  database: geepivomailin_production
   pool: 5
   timeout: 5000
