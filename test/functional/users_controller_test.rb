@@ -9,6 +9,7 @@ class UsersControllerTest < ActionController::TestCase
     
     should "activate his account" do
       user = users(:not_activated_user)
+      User.any_instance.stubs(:check_token!).returns(nil)
       
       assert !user.status
       

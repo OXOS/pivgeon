@@ -5,6 +5,10 @@ class UserTest < ActiveSupport::TestCase
   fixtures :all
   
   context "User" do
+    
+    setup do
+      mock_requests()
+    end
                    
     should "be activated" do            
       user = User.create(:email=>"somebody@example.com",:token=>"123123131")
@@ -33,23 +37,33 @@ class UserTest < ActiveSupport::TestCase
     should "find or create and send email" do
       assert_difference("User.count") do
         assert_difference('ActionMailer::Base.deliveries.count', 1) do
-          User.find_or_create_and_send_email(:email=>"new_user@example.com",:token=>"134131231")
+          User.find_or_create_and_send_email(:email=>"new_user@example.com",:token=>"123123131")
         end
       end
       
       inactive_user = users(:not_activated_user)
       assert_no_difference("User.count") do
         assert_difference('ActionMailer::Base.deliveries.count', 1) do
-          User.find_or_create_and_send_email(:email=>inactive_user.email,:token=>"134131231")
+          User.find_or_create_and_send_email(:email=>inactive_user.email,:token=>"123123131")
         end
       end
     end
     
     context "when created" do
       
-      should validate_presence_of(:token)    
-      should validate_presence_of(:email)
-      should validate_uniqueness_of(:email)
+      context "with missing data" do
+        setup do
+          User.any_instance.stubs(:token).returns("123123131")
+        end
+        should validate_presence_of(:email)
+        should validate_uniqueness_of(:email)                
+      end     
+      
+      should "validate presence of token" do
+          assert_raises(ActiveResource::UnauthorizedAccess) do
+            user = User.create(:email=>"test@example.com")
+          end
+        end
       
       context "with valid params" do
         
@@ -62,13 +76,13 @@ class UserTest < ActiveSupport::TestCase
       end
       
       should "generate activation code" do
-        user = User.create(:email=>"test@example.com",:token=>"2345678")
+        user = User.create(:email=>"test@example.com",:token=>"123123131")
         assert !user.activation_code.blank?
       end
       
       should "send confirmation email" do
         assert_difference "ActionMailer::Base.deliveries.count" do
-          user = User.create(:email=>"test@example.com",:token=>"2345678")
+          user = User.create(:email=>"test@example.com",:token=>"123123131")
         end
       end
       
@@ -87,6 +101,29 @@ class UserTest < ActiveSupport::TestCase
       end
     end
             
+  end
+  
+  protected
+  
+  def mock_requests()
+    ActiveResource::HttpMock.respond_to do |mock|
+      mock.get("/services/v3/projects.xml", 
+                {"Accept"=>"application/xml", "X-TrackerToken"=>'123123131'}, 
+                pivotal_projects_response,
+                200)
+      mock.get("/services/v3/projects.xml", 
+                {"Accept"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
+                pivotal_projects_response,
+                200) 
+      mock.get("/services/v3/projects.xml", 
+                {"Accept"=>"application/xml", "X-TrackerToken"=>'111111111'}, 
+                pivotal_projects_response,
+                200)  
+      mock.get("/services/v3/projects.xml", 
+                {"Accept"=>"application/xml", "X-TrackerToken"=>''}, 
+                nil,
+                401)
+    end
   end
   
 end

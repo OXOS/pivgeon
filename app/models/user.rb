@@ -1,12 +1,12 @@
 class User < ActiveRecord::Base
   
   before_validation :generate_activation_code
-  before_create :send_registration_confirmation
+  after_validation :check_token!
+  before_create :send_registration_confirmation  
   
   scope :active, where(:status => "1")
   scope :inactive, where(:status => "0")
   
-  validates(:token, :presence => true)
   validates(:email, :presence => true)
   validates(:email, :uniqueness => true, :on=>:create)  
   validates(:activation_code, :presence => true, :on => :create)
@@ -37,6 +37,11 @@ class User < ActiveRecord::Base
   end
   
   protected
+  
+  def check_token!
+    Project.token = self.token
+    Project.find(:all)
+  end
 
   def generate_activation_code
     self.activation_code = (0..16).map{ rand(36).to_s(36) }.join
