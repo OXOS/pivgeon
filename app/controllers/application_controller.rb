@@ -22,6 +22,10 @@ class ApplicationController < ActionController::Base
     rescue SecurityError
       Rails.logger.info("############### SecurityError")
       render(:text => "Access denied", :status => 403) and return
+      
+    rescue
+      Rails.logger.info("############### Exception")
+      render(:status => 403) and return
     end
   end
   
