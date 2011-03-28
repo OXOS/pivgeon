@@ -29,12 +29,11 @@ class ApiController < ApplicationController
     attrs = {:owned_by=>@owner.person.name,:project_id=>@project.id,:name=>@parsed_subject[:subject],:story_type=>"chore",:description=>params[:plain]}   
     Story.token = @user.token    
     story = Story.create(attrs)
-    Rails.logger.info("############### ActiveRecord/ActiveREsource error: #{story.errors.full_messages} ") if story.new?
     render_proper_status(story.new?)     
   end
   
   def render_proper_status(new_record=true)
-    if new_record            
+    if new_record      
       render(:text => "Invalid data", :status => 403)
     else
       render(:nothing => true)
