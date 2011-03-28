@@ -11,7 +11,7 @@ class UserMailerTest < ActionMailer::TestCase
       assert !ActionMailer::Base.deliveries.empty?
       assert_equal "wojciech@example.com", email.to.first
       assert_equal "GeePivoMailin: new user confirmation", email.subject
-      assert_match /http:\/\/geepivomailindev.heroku.com\/users\/confirm\//, email.encoded
+      assert_match /#{ActionMailer::Base.default_url_options[:host]}\/users\/confirm\//, email.encoded
     end
   end
   
