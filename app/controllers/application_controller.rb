@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   protected
   
   def handle_exception(&block)
+    headers["Content-type"] = "text/plain" 
     begin
       block.call
     rescue ActiveResource::ClientError
