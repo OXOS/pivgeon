@@ -113,7 +113,7 @@ class ActiveSupport::TestCase
         <bugs_and_chores_are_estimatable>false</bugs_and_chores_are_estimatable>
         <commit_mode>false</commit_mode>
         <last_activity_at type="datetime">2010/01/16 17:39:10 CST</last_activity_at>
-        <memberships>
+        <memberships type="array">
           <membership>
             <id>1</id>
             <person>

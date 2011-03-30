@@ -27,7 +27,7 @@ class Story < HyperactiveResource
   end
   
   def self.find_owner(owner_email, project)
-    memberships = project.memberships.membership
+    memberships = project.memberships
     if memberships.count > 0
       member = memberships.select{|m| m.person.email == owner_email}.first    
       member
