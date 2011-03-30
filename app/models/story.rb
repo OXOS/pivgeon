@@ -7,7 +7,7 @@ class Story < HyperactiveResource
   validates(:owned_by, :presence=>true)  
   
   def self.parse_subject(subject)
-    match = subject.match(/^\s*\[(.+?)\](\s*Re:\s*|\s*re:\s*|\s*RE:\s*|\s*Fwd:\s*|\s*FWD:\s*|\s*fwd:\s*)?(.+)/)
+    match = subject.match(/^\s*\[(.+?)\](\s*Re:\s*|\s*re:\s*|\s*RE:\s*|\s*Fwd:\s*|\s*FWD:\s*|\s*fwd:\s*|\s*PD:\s*)?(.+)/)
     {}.tap do |subject|
       subject[:project_name] = match[1]
       subject[:subject] = match[3]      
