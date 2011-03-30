@@ -19,8 +19,8 @@ class ApplicationController < ActionController::Base
       Rails.logger.info("############### ActiveResource::ClientError")
       render(:text=>"Server Error", :status => 500) and return  
       
-    rescue
-      Rails.logger.info("############### Exception")
+    rescue => error
+      Rails.logger.info("############### Exception #{error.message} -  #{error.backtrace}")
       render(:text=>"Error", :status => 403) and return
     end
   end
