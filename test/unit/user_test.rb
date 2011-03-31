@@ -49,21 +49,54 @@ class UserTest < ActiveSupport::TestCase
       end
     end
     
+    context "when not created" do
+      
+      setup do
+        
+      end
+      
+      context "due to taken email" do
+        should "receive email with information" do
+          existing_user = users(:daniel)
+          assert_difference('ActionMailer::Base.deliveries.count', 1) do
+            user = User.create(:email=>existing_user.email,:token=>"12345678")
+          end
+        end
+      end
+      
+      context "due to invalid token" do
+        should "receive email with information" do
+          assert_difference('ActionMailer::Base.deliveries.count', 1) do
+            user = User.create(:email=>"annonymous@example.com",:token=>"1")
+          end
+        end
+      end
+      
+    end
+    
     context "when created" do
       
       context "with invalid params" do
         
-        setup do
-          User.any_instance.stubs(:token).returns("123123131")
+        should "validate presence of email" do
+          user = User.create
+          assert !user.errors.on(:email).empty?
         end
         
-        should validate_presence_of(:email)
-        should validate_uniqueness_of(:email)                     
+        should "validate uniqueness of email" do
+          existing_user = users(:daniel)
+          user = User.create(:email=>existing_user.email)
+          assert !user.errors.on(:email).empty?
+        end
+        
         should "validate presence of token" do
-          User.any_instance.stubs(:token).returns(nil)
-          assert_raises(ActiveResource::UnauthorizedAccess) do
-            user = User.create(:email=>"test@example.com")
-          end
+          user = User.create(:email=>"test@example.com")
+          assert !user.errors.on(:token).empty?
+        end
+        
+        should "validate if token is working" do          
+          user = User.create(:email=>"test@example.com",:token=>"1")
+          assert !user.errors.on(:token).empty?
         end
         
       end     
@@ -126,6 +159,10 @@ class UserTest < ActiveSupport::TestCase
                 {"Accept"=>"application/xml", "X-TrackerToken"=>''}, 
                 nil,
                 401)
+      mock.get("/services/v3/projects.xml", 
+                {"Accept"=>"application/xml", "X-TrackerToken"=>'1'}, 
+                nil,
+                401)         
     end
   end
   

@@ -119,7 +119,7 @@ class ApiControllerTest < ActionController::TestCase
         
         should "get email with activation link" do
           UserMailer.expects(:registration_confirmation).returns(mock('UserMailerObject','deliver'=>true)) 
-          User.any_instance.expects(:check_token!).returns(nil)
+          User.any_instance.expects(:validate_token).returns(nil)
           post :create, valid_params("annonymous@example.com",CLOUDMAILIN_EMAIL_ADDRESS,"12345678")
         end
         

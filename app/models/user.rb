@@ -1,8 +1,7 @@
 class User < ActiveRecord::Base
   
-  before_validation :generate_activation_code
-  after_validation :check_token!
-  before_create :send_registration_confirmation  
+  before_validation(:generate_activation_code)
+  before_create(:send_registration_confirmation)  
   
   scope :active, where(:status => "1")
   scope :inactive, where(:status => "0")
@@ -10,6 +9,9 @@ class User < ActiveRecord::Base
   validates(:email, :presence => true)
   validates(:email, :uniqueness => true, :on=>:create)  
   validates(:activation_code, :presence => true, :on => :create)
+  validate :validate_token
+  
+  after_validation(:send_notifications)
   
   def self.parse_message(message)
     {}.tap do |params| 
@@ -38,9 +40,18 @@ class User < ActiveRecord::Base
   
   protected
   
-  def check_token!
-    Project.token = self.token
-    Project.find(:all)
+  def validate_token
+    begin
+      Project.token = self.token
+      Project.find(:all)
+    rescue
+      self.errors.add(:token, "is invalid")
+    end
+  end
+  
+  def send_notifications
+    return if self.errors.empty?
+    UserMailer.not_created_notification(self).deliver
   end
 
   def generate_activation_code
