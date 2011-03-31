@@ -51,20 +51,23 @@ class UserTest < ActiveSupport::TestCase
     
     context "when created" do
       
-      context "with missing data" do
+      context "with invalid params" do
+        
         setup do
           User.any_instance.stubs(:token).returns("123123131")
         end
+        
         should validate_presence_of(:email)
-        should validate_uniqueness_of(:email)                
-      end     
-      
-      should "validate presence of token" do
+        should validate_uniqueness_of(:email)                     
+        should "validate presence of token" do
+          User.any_instance.stubs(:token).returns(nil)
           assert_raises(ActiveResource::UnauthorizedAccess) do
             user = User.create(:email=>"test@example.com")
           end
         end
-      
+        
+      end     
+                  
       context "with valid params" do
         
         should "be successfully saved" do
