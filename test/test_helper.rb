@@ -1,4 +1,5 @@
 ENV["RAILS_ENV"] = "test"
+ENV['RUBYOPT'] = "-W0"
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
 require "ruby-debug"
@@ -12,6 +13,7 @@ class ActiveSupport::TestCase
 #  fixtures :all
 
   # Add more helper methods to be used by all tests here...
+      
 
   def valid_params(from, to, subject="[GeePivoMailin] Story 1")
     {"html"=>"description<br/>", 
@@ -21,7 +23,7 @@ class ActiveSupport::TestCase
      "signature"=>"60d30a03373fb7366e49920b333cf44e", 
      "subject"=>subject, 
      "to"=>"<dfba89c3c1ec17e81304@cloudmailin.net>", 
-     "message"=>"Received: (wp-smtpd smtp.wp.pl 22222 invoked from network); 11 Jan 2011 13:45:23 +0100\r\nReceived: from out.poczta.wp.pl (HELO localhost) ([222.22.222.222])\r\n(envelope-sender <#{from}>)\r\n          by smtp.wp.pl (WP-SMTPD) with SMTP\r\nfor <#{to}>; 11 Jan 2011 13:45:23 +0100\r\nDate: Tue, 11 Jan 2011 13:45:23 +0100\r\nFrom: =?ISO-8859-2?Q?wojciech?= <#{from}>\r\nTo: daniel <#{to}>\r\nCc: dfba89c3c1ec17e81304 <dfba89c3c1ec17e81304@cloudmailin.net>\r\nSubject: #{subject}\r\nMessage-ID: <4d2c50e315e556.43793632@wp.pl>\r\nMIME-Version: 1.0\r\nContent-Type: text/plain; charset=iso-8859-2\r\nContent-Transfer-Encoding: 8bit\r\nContent-Disposition: inline\r\n"}
+     "message"=>"Received: by qwj8 with SMTP id 8so3681152qwj.4\r\n        for <b06e829748e4a3c9cea9@cloudmailin.net>; Sun, 03 Apr 2011 11:48:53 -0700 (PDT)\r\nMIME-Version: 1.0\r\nReceived: by 10.224.200.195 with SMTP id ex3mr5033699qab.229.1301856533092;\r\n Sun, 03 Apr 2011 11:48:53 -0700 (PDT)\r\nReceived: by 10.224.37.81 with HTTP; Sun, 3 Apr 2011 11:48:53 -0700 (PDT)\r\nDate: Sun, 3 Apr 2011 20:48:53 +0200\r\nMessage-ID: <BANLkTimSJh85TDNCn0RNH_YH5EHggnDAfw@mail.gmail.com>\r\nSubject: #{subject}\r\nFrom: =?UTF-8?Q?Daniel_Soko=C5=82owski?= <#{from}>\r\nTo: =?UTF-8?Q?Daniel_Soko=C5=82owski?= <#{to}>\r\nCc: b06e829748e4a3c9cea9@cloudmailin.net\r\nContent-Type: multipart/alternative; boundary=20cf3010edcf3419bd04a0081821\r\n\r\n--20cf3010edcf3419bd04a0081821\r\nContent-Type: text/plain; charset=UTF-8\r\n\r\n\r\n\r\n--20cf3010edcf3419bd04a0081821\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n<br>\r\n\r\n--20cf3010edcf3419bd04a0081821--"}
   end
   
 
