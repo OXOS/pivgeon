@@ -1,18 +1,16 @@
 class User < ActiveRecord::Base
   
-  before_validation(:generate_activation_code)
-  before_create(:send_registration_confirmation)  
-  
-  scope :active, where(:status => "1")
-  scope :inactive, where(:status => "0")
-  
-  validates(:email, :presence => true)
-  validates(:email, :uniqueness => {:message => "There already exists an user account registered for this email address"}, :on=>:create)  
+  validates(:email, :presence => true, :uniqueness => {:message => "There already exists an user account registered for this email address",:on=>:create})
   validates(:activation_code, :presence => true, :on => :create)
   validate :validate_token
   
+  before_validation(:generate_activation_code)
+  before_create(:send_registration_confirmation)  
   after_validation(:send_notifications)
   
+  scope :active, where(:status => "1")
+  scope :inactive, where(:status => "0")
+         
   def self.parse_message(message)
     {}.tap do |params| 
       params[:email] = message.from.first
@@ -33,6 +31,11 @@ class User < ActiveRecord::Base
     UserMailer.registration_confirmation(self).deliver
   end
   
+  def send_notifications
+    return if self.errors.empty?
+    UserMailer.not_created_notification(self).deliver
+  end
+  
   def activate!
     self.status = true
     self.save
@@ -48,12 +51,7 @@ class User < ActiveRecord::Base
       self.errors.add(:token, "The given token '#{self.token}' is invalid")
     end
   end
-  
-  def send_notifications
-    return if self.errors.empty?
-    UserMailer.not_created_notification(self).deliver
-  end
-
+    
   def generate_activation_code
     self.activation_code = (0..16).map{ rand(36).to_s(36) }.join
   end

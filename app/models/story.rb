@@ -1,6 +1,6 @@
 class Story < HyperactiveResource
-  self.site = "http://www.pivotaltracker.com/services/v3/projects/:project_id"
   
+  self.site = "http://www.pivotaltracker.com/services/v3/projects/:project_id"
   self.columns = [:story_type, :name, :requested_by, :owned_by, :description  ]  
   
   validates(:name, :presence=>true)
