@@ -35,6 +35,8 @@ class UsersControllerTest < ActionController::TestCase
     should "see page 404 when try to access activation page using wrong token" do   
       get :confirm, :id=>"hakunamatata"
       assert_response 404
+#      assert @response.body.include?("The page you were looking for doesn't exist.")
+      assert_template "public/404.html"
     end
     
   end

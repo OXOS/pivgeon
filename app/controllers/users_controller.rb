@@ -14,7 +14,7 @@ class UsersController < ApplicationController
   
   def find_user
     unless @user = User.find_by_activation_code(params[:id])          
-      render(:status => 404)
+      render('public/404.html', :layout=>false, :status => 404)
     end
   end
   
