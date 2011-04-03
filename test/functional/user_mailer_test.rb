@@ -19,8 +19,8 @@ class UserMailerTest < ActionMailer::TestCase
       user.errors.add(:token, "message 1")
       user.errors.add(:email, "message 2")
       
-      assert !user.errors.on(:token).empty?
-      assert !user.errors.on(:email).empty?
+      assert !user.errors[:token].empty?
+      assert !user.errors[:email].empty?
       
       email =  UserMailer.not_created_notification(user).deliver!
       assert !ActionMailer::Base.deliveries.empty?

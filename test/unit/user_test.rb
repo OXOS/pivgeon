@@ -80,23 +80,23 @@ class UserTest < ActiveSupport::TestCase
         
         should "validate presence of email" do
           user = User.create
-          assert !user.errors.on(:email).empty?
+          assert !user.errors[:email].empty?
         end
         
         should "validate uniqueness of email" do
           existing_user = users(:daniel)
           user = User.create(:email=>existing_user.email)
-          assert_equal "There already exists an user account registered for this email address", user.errors.on(:email)
+          assert user.errors[:email].include?("There already exists an user account registered for this email address")
         end
         
         should "validate presence of token" do
           user = User.create(:email=>"test@example.com")
-          assert !user.errors.on(:token).empty?
+          assert !user.errors[:token].empty?
         end
         
         should "validate if token is working" do          
           user = User.create(:email=>"test@example.com",:token=>"1")
-          assert_equal "The given token '1' is invalid", user.errors.on(:token)
+          assert user.errors[:token].include?("The given token '1' is invalid")
         end
         
       end     

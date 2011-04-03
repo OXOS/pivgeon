@@ -40,7 +40,6 @@ class ApiControllerTest < ActionController::TestCase
       context "when pivotal tracker respond client error" do
         should "not create story" do          
           [ActiveResource::ForbiddenAccess,ActiveResource::UnauthorizedAccess,ActiveResource::BadRequest,ActiveResource::ResourceNotFound].each do |e|
-            puts e.inspect
             Project.stubs(:find_project_by_name).raises(e.new('',''))
             post :create, valid_params(@user.email,"annonymous@example.com","[GeePivoMailin] Subject")
             assert_response 403
