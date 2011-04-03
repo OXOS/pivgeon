@@ -7,7 +7,7 @@ class User < ActiveRecord::Base
   scope :inactive, where(:status => "0")
   
   validates(:email, :presence => true)
-  validates(:email, :uniqueness => true, :on=>:create)  
+  validates(:email, :uniqueness => {:message => "There already exists an user account registered for this email address"}, :on=>:create)  
   validates(:activation_code, :presence => true, :on => :create)
   validate :validate_token
   
@@ -45,7 +45,7 @@ class User < ActiveRecord::Base
       Project.token = self.token
       Project.find(:all)
     rescue
-      self.errors.add(:token, "is invalid")
+      self.errors.add(:token, "The given token '#{self.token}' is invalid")
     end
   end
   
