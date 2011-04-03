@@ -2,9 +2,10 @@ class Story < HyperactiveResource
   
   self.site = "http://www.pivotaltracker.com/services/v3/projects/:project_id"
   self.columns = [:story_type, :name, :requested_by, :owned_by, :description  ]  
+  self.belong_tos = [:user]
   
   validates(:name, :presence=>true)
-  validates(:owned_by, :presence=>true)  
+  validates(:owned_by, :presence=>true)       
   
   def self.parse_subject(subject)
     match = subject.match(/^\s*\[(.+?)\](\s*Re:\s*|\s*re:\s*|\s*RE:\s*|\s*Fwd:\s*|\s*FWD:\s*|\s*fwd:\s*|\s*PD:\s*)?(.+)/)
@@ -34,6 +35,20 @@ class Story < HyperactiveResource
     else
       nil
     end    
+  end
+  
+  def send_notification
+    if self.errors.empty?
+      StoryMailer.story_created(self).deliver!
+    else
+      StoryMailer.story_not_created(self).deliver!
+    end
+  end
+  
+  protected
+  
+  def after_save()
+    send_notification
   end
 
 end

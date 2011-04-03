@@ -10,7 +10,8 @@ class StoryTest < ActiveSupport::TestCase
     setup do
       mock_requests()
       @incomming_message = valid_params("wojciech@example.com","daniel@example.com")['message']
-      @attrs = new_story_attrs("daniel@example.com")      
+      @user = users(:wojciech)
+      @attrs = new_story_attrs(@user.id,"daniel@example.com")      
     end
     
     should "valididate subject format" do
@@ -73,6 +74,28 @@ class StoryTest < ActiveSupport::TestCase
       assert_equal "daniel", story.owned_by
     end
 
+  end
+  
+  context "An email notification" do
+    
+    setup do
+      mock_requests()
+      @user = users(:wojciech)
+      @attrs = new_story_attrs(@user.id,"daniel@example.com")     
+      Story.token = "12345678"
+    end
+    
+    should "be sent when new story is created" do
+      Story.create(@attrs)
+      delivery = ActionMailer::Base.deliveries.first
+      assert_equal "GeePivoMailin: new story created", delivery.subject
+    end
+    
+    should "be sent when new story is not created" do
+      Story.create()
+      delivery = ActionMailer::Base.deliveries.first
+      assert_equal "GeePivoMailin: error creating new story", delivery.subject
+    end
   end
   
   protected

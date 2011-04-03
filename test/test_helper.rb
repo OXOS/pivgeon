@@ -27,8 +27,8 @@ class ActiveSupport::TestCase
   end
   
 
-  def new_story_attrs(owned_by)
-    {:story_type=>"chore",:name=>"Story 1", :description=>"description", :owned_by=>owned_by, :project_id=>"147449"}
+  def new_story_attrs(user_id,owned_by)
+    {:user_id=>user_id,:story_type=>"chore",:name=>"Story 1", :description=>"description", :owned_by=>owned_by, :project_id=>"147449"}
   end
   
   def test_presence_of(elem,param)

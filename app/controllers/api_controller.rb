@@ -26,7 +26,7 @@ class ApiController < ApplicationController
   end
   
   def create_story(message)    
-    attrs = {:owned_by=>@owner.person.name,:project_id=>@project.id,:name=>@parsed_subject[:subject],:story_type=>"chore",:description=>params[:plain]}   
+    attrs = {:user_id=>@user.id,:owned_by=>@owner.person.name,:project_id=>@project.id,:name=>@parsed_subject[:subject],:story_type=>"chore",:description=>params[:plain]}   
     Story.token = @user.token    
     story = Story.create(attrs)
     render_proper_status(story.new?)     

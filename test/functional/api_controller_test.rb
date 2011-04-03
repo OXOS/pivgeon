@@ -17,7 +17,7 @@ class ApiControllerTest < ActionController::TestCase
         Project.expects(:find_project_by_name).with("GeePivoMailin","12345678").returns(mock("Project",:id=>"12345"))
         person = mock("Member",:name=>"daniel")
         Story.expects(:find_owner).returns(mock("Owner",:person=>person))
-        Story.expects(:create).with(:owned_by => 'daniel', :project_id => '12345', :name => ' Subject', :story_type => 'chore', :description => 'description').returns(mock('Story','new?'=>false))
+        Story.expects(:create).with(:user_id=>@user.id,:owned_by => 'daniel', :project_id => '12345', :name => ' Subject', :story_type => 'chore', :description => 'description').returns(mock('Story','new?'=>false))
         post :create, valid_params(@user.email,"daniel@example.com","[GeePivoMailin] Subject")
         assert_response :success
       end
