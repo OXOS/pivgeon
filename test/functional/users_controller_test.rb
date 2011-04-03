@@ -32,5 +32,10 @@ class UsersControllerTest < ActionController::TestCase
       assert_select "div#box", "Sorry. Your account hasn't been activated."
     end
     
+    should "see page 404 when try to access activation page using wrong token" do   
+      get :confirm, :id=>"hakunamatata"
+      assert_response 404
+    end
+    
   end
 end
