@@ -35,9 +35,5 @@ class Story < HyperactiveResource
       nil
     end    
   end
-  
-  def owned_by=(owner)
-    self.attributes["owned_by"] = owner
-    super(owner)
-  end
+
 end
