@@ -20,8 +20,12 @@ class User < ActiveRecord::Base
   
   def self.find_or_create_and_send_email(attrs={})
     if user = User.inactive.find_by_email(attrs[:email])
-      user.send_registration_confirmation
-      user
+      if user.update_attributes(attrs)
+        user.send_registration_confirmation
+        return(user)
+      else
+        nil
+      end
     else
       create(attrs)
     end

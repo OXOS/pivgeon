@@ -36,16 +36,32 @@ class UserTest < ActiveSupport::TestCase
     
     should "find or create and send email" do
       assert_difference("User.count") do
-        assert_difference('ActionMailer::Base.deliveries.count', 1) do
-          User.find_or_create_and_send_email(:email=>"new_user@example.com",:token=>"123123131")
-        end
+        User.find_or_create_and_send_email(:email=>"new_user@example.com",:token=>"123123131")
+        assert_equal "GeePivoMailin: new user confirmation", ActionMailer::Base.deliveries.first.subject
       end
       
+      ActionMailer::Base.deliveries = []
+      assert_no_difference("User.count") do
+        User.find_or_create_and_send_email(:email=>"new_user@example.com",:token=>"1")
+        assert_equal "GeePivoMailin: create new account error", ActionMailer::Base.deliveries.first.subject
+      end  
+            
+      # inactive user second time tries to create account with different and invalid token
+      ActionMailer::Base.deliveries = []
+      inactive_user = users(:not_activated_user)
+      assert_no_difference("User.count") do           
+        user = User.find_or_create_and_send_email(:email=>inactive_user.email,:token=>"1")        
+        assert_nil user
+        assert_equal "GeePivoMailin: create new account error", ActionMailer::Base.deliveries.first.subject
+      end
+            
+      # inactive user second time tries to create account with different and valid token
+      ActionMailer::Base.deliveries = []
       inactive_user = users(:not_activated_user)
       assert_no_difference("User.count") do
-        assert_difference('ActionMailer::Base.deliveries.count', 1) do
-          User.find_or_create_and_send_email(:email=>inactive_user.email,:token=>"123123131")
-        end
+        user = User.find_or_create_and_send_email(:email=>inactive_user.email,:token=>"111111111")
+        assert_equal "111111111", user.reload.token
+        assert_equal "GeePivoMailin: new user confirmation", ActionMailer::Base.deliveries.first.subject
       end
     end
     
