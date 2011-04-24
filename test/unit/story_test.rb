@@ -87,13 +87,13 @@ class StoryTest < ActiveSupport::TestCase
     
     should "be sent when new story is created" do
       Story.create(@attrs)
-      delivery = ActionMailer::Base.deliveries.first
+      delivery = ActionMailer::Base.deliveries.last
       assert_equal "GeePivoMailin: new story created", delivery.subject
     end
     
     should "be sent when new story is not created" do
-      Story.create()
-      delivery = ActionMailer::Base.deliveries.first
+      Story.create(:user_id=>@user.id, :owned_by=>"Daniel")
+      delivery = ActionMailer::Base.deliveries.last
       assert_equal "GeePivoMailin: error creating new story", delivery.subject
     end
   end

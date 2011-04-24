@@ -5,7 +5,14 @@ class Story < HyperactiveResource
   self.belong_tos = [:user]
   
   validates(:name, :presence=>true)
-  validates(:owned_by, :presence=>true)       
+  validates(:owned_by, :presence=>true) 
+  
+  # hacked to make me able to use afte_save callback because it is not triggered if record is not valid
+  def save
+    result = super()
+    after_save() unless result
+    result
+  end
   
   def self.parse_subject(subject)
     match = subject.match(/^\s*\[(.+?)\](\s*Re:\s*|\s*re:\s*|\s*RE:\s*|\s*Fwd:\s*|\s*FWD:\s*|\s*fwd:\s*|\s*PD:\s*)?(.+)/)
@@ -39,16 +46,16 @@ class Story < HyperactiveResource
   
   def send_notification
     if self.errors.empty?
-      StoryMailer.story_created(self).deliver!
+      StoryMailer.created_notification(self).deliver!
     else
-      StoryMailer.story_not_created(self).deliver!
+      StoryMailer.not_created_notification(self).deliver!
     end
   end
   
   protected
   
   def after_save()
-    send_notification
+    send_notification()
   end
 
 end

@@ -1,0 +1,5 @@
+You tried to create new story for <%= @story.owned_by %>. Unfortunatelly the story hasn't been created due to following errors:
+
+<ol>
+  <%= display_all_error_messages(@story,:all) %>  
+</ol>

@@ -3,11 +3,12 @@ class StoryMailer < ActionMailer::Base
   layout "application"
   helper :application
   
-  def story_created(story)
+  def created_notification(story)
     mail(:to => story.user.email, :subject => "GeePivoMailin: new story created")
   end
   
-  def story_not_created(story)
+  def not_created_notification(story)
+    @story = story
     mail(:to => story.user.email, :subject => "GeePivoMailin: error creating new story")
   end
   
