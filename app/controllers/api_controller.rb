@@ -21,14 +21,14 @@ class ApiController < ApplicationController
     
   def create_user(message)    
     attrs = User.parse_message(message)      
-    user = User.find_or_create_and_send_email(attrs)
+    user = User.find_or_create_and_send_email!(attrs)
     render_proper_status(user.new_record?)
   end
   
   def create_story(message)    
     attrs = {:user_id=>@user.id,:owned_by=>@owner.person.name,:project_id=>@project.id,:name=>@parsed_subject[:subject],:story_type=>"chore",:description=>params[:plain]}   
     Story.token = @user.token    
-    story = Story.create(attrs)
+    story = Story.create!(attrs)
     render_proper_status(story.new?)     
   end
   
@@ -45,9 +45,7 @@ class ApiController < ApplicationController
   end
   
   def parse_message
-    handle_exception do
       @message = Mail.new(params[:message])
-    end
   end
   
   def validate_subject

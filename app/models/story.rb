@@ -4,6 +4,9 @@ class Story < HyperactiveResource
   self.columns = [:story_type, :name, :requested_by, :owned_by, :description  ]  
   self.belong_tos = [:user]
   
+  include Pivgeon::Notification
+  add_notifier(StoryMailer,"created_notification")
+  
   validates(:name, :presence=>true)
   validates(:owned_by, :presence=>true) 
   
@@ -41,21 +44,7 @@ class Story < HyperactiveResource
       member
     else
       nil
-    end    
-  end
-  
-  def send_notification
-    if self.errors.empty?
-      StoryMailer.created_notification(self).deliver!
-    else
-      StoryMailer.not_created_notification(self).deliver!
     end
-  end
-  
-  protected
-  
-  def after_save()
-    send_notification()
   end
 
 end

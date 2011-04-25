@@ -23,9 +23,11 @@ class ApiControllerTest < ActionController::TestCase
       end
       
       context "with invalid subject format" do
-        should "not create story" do          
-          post :create, valid_params(@user.email,"daniel@example.com","Subject")
-          assert_response 403, "Invalid data"
+        should "not create story" do
+          assert_difference("ActionMailer::Base.deliveries.count") do
+            post :create, valid_params(@user.email,"daniel@example.com","Subject")
+            assert_response 403, "Invalid data"
+          end
         end
       end
       
