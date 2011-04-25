@@ -6,7 +6,7 @@ class ApiController < ApplicationController
   before_filter :find_user
   before_filter :find_story_owner
   
-  def create   
+  def create      
     handle_exception do
       if direct_sent_to_cloudmailin?(@message)
         create_user(@message)
@@ -20,15 +20,16 @@ class ApiController < ApplicationController
   protected
     
   def create_user(message)    
-    attrs = User.parse_message(message)      
-    user = User.find_or_create_and_send_email!(attrs)
+    attrs = User.parse_message(message)  
+    @user = User.find_or_create!(attrs)      
     render_and_send_notification()
   end
   
   def create_story(message)    
     attrs = {:user_id=>@user.id,:owned_by=>@owner.person.name,:project_id=>@project.id,:name=>@parsed_subject[:subject],:story_type=>"chore",:description=>params[:plain]}   
     Story.token = @user.token    
-    story = Story.create!(attrs)
+    @story = Story.new(attrs)
+    @story.save!
     render_and_send_notification()    
   end
   

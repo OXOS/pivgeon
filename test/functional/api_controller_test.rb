@@ -4,29 +4,30 @@ class ApiControllerTest < ActionController::TestCase
   
   fixtures :all
   
-  context "An active user" do
+  context "An active user" do  
+    
+    setup do
+      mock_requests()
+    end
                 
     context "who sends email to somebody else and cc to cloudmailin" do
             
       setup do        
         @user = users(:wojciech)
-        @owner = users(:daniel)
+        @owner = users(:daniel)        
       end
       
-      should "create story" do                
-        Project.expects(:find_project_by_name).with("GeePivoMailin","12345678").returns(mock("Project",:id=>"12345"))
-        person = mock("Member",:name=>"daniel")
-        Story.expects(:find_owner).returns(mock("Owner",:person=>person))
-        Story.expects(:create).with(:user_id=>@user.id,:owned_by => 'daniel', :project_id => '12345', :name => ' Subject', :story_type => 'chore', :description => 'description').returns(mock('Story','new?'=>false))
-        post :create, valid_params(@user.email,"daniel@example.com","[GeePivoMailin] Subject")
-        assert_response :success
+      should "create story" do
+        assert_notification("GeePivoMailin: new story created") do  
+          post :create, valid_params(@user.email,"daniel@example.com","[GeePivoMailin] Subject")
+        end
       end
       
       context "with invalid subject format" do
         should "not create story" do
           assert_difference("ActionMailer::Base.deliveries.count") do
             post :create, valid_params(@user.email,"daniel@example.com","Subject")
-            assert_response 403, "Invalid data"
+            assert_response 200, "Invalid data"
           end
         end
       end
@@ -35,7 +36,7 @@ class ApiControllerTest < ActionController::TestCase
         should "not create story" do  
           Project.expects(:find_project_by_name).returns(nil)
           post :create, valid_params(@user.email,"annonymous@example.com","[GeePivoMailin] Subject")
-          assert_response 403, "Invalid data"
+          assert_response 200, "Invalid data"
         end
       end
       
@@ -44,7 +45,7 @@ class ApiControllerTest < ActionController::TestCase
           [ActiveResource::ForbiddenAccess,ActiveResource::UnauthorizedAccess,ActiveResource::BadRequest,ActiveResource::ResourceNotFound].each do |e|
             Project.stubs(:find_project_by_name).raises(e.new('',''))
             post :create, valid_params(@user.email,"annonymous@example.com","[GeePivoMailin] Subject")
-            assert_response 403
+            assert_response 200
           end
         end
       end
@@ -54,7 +55,7 @@ class ApiControllerTest < ActionController::TestCase
           [ActiveResource::TimeoutError,ActiveResource::ServerError].each do |e|
             Project.stubs(:find_project_by_name).raises(e.new(''))
             post :create, valid_params(@user.email,"annonymous@example.com","[GeePivoMailin] Subject")
-            assert_response 500
+            assert_response 200
           end
         end
       end
@@ -72,7 +73,7 @@ class ApiControllerTest < ActionController::TestCase
       
       should "not create new story" do
         post :create, valid_params(@user.email,"daniel@example.com","[GeePivoMailin] subject")
-        assert_response 403
+        assert_response 200
       end
                   
     end
@@ -84,14 +85,11 @@ class ApiControllerTest < ActionController::TestCase
       end
       
       should "not create new user" do
-        assert_no_difference("User.count") do
-          post :create, @incomming_params
+        assert_notification("GeePivoMailin: new user confirmation") do
+          assert_no_difference("User.count") do
+            post :create, @incomming_params
+          end
         end
-      end
-
-      should "get email with activation link" do
-        UserMailer.expects(:registration_confirmation).returns(mock('UserMailerObject','deliver'=>true)) 
-        post :create, @incomming_params
       end
     
     end
@@ -100,35 +98,28 @@ class ApiControllerTest < ActionController::TestCase
   
   context "A not existing user" do
     
-    context "who sends email to somebody else and cc to cloudmailin" do
+    setup do
+      mock_requests()
+    end
     
+    context "who sends email to somebody else and cc to cloudmailin" do
       should "not create new story" do
-        post :create, valid_params("annonymous@example.com","daniel@example.com","[GeePivoMailin] subject")
-        assert_response 403
+        assert_notification("GeePivoMailin: error creating new story") do  
+          post :create, valid_params("annonymous@example.com","daniel@example.com","[GeePivoMailin] subject")
+        end
       end
-        
     end
     
     context "who sends email directly to cloudmailin" do
-      
       context "with valid data" do
-      
         should "create inactive user" do
-          User.expects(:find_or_create_and_send_email).returns(mock('User','new_record?'=>false))                
-          post :create, valid_params("annonymous@example.com",CLOUDMAILIN_EMAIL_ADDRESS,"12345678")
+          assert_notification("GeePivoMailin: new user confirmation") do
+            post :create, valid_params("annonymous@example.com",CLOUDMAILIN_EMAIL_ADDRESS,"123123131")
+          end
         end
-        
-        should "get email with activation link" do
-          UserMailer.expects(:registration_confirmation).returns(mock('UserMailerObject','deliver'=>true)) 
-          User.any_instance.expects(:validate_token).returns(nil)
-          post :create, valid_params("annonymous@example.com",CLOUDMAILIN_EMAIL_ADDRESS,"12345678")
-        end
-        
       end
-    
     end
     
-    
   end
-
+  
 end

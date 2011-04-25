@@ -155,4 +155,65 @@ class ActiveSupport::TestCase
   '
   end
   
+  def mock_requests()
+    ActiveResource::HttpMock.respond_to do |mock|
+      mock.get("/services/v3/projects.xml", 
+                {"Accept"=>"application/xml", "X-TrackerToken"=>'123123131'}, 
+                pivotal_projects_response,
+                200)
+      mock.get("/services/v3/projects.xml", 
+                {"Accept"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
+                pivotal_projects_response,
+                200) 
+      mock.get("/services/v3/projects.xml", 
+                {"Accept"=>"application/xml", "X-TrackerToken"=>'111111111'}, 
+                pivotal_projects_response,
+                200)  
+      mock.get("/services/v3/projects.xml", 
+                {"Accept"=>"application/xml", "X-TrackerToken"=>''}, 
+                nil,
+                401)
+      mock.get("/services/v3/projects.xml", 
+                {"Accept"=>"application/xml", "X-TrackerToken"=>'1'}, 
+                nil,
+                401)      
+      mock.post("/services/v3/projects/147449/stories.xml", 
+                {"Content-Type"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
+                pivotal_story_response,
+                201)
+      mock.get("/services/v3/projects/147449/memberships.xml", 
+                {"Accept"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
+                pivotal_memberships_response,
+                201)     
+      mock.post("/services/v3/projects//stories.xml", 
+                {"Content-Type"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
+                nil,
+                500)
+      mock.post("/services/v3/projects/404404404/stories.xml", 
+                {"Content-Type"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
+                nil,
+                404)    
+       mock.get("/services/v3/projects/404404404/memberships.xml", 
+                {"Accept"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
+                pivotal_memberships_response,
+                201)     
+      mock.get("/services/v3/projects//memberships.xml", 
+                {"Accept"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
+                nil,
+                500)
+      mock.get("/services/v3/projects.xml", 
+                {"Accept"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
+                pivotal_projects_response,
+                200)      
+    end
+  end
+  
+  def assert_notification(subject,&block)
+    assert_difference("ActionMailer::Base.deliveries.count") do  
+      block.call
+      assert_response 200
+      assert_equal subject, ActionMailer::Base.deliveries.last.subject
+    end    
+  end
+  
 end

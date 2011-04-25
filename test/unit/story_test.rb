@@ -92,40 +92,6 @@ class StoryTest < ActiveSupport::TestCase
   end
   
   protected
-    
-  def mock_requests()
-    ActiveResource::HttpMock.respond_to do |mock|
-      mock.post("/services/v3/projects/147449/stories.xml", 
-                {"Content-Type"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
-                pivotal_story_response,
-                201)
-      mock.get("/services/v3/projects/147449/memberships.xml", 
-                {"Accept"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
-                pivotal_memberships_response,
-                201)     
-      mock.post("/services/v3/projects//stories.xml", 
-                {"Content-Type"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
-                nil,
-                500)
-      mock.post("/services/v3/projects/404404404/stories.xml", 
-                {"Content-Type"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
-                nil,
-                404)    
-       mock.get("/services/v3/projects/404404404/memberships.xml", 
-                {"Accept"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
-                pivotal_memberships_response,
-                201)     
-      mock.get("/services/v3/projects//memberships.xml", 
-                {"Accept"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
-                nil,
-                500)
-      mock.get("/services/v3/projects.xml", 
-                {"Accept"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
-                pivotal_projects_response,
-                200)                
-              
-    end
-  end
   
   def deb
     require "ruby-debug"

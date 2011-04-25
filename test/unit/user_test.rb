@@ -129,32 +129,5 @@ class UserTest < ActiveSupport::TestCase
     end
             
   end
-  
-  protected
-  
-  def mock_requests()
-    ActiveResource::HttpMock.respond_to do |mock|
-      mock.get("/services/v3/projects.xml", 
-                {"Accept"=>"application/xml", "X-TrackerToken"=>'123123131'}, 
-                pivotal_projects_response,
-                200)
-      mock.get("/services/v3/projects.xml", 
-                {"Accept"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
-                pivotal_projects_response,
-                200) 
-      mock.get("/services/v3/projects.xml", 
-                {"Accept"=>"application/xml", "X-TrackerToken"=>'111111111'}, 
-                pivotal_projects_response,
-                200)  
-      mock.get("/services/v3/projects.xml", 
-                {"Accept"=>"application/xml", "X-TrackerToken"=>''}, 
-                nil,
-                401)
-      mock.get("/services/v3/projects.xml", 
-                {"Accept"=>"application/xml", "X-TrackerToken"=>'1'}, 
-                nil,
-                401)         
-    end
-  end
-  
+
 end

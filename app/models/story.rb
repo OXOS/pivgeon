@@ -15,7 +15,7 @@ class Story < HyperactiveResource
     result = super()
     after_save() unless result
     result
-  end
+  end    
   
   def self.parse_subject(subject)
     match = subject.match(/^\s*\[(.+?)\](\s*Re:\s*|\s*re:\s*|\s*RE:\s*|\s*Fwd:\s*|\s*FWD:\s*|\s*fwd:\s*|\s*PD:\s*)?(.+)/)

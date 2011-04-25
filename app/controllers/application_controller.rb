@@ -27,7 +27,7 @@ class ApplicationController < ActionController::Base
   
   def send_notification_for_object()
     _class,_object = get_class_and_object()
-    _class.send_notification(_object)
+    _class.send_notification(_object,nil)
   end
   
   def send_notification_for_exception(error_message)
