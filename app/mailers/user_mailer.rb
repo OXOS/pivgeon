@@ -10,6 +10,7 @@ class UserMailer < ActionMailer::Base
   
   def not_created_notification(user,error_message=nil)
     @email = ( user.is_a?(User) ? user.email : user.from.first )
+    @user = user
     @error_message = error_message
     mail(:to => @email, :subject => "GeePivoMailin: create new account error")
   end

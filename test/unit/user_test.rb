@@ -36,39 +36,36 @@ class UserTest < ActiveSupport::TestCase
     
     should "find or create and send email" do
       assert_difference("User.count") do
-        assert_difference('ActionMailer::Base.deliveries.count', 1) do
-          User.find_or_create_and_send_email(:email=>"new_user@example.com",:token=>"123123131")
-        end
+        User.find_or_create!(:email=>"new_user@example.com",:token=>"123123131")
       end
       
       inactive_user = users(:not_activated_user)
       assert_no_difference("User.count") do
-        assert_difference('ActionMailer::Base.deliveries.count', 1) do
-          User.find_or_create_and_send_email(:email=>inactive_user.email,:token=>"123123131")
-        end
+        User.find_or_create!(:email=>inactive_user.email,:token=>"123123131")
+      end
+    end
+    
+    should "send notification" do      
+      assert_difference("ActionMailer::Base.deliveries.count") do
+        user = users(:wojciech)
+        User.send_notification(user,nil)
+        assert_equal "GeePivoMailin: new user confirmation", ActionMailer::Base.deliveries.last.subject
+      end
+      
+      assert_difference("ActionMailer::Base.deliveries.count") do
+        user = users(:wojciech)
+        user.errors.add(:base,"test error")
+        User.send_notification(user,nil)
+        assert_equal "GeePivoMailin: create new account error", ActionMailer::Base.deliveries.last.subject
       end
     end
     
     context "when not created" do
       
-      setup do
-        
-      end
-      
-      context "due to taken email" do
-        should "receive email with information" do
-          existing_user = users(:daniel)
-          assert_difference('ActionMailer::Base.deliveries.count', 1) do
-            user = User.create(:email=>existing_user.email,:token=>"12345678")
-          end
-        end
-      end
-      
-      context "due to invalid token" do
-        should "receive email with information" do
-          assert_difference('ActionMailer::Base.deliveries.count', 1) do
-            user = User.create(:email=>"annonymous@example.com",:token=>"1")
-          end
+      should "raise exception" do
+        existing_user = users(:daniel)
+        assert_raise(ActiveRecord::RecordInvalid) do
+          user = User.find_or_create!(:email=>existing_user.email,:token=>"12345678")
         end
       end
       
@@ -114,12 +111,6 @@ class UserTest < ActiveSupport::TestCase
       should "generate activation code" do
         user = User.create(:email=>"test@example.com",:token=>"123123131")
         assert !user.activation_code.blank?
-      end
-      
-      should "send confirmation email" do
-        assert_difference "ActionMailer::Base.deliveries.count" do
-          user = User.create(:email=>"test@example.com",:token=>"123123131")
-        end
       end
       
     end

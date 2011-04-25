@@ -11,7 +11,7 @@ class Story < HyperactiveResource
   validates(:owned_by, :presence=>true) 
   
   # hacked to make me able to use afte_save callback because it is not triggered if record is not valid
-  def save
+  def save!
     result = super()
     after_save() unless result
     result

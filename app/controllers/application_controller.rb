@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
     headers["Content-type"] = "text/plain" 
     begin
       block.call      
-    rescue ActiveRecord::RecordNotSaved
+    rescue ActiveRecord::RecordNotSaved, ActiveRecord::RecordInvalid
       render_and_send_notification()
     rescue ActiveResource::UnauthorizedAccess, SecurityError
       render_and_send_notification("Unauthorized access")
@@ -21,11 +21,11 @@ class ApplicationController < ActionController::Base
   end
       
   def render_and_send_notification(error_message=nil)
-    error_message.blank? ? send_notification_for_invalid_object() : send_notification_for_exception(error_message)
+    error_message.blank? ? send_notification_for_object() : send_notification_for_exception(error_message)
     render(:text => "Success", :status => 200)
   end   
   
-  def send_notification_for_invalid_object()
+  def send_notification_for_object()
     _class,_object = get_class_and_object()
     _class.send_notification(_object)
   end

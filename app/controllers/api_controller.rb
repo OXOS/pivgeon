@@ -22,14 +22,14 @@ class ApiController < ApplicationController
   def create_user(message)    
     attrs = User.parse_message(message)      
     user = User.find_or_create_and_send_email!(attrs)
-    render_proper_status(user.new_record?)
+    render_and_send_notification()
   end
   
   def create_story(message)    
     attrs = {:user_id=>@user.id,:owned_by=>@owner.person.name,:project_id=>@project.id,:name=>@parsed_subject[:subject],:story_type=>"chore",:description=>params[:plain]}   
     Story.token = @user.token    
     story = Story.create!(attrs)
-    render_proper_status(story.new?)     
+    render_and_send_notification()    
   end
   
   def render_proper_status(new_record=true)

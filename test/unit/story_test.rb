@@ -73,29 +73,22 @@ class StoryTest < ActiveSupport::TestCase
       story.owned_by = "daniel"
       assert_equal "daniel", story.owned_by
     end
+    
+    should "send notification" do      
+      story = Story.create(@attrs)
+      
+      assert_difference("ActionMailer::Base.deliveries.count") do        
+        Story.send_notification(story,nil)
+        assert_equal "GeePivoMailin: new story created", ActionMailer::Base.deliveries.last.subject
+      end
+      
+      assert_difference("ActionMailer::Base.deliveries.count") do
+        story.errors.add(:base,"test error")
+        Story.send_notification(story,nil)
+        assert_equal "GeePivoMailin: error creating new story", ActionMailer::Base.deliveries.last.subject
+      end
+    end
 
-  end
-  
-  context "An email notification" do
-    
-    setup do
-      mock_requests()
-      @user = users(:wojciech)
-      @attrs = new_story_attrs(@user.id,"daniel@example.com")     
-      Story.token = "12345678"
-    end
-    
-    should "be sent when new story is created" do
-      Story.create(@attrs)
-      delivery = ActionMailer::Base.deliveries.last
-      assert_equal "GeePivoMailin: new story created", delivery.subject
-    end
-    
-    should "be sent when new story is not created" do
-      Story.create(:user_id=>@user.id, :owned_by=>"Daniel")
-      delivery = ActionMailer::Base.deliveries.last
-      assert_equal "GeePivoMailin: error creating new story", delivery.subject
-    end
   end
   
   protected
