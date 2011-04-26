@@ -34,15 +34,17 @@ class UserTest < ActiveSupport::TestCase
       assert_equal inactive_users.sort, User.inactive.map(&:id).sort
     end
     
-    should "find or create and send email" do
-      assert_difference("User.count") do
-        User.find_or_create!(:email=>"new_user@example.com",:token=>"123123131")
-      end
+    should "find or build" do      
+      user = User.find_or_build(:email=>"new_user@example.com",:token=>"123123131")
+      assert user.new_record?
+      assert_equal "new_user@example.com", user.email
+      assert_equal "123123131", user.token
       
       inactive_user = users(:not_activated_user)
-      assert_no_difference("User.count") do
-        User.find_or_create!(:email=>inactive_user.email,:token=>"123123131")
-      end
+      user = User.find_or_build(:email=>inactive_user.email,:token=>"123123131")
+      assert !user.new_record?
+      assert_equal "inactive@example.com", user.email
+      assert_equal "111111111", user.token
     end
     
     should "send notification" do      
@@ -65,7 +67,8 @@ class UserTest < ActiveSupport::TestCase
       should "raise exception" do
         existing_user = users(:daniel)
         assert_raise(ActiveRecord::RecordInvalid) do
-          user = User.find_or_create!(:email=>existing_user.email,:token=>"12345678")
+          user = User.find_or_build(:email=>existing_user.email,:token=>"12345678")
+          user.save!
         end
       end
       
