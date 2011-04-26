@@ -1,7 +1,7 @@
 require File.expand_path(File.dirname(__FILE__))+ '/../test_helper'
 
 class ApiControllerTest < ActionController::TestCase
-  
+  include ActionController::Assertions::PivGeonAssertions
   fixtures :all
   
   context "An active user" do  

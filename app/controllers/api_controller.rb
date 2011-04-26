@@ -7,7 +7,7 @@ class ApiController < ApplicationController
   before_filter :find_story_owner
   
   def create      
-    handle_exception do
+    handle_exception do     
       if direct_sent_to_cloudmailin?(@message)
         create_user(@message)
       else
@@ -50,7 +50,7 @@ class ApiController < ApplicationController
   end
   
   def validate_subject
-    handle_exception do
+    handle_exception do       
       unless direct_sent_to_cloudmailin?(@message)
         raise(ArgumentError) unless Story.valid_subject_format?(@message.subject)
       end

@@ -207,13 +207,34 @@ class ActiveSupport::TestCase
                 200)      
     end
   end
-  
-  def assert_notification(subject,&block)
-    assert_difference("ActionMailer::Base.deliveries.count") do  
-      block.call
-      assert_response 200
-      assert_equal subject, ActionMailer::Base.deliveries.last.subject
-    end    
+          
+end
+
+
+module ActionController
+  module Assertions
+    module PivGeonAssertions
+      def assert_notification(subject,&block)
+        assert_difference("ActionMailer::Base.deliveries.count") do  
+          block.call
+          assert_response 200
+          assert_equal subject, ActionMailer::Base.deliveries.last.subject
+        end    
+      end
+    end
   end
-  
+end
+
+module ActionDispatch
+  module Assertions
+    module PivGeonAssertions
+      def assert_notification(subject,&block)
+        assert_difference("ActionMailer::Base.deliveries.count") do  
+          block.call                    
+          assert_equal 200, status
+          assert_equal subject, ActionMailer::Base.deliveries.last.subject
+        end    
+      end
+    end
+  end
 end
