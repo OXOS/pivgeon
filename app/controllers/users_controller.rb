@@ -13,7 +13,7 @@ class UsersController < ApplicationController
   protected
   
   def find_user
-    unless @user = User.find_by_activation_code(params[:id])          
+    unless @user = User.inactive.find_by_activation_code(params[:id])          
       render('public/404.html', :layout=>false, :status => 404)
     end
   end

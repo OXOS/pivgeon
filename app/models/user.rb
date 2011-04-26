@@ -22,6 +22,7 @@ class User < ActiveRecord::Base
   #TODO: should it update attrs for found user?
   def self.find_or_build(attrs={})
     if user = User.inactive.find_by_email(attrs[:email])
+      user.attributes = attrs
       user
     else
       new(attrs)

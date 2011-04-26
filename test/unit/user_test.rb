@@ -44,7 +44,7 @@ class UserTest < ActiveSupport::TestCase
       user = User.find_or_build(:email=>inactive_user.email,:token=>"123123131")
       assert !user.new_record?
       assert_equal "inactive@example.com", user.email
-      assert_equal "111111111", user.token
+      assert_equal "123123131", user.token
     end
     
     should "send notification" do      
