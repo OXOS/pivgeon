@@ -21,7 +21,8 @@ class ApiController < ApplicationController
     
   def create_user(message)    
     attrs = User.parse_message(message)  
-    @user = User.find_or_create!(attrs)      
+    @user = User.find_or_build(attrs)      
+    @user.save!
     render_and_send_notification()
   end
   

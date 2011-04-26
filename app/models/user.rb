@@ -19,11 +19,11 @@ class User < ActiveRecord::Base
     end 
   end
   
-  def self.find_or_create!(attrs={})
+  def self.find_or_build(attrs={})
     if user = User.inactive.find_by_email(attrs[:email])
       user
     else
-      create!(attrs)
+      new(attrs)
     end
   end
   
