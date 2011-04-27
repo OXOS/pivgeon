@@ -7,7 +7,6 @@ class ApiController < ApplicationController
   before_filter :find_story_owner
   
   def create      
-    Rails.logger.info "######################## create"
     handle_exception do     
       if direct_sent_to_cloudmailin?(@message)
         create_user(@message)
@@ -20,8 +19,7 @@ class ApiController < ApplicationController
   
   protected
     
-  def create_user(message)   
-    Rails.logger.info "######################## create user"
+  def create_user(message)    
     attrs = User.parse_message(message)  
     @user = User.find_or_build(attrs)      
     @user.save!
@@ -29,11 +27,10 @@ class ApiController < ApplicationController
   end
   
   def create_story(message)    
-    Rails.logger.info "######################## create story"
     attrs = {:user_id=>@user.id,:owned_by=>@owner.person.name,:project_id=>@project.id,:name=>@parsed_subject[:subject],:story_type=>"chore",:description=>params[:plain]}   
     Story.token = @user.token    
     @story = Story.new(attrs)
-    @story.save!    
+    @story.save!
     render_and_send_notification()    
   end
   
@@ -42,12 +39,10 @@ class ApiController < ApplicationController
   end
   
   def parse_message
-    Rails.logger.info "######################## parse message"
       @message = Mail.new(params[:message])
   end
   
   def validate_subject
-    Rails.logger.info "######################## validate subject"
     handle_exception do       
       unless direct_sent_to_cloudmailin?(@message)
         raise(ArgumentError) unless Story.valid_subject_format?(@message.subject)
@@ -56,7 +51,6 @@ class ApiController < ApplicationController
   end
   
   def find_user
-    Rails.logger.info "######################## find user"
     handle_exception do
       unless direct_sent_to_cloudmailin?(@message)
         @user = User.active.find_by_email(@message.from.first)
