@@ -1,8 +1,9 @@
 class Story < HyperactiveResource
   
   self.site = "http://www.pivotaltracker.com/services/v3/projects/:project_id"
-  self.columns = [:story_type, :name, :requested_by, :owned_by, :description  ]  
+  self.columns = [:story_type, :name, :requested_by, :owned_by, :description]  
   self.belong_tos = [:user]
+  self.skip_to_xml_for = [:user_id]
   
   include Pivgeon::Notification
   add_notifier(StoryMailer,"created_notification")
