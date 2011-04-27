@@ -138,4 +138,19 @@ class StoryFlowsTest < ActionDispatch::IntegrationTest
     
   end
   
+  context "Somebody who is assigned to the story by existing user" do
+    
+    setup do
+      mock_requests()
+      @user = users(:wojciech)
+      @owner = users(:daniel)
+    end
+    
+    should "receive email with informations" do
+      assert_notification("GeePivoMailin: new story assigned to you.") do
+        post "/api", valid_params(@user.email,@owner.email)        
+      end
+    end
+  end
+  
 end
