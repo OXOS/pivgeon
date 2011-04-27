@@ -34,14 +34,6 @@ class ApiController < ApplicationController
     render_and_send_notification()    
   end
   
-  def render_proper_status(new_record=true)
-    if new_record      
-      render(:text => "Invalid data", :status => 403)
-    else
-      render(:nothing => true)
-    end 
-  end
-  
   def direct_sent_to_cloudmailin?(message)
     return message.to.first == CLOUDMAILIN_EMAIL_ADDRESS
   end
