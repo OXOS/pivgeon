@@ -40,5 +40,9 @@ class Story < HyperactiveResource
       nil
     end
   end
+  
+  def url()
+    "https://www.pivotaltracker.com/story/show/#{self.id}"
+  end
 
 end

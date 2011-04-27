@@ -11,12 +11,14 @@ class StoryMailerTest < ActionMailer::TestCase
       @story = Story.new(:owned_by=>"daniel",:requested_by=>"wojciech",:name=>"Story nr 1",:user_id=>@user.id)
     end
     
-    should "send notification when user account is created" do      
+    should "send notification when user account is created" do
+      @story.stubs(:id).returns(12345)
+      @story.stubs(:name).returns("Story nr 1")
       email =  StoryMailer.created_notification(@story).deliver!
       assert !ActionMailer::Base.deliveries.empty?
       assert_equal "wojciech@example.com", email.to.first
       assert_equal "GeePivoMailin: new story created", email.subject
-      assert_match /You have created new story #{@story.name}./, email.encoded
+      assert_match /You have created new story <a href=\"https:\/\/www.pivotaltracker.com\/story\/show\/12345\">Story nr 1<\/a>./, email.encoded
     end
     
     context "when user is not created" do
