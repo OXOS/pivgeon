@@ -31,11 +31,9 @@ class ApiController < ApplicationController
   def create_story(message)    
     Rails.logger.info "######################## create story"
     attrs = {:user_id=>@user.id,:owned_by=>@owner.person.name,:project_id=>@project.id,:name=>@parsed_subject[:subject],:story_type=>"chore",:description=>params[:plain]}   
-    Rails.logger.info "######################## attrs #{attrs.inspect}"
     Story.token = @user.token    
     @story = Story.new(attrs)
-    @story.save!
-    Rails.logger.info "######################## after  @story.save!"
+    @story.save!    
     render_and_send_notification()    
   end
   
