@@ -16,11 +16,13 @@ class ApplicationController < ActionController::Base
     rescue ActiveResource::ServerError, ActiveResource::TimeoutError
       render_and_send_notification("Server error")
     rescue => error
-      render_and_send_notification("Unknown error")
+      Rails.logger.info "######################## story errors #{@story.errors.full_messages}" if @story
+      render_and_send_notification("Unknown error #{error.message}")
     end  
   end
       
   def render_and_send_notification(error_message=nil)
+    Rails.logger.info "######################## render_and_send_notification"
     error_message.blank? ? send_notification_for_object() : send_notification_for_exception(error_message)
     render(:text => "Success", :status => 200)
   end   
