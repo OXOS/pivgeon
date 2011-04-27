@@ -10,13 +10,6 @@ class Story < HyperactiveResource
   validates(:name, :presence=>true)
   validates(:owned_by, :presence=>true) 
   
-  # hacked to make me able to use afte_save callback because it is not triggered if record is not valid
-  def save!
-    result = super()
-    after_save() unless result
-    result
-  end    
-  
   def self.parse_subject(subject)
     match = subject.match(/^\s*\[(.+?)\](\s*Re:\s*|\s*re:\s*|\s*RE:\s*|\s*Fwd:\s*|\s*FWD:\s*|\s*fwd:\s*|\s*PD:\s*)?(.+)/)
     {}.tap do |subject|
