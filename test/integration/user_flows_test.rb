@@ -116,7 +116,7 @@ class UserFlowsTest < ActionDispatch::IntegrationTest
         assert_no_difference("User.count") do
           assert_notification("GeePivoMailin: create new account error") do
             post "/api", valid_params(@user.email,CLOUDMAILIN_EMAIL_ADDRESS,"123123131")
-            assert_match /You can only create one account associated with specific email address/, ActionMailer::Base.deliveries.last.body.encoded
+            assert_match /There already exists an user account registered for this email address/, ActionMailer::Base.deliveries.last.body.encoded
           end
         end
       end
@@ -127,7 +127,7 @@ class UserFlowsTest < ActionDispatch::IntegrationTest
         assert_no_difference("User.count") do
           assert_notification("GeePivoMailin: create new account error") do
             post "/api", valid_params(@user.email,CLOUDMAILIN_EMAIL_ADDRESS,"999999999999")
-            assert_match /You can only create one account associated with specific email address/, ActionMailer::Base.deliveries.last.body.encoded
+            assert_match /There already exists an user account registered for this email address/, ActionMailer::Base.deliveries.last.body.encoded
           end
         end
       end
