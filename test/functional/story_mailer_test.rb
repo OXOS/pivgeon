@@ -24,13 +24,13 @@ class StoryMailerTest < ActionMailer::TestCase
       end
       
       should "send notification for story owner" do
-#        @story.stubs(:id).returns(12345)
-#        @story.stubs(:name).returns("Story nr 1")
-#        email =  StoryMailer.created_for_creator(@story).deliver!
-#        assert !ActionMailer::Base.deliveries.empty?
-#        assert_equal "wojciech@example.com", email.to.first
-#        assert_equal "GeePivoMailin: new story created", email.subject
-#        assert_match /You have created new story <a href=\"https:\/\/www.pivotaltracker.com\/story\/show\/12345\">Story nr 1<\/a>./, email.encoded
+        @story.stubs(:id).returns(12345)
+        @story.stubs(:name).returns("Story nr 1")
+        email =  StoryMailer.created_for_owner(@story).deliver!
+        assert !ActionMailer::Base.deliveries.empty?
+        assert_equal "wojciech@example.com", email.to.first
+        assert_equal "GeePivoMailin: new story assigned to you", email.subject
+        assert_match /User #{@story.user.email} has created new story #{@story.name} and assigned it to you./, email.encoded
       end
       
     end
