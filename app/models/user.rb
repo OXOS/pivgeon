@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
   
   include Pivgeon::Notification
-  add_notifier(UserMailer)
+  add_notifier(UserMailer,"created_notification")
   
   validates(:email, :presence => true, :uniqueness => {:message => "There already exists an user account registered for this email address",:on=>:create})
   validates(:activation_code, :presence => true, :on => :create)

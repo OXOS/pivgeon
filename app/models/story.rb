@@ -7,7 +7,7 @@ class Story < HyperactiveResource
   self.skip_to_xml_for = [:user_id,:owner_email]
   
   include Pivgeon::Notification
-  add_notifier(StoryMailer,{:on_create=>true,:on_error=>false})
+  add_notifier(StoryMailer,"created_notification")
   
   validates(:name, :presence=>true)
   validates(:owned_by, :presence=>true) 
