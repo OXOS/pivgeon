@@ -77,9 +77,10 @@ class StoryTest < ActiveSupport::TestCase
     should "send notification" do      
       story = Story.create(@attrs)
       
-      assert_difference("ActionMailer::Base.deliveries.count") do        
+      assert_difference("ActionMailer::Base.deliveries.count",2) do        
         Story.send_notification(story,nil)
-        assert_equal "GeePivoMailin: new story created", ActionMailer::Base.deliveries.last.subject
+        assert ActionMailer::Base.deliveries.map(&:subject).include?("GeePivoMailin: new story created")
+        assert ActionMailer::Base.deliveries.map(&:subject).include?("GeePivoMailin: new story assigned to you")
       end
       
       assert_difference("ActionMailer::Base.deliveries.count") do

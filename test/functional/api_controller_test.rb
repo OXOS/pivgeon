@@ -18,7 +18,7 @@ class ApiControllerTest < ActionController::TestCase
       end
       
       should "create story" do
-        assert_notification("GeePivoMailin: new story created") do  
+        assert_notification(["GeePivoMailin: new story created","GeePivoMailin: new story assigned to you"]) do  
           post :create, valid_params(@user.email,"daniel@example.com","[GeePivoMailin] Subject")
         end
       end

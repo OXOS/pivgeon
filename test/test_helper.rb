@@ -214,12 +214,21 @@ end
 module ActionController
   module Assertions
     module PivGeonAssertions
-      def assert_notification(subject,&block)
-        assert_difference("ActionMailer::Base.deliveries.count") do  
-          block.call
+      def assert_notification(subjects,&block)
+        unless subjects.is_a?(Array)
+          count = 1
+          subjects = [subjects]
+        else
+          count = subjects.size
+        end        
+        assert_difference("ActionMailer::Base.deliveries.count",count) do  
+          block.call                    
           assert_response 200
-          assert_equal subject, ActionMailer::Base.deliveries.last.subject
-        end    
+          subjects.each do |subject|
+            assert ActionMailer::Base.deliveries.map(&:subject).include?(subject)
+          end
+        end 
+        ActionMailer::Base.deliveries = []
       end
     end
   end
@@ -228,12 +237,21 @@ end
 module ActionDispatch
   module Assertions
     module PivGeonAssertions
-      def assert_notification(subject,&block)
-        assert_difference("ActionMailer::Base.deliveries.count") do  
+      def assert_notification(subjects,&block)
+        unless subjects.is_a?(Array)
+          count = 1
+          subjects = [subjects]
+        else
+          count = subjects.size
+        end        
+        assert_difference("ActionMailer::Base.deliveries.count",count) do  
           block.call                    
           assert_equal 200, status
-          assert_equal subject, ActionMailer::Base.deliveries.last.subject
-        end    
+          subjects.each do |subject|
+            assert ActionMailer::Base.deliveries.map(&:subject).include?(subject)
+          end
+        end
+        ActionMailer::Base.deliveries = []
       end
     end
   end
