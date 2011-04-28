@@ -2,8 +2,8 @@ class ApiController < ApplicationController
   skip_before_filter :verify_authenticity_token  
   
   before_filter :parse_message
-  before_filter :validate_subject
   before_filter :find_user
+  before_filter :validate_subject  
   before_filter :find_story_owner
   
   def create      

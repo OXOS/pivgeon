@@ -92,6 +92,7 @@ class StoryFlowsTest < ActionDispatch::IntegrationTest
       should "receive email informed that story hasn't been successfully created" do
         assert_notification("GeePivoMailin: error creating new story") do
           post "/api", valid_params(@inactive_user.email,@owner.email)
+          assert_match /Unauthorized access /, ActionMailer::Base.deliveries.last.body.encoded
         end
       end
       
@@ -102,6 +103,7 @@ class StoryFlowsTest < ActionDispatch::IntegrationTest
       should "receive email informed that story hasn't been successfully created" do
         assert_notification("GeePivoMailin: error creating new story") do
           post "/api", valid_params(@inactive_user.email,@owner.email,"subject with missing project name")
+          assert_match /Unauthorized access /, ActionMailer::Base.deliveries.last.body.encoded
         end
       end
       
@@ -121,6 +123,7 @@ class StoryFlowsTest < ActionDispatch::IntegrationTest
       should "receive email informed that story hasn't been successfully created" do
         assert_notification("GeePivoMailin: error creating new story") do
           post "/api", valid_params("unexisting@example.com",@owner.email)
+          assert_match /Unauthorized access /, ActionMailer::Base.deliveries.last.body.encoded
         end
       end
         
@@ -131,26 +134,12 @@ class StoryFlowsTest < ActionDispatch::IntegrationTest
       should "receive email informed that story hasn't been successfully created" do
         assert_notification("GeePivoMailin: error creating new story") do
           post "/api", valid_params("unexisting@example.com",@owner.email,"subject with missing project name")
+          assert_match /Unauthorized access /, ActionMailer::Base.deliveries.last.body.encoded
         end
       end
       
     end
     
-  end
-  
-  context "Somebody who is assigned to the story by existing user" do
-    
-    setup do
-      mock_requests()
-      @user = users(:wojciech)
-      @owner = users(:daniel)
-    end
-    
-    should "receive email with informations" do
-      assert_notification("GeePivoMailin: new story assigned to you.") do
-        post "/api", valid_params(@user.email,@owner.email)        
-      end
-    end
   end
   
 end
