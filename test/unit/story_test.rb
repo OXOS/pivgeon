@@ -11,6 +11,7 @@ class StoryTest < ActiveSupport::TestCase
       mock_requests()
       @incomming_message = valid_params("wojciech@example.com","daniel@example.com")['message']
       @user = users(:wojciech)
+      @project = Project.find_project_by_name("GeePivoMailin",@user.token)
       @attrs = new_story_attrs(@user.id,"daniel@example.com")      
     end
     
@@ -57,21 +58,39 @@ class StoryTest < ActiveSupport::TestCase
       assert_false(Story.create(@attrs).new?)
     end
     
-    should "find owner" do
-      project = Project.find_project_by_name("GeePivoMailin","12345678")
-      
-      owner = Story.find_owner("daniel@example.com",project)
+    should "return owner" do
+      project = Project.find_project_by_name("GeePivoMailin","12345678")      
+      params = {:user_id=>@user.id,:owner_email=>"daniel@example.com",:project_name=>project.name,:name=>"test"}   
+      story = Story.new(params)
+      owner = story.owner()
       assert_equal "daniel", owner.person.name
-      assert_equal "DS", owner.person.initials
-      
-      owner = Story.find_owner("annonymous@example.com",project)
-      assert_equal nil, owner
+      assert_equal "DS", owner.person.initials            
     end
     
-    should "set owned_by" do
-      story = Story.new
-      story.owned_by = "daniel"
+    should "return project" do
+      project = Project.find_project_by_name("GeePivoMailin","12345678")      
+      params = {:user_id=>@user.id,:owner_email=>"daniel@example.com",:project_name=>project.name,:name=>"test"}   
+      story = Story.new(params)
+      project = story.project()
+      assert_equal "GeePivoMailin", project.name      
+    end
+    
+    should "set owned_by when saving" do
+      story = Story.new(@attrs)
+      story.save
       assert_equal "daniel", story.owned_by
+    end
+    
+    should "set prefix option :project_id when saving" do
+      story = Story.new(@attrs)
+      story.save
+      assert_equal "147449", story.prefix_options[:project_id].to_s
+    end
+    
+    should "return proper url to story in pivotal tracker" do
+      story = Story.new(@attrs)
+      story.save
+      assert_equal "https://www.pivotaltracker.com/story/show/100001", story.url
     end
     
     should "send notification" do      

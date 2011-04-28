@@ -17,6 +17,8 @@ class StoryFlowsTest < ActionDispatch::IntegrationTest
       should "receive email informed that story has been successfully created" do
         assert_notification("GeePivoMailin: new story created") do
           post "/api", valid_params(@active_user.email,@owner.email)
+#          debugger
+#          puts 'asd'
         end
       end
       

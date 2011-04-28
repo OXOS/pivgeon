@@ -12,31 +12,52 @@ class ApiControllerTest < ActionController::TestCase
       @owner = users(:daniel)            
     end
 
-    should "create story" do
-      params = valid_params(@user.email,"daniel@example.com","[GeePivoMailin] Subject")
-#      message = Mail.new(params['message'])
-#      
-#      Mail.expects(:new).retruns(message)
+    should "create story" do            
+      ob_proxy = mock("object_proxy")
+      ob_proxy.expects(:find_by_email).with("wojciech@example.com").returns(@user)
+      User.expects(:active).returns(ob_proxy)
+      Story.expects(:valid_subject_format?).with("[GeePivoMailin] Subject").returns(true)
+      Story.expects(:parse_subject).with("[GeePivoMailin] Subject").returns({:name=>"Subject",:project_name=>"GeePivoMailin"})
+      Story.expects(:token=)
+      Story.any_instance.expects(:save!).returns(true)
+      Story.expects(:send_notification)
       
-      post :create, params
+      post :create, valid_params(@user.email,"daniel@example.com","[GeePivoMailin] Subject")     
       assert_response 200
     end
 
     should "not create story" do
-      post :create, valid_params(@user.email,"daniel@example.com","Subject")
+      ob_proxy = mock("object_proxy")
+      ob_proxy.expects(:find_by_email).with("wojciech@example.com").returns(@user)
+      User.expects(:active).returns(ob_proxy)
+      Story.expects(:valid_subject_format?).with("[GeePivoMailin] Subject").returns(true)
+      Story.expects(:parse_subject).with("[GeePivoMailin] Subject").returns({:name=>"Subject",:project_name=>"GeePivoMailin"})
+      Story.expects(:token=)
+      Story.any_instance.expects(:save!).raises(ActiveRecord::RecordNotSaved)
+      Story.expects(:send_notification)
+      
+      post :create, valid_params(@user.email,"daniel@example.com","[GeePivoMailin] Subject")
       assert_response 200, "Invalid data"
     end
       
     should "create user" do
-      assert_notification("GeePivoMailin: new user confirmation") do
-        post :create, valid_params("annonymous@example.com",CLOUDMAILIN_EMAIL_ADDRESS,"123123131")
-      end
+      User.expects(:parse_message).returns("some attrs fake")
+      user_mock = mock("user")
+      user_mock.expects(:save!).returns(true)
+      User.expects(:find_or_build).with("some attrs fake").returns(user_mock)
+      User.expects(:send_notification)
+      post :create, valid_params("annonymous@example.com",CLOUDMAILIN_EMAIL_ADDRESS,"123123131")
+      assert_response 200
     end
     
     should "not create user" do
-      assert_notification("GeePivoMailin: new user confirmation") do
-        post :create, valid_params("annonymous@example.com",CLOUDMAILIN_EMAIL_ADDRESS,"123123131")
-      end
+      User.expects(:parse_message).returns("some attrs fake")
+      user_mock = mock("user")
+      user_mock.expects(:save!).raises(ActiveRecord::RecordNotSaved)
+      User.expects(:find_or_build).with("some attrs fake").returns(user_mock)
+      User.expects(:send_notification)
+      post :create, valid_params("annonymous@example.com",CLOUDMAILIN_EMAIL_ADDRESS,"123123131")
+      assert_response 200, "Invalid data"
     end
       
   end
