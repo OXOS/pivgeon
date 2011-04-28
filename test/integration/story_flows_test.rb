@@ -15,7 +15,7 @@ class StoryFlowsTest < ActionDispatch::IntegrationTest
     context "who creates story with valid data" do
       
       should "receive email informed that story has been successfully created" do
-        assert_notification(["GeePivoMailin: new story created","GeePivoMailin: new story assigned to you"]) do
+        assert_notification("GeePivoMailin: new story created") do
           post "/api", valid_params(@active_user.email,@owner.email)
         end
       end
@@ -147,7 +147,7 @@ class StoryFlowsTest < ActionDispatch::IntegrationTest
     end
     
     should "receive email with informations" do
-      assert_notification(["GeePivoMailin: new story created","GeePivoMailin: new story assigned to you"]) do
+      assert_notification("GeePivoMailin: new story assigned to you.") do
         post "/api", valid_params(@user.email,@owner.email)        
       end
     end
