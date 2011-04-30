@@ -5,14 +5,14 @@ class UserMailer < ActionMailer::Base
   
   def created_notification(user,error_message=nil)
     @activation_link = user.activation_code
-    mail(:to => user.email, :subject => "GeePivoMailin: new user confirmation")
+    mail(:to => user.email, :subject => "#{APP_NAME}: new user confirmation")
   end
   
   def not_created_notification(user,error_message=nil)
     @email = ( user.is_a?(User) ? user.email : user.from.first )
     @user = user
     @error_message = error_message
-    mail(:to => @email, :subject => "GeePivoMailin: create new account error")
+    mail(:to => @email, :subject => "#{APP_NAME}: create new account error")
   end
   
 end

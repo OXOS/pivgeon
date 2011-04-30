@@ -39,10 +39,11 @@ module Geepivodev
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:password]
     
-    config.action_mailer.default_url_options = { :host => 'geepivomailin.heroku.com' }
+    config.action_mailer.default_url_options = { :host => 'pivgeon.com' }
 
   end
 end
 
 #CLOUDMAILIN_EMAIL_ADDRESS = "b06e829748e4a3c9cea9@cloudmailin.net"
 CLOUDMAILIN_EMAIL_ADDRESS = "62cf42b7bc93e69c7a5b@cloudmailin.net"
+APP_NAME = "PivGeon"
