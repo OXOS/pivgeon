@@ -17,7 +17,7 @@ class StoryMailerTest < ActionMailer::TestCase
       email =  StoryMailer.created_notification(@story).deliver!
       assert !ActionMailer::Base.deliveries.empty?
       assert_equal "wojciech@example.com", email.to.first
-      assert_equal "GeePivoMailin: new story created", email.subject
+      assert_equal "PivGeon: new story created", email.subject
       assert_match /You have created new story <a href=\"https:\/\/www.pivotaltracker.com\/story\/show\/12345\">Story nr 1<\/a>./, email.encoded
     end
     
@@ -30,7 +30,7 @@ class StoryMailerTest < ActionMailer::TestCase
         email =  StoryMailer.not_created_notification(@story).deliver!
         assert !ActionMailer::Base.deliveries.empty?
         assert_equal "wojciech@example.com", email.to.first
-        assert_equal "GeePivoMailin: error creating new story", email.subject
+        assert_equal "PivGeon: error creating new story", email.subject
         assert_match /You tried to create new story. Unfortunatelly the story hasn't been created due to following errors:/, email.encoded
         assert_match /message 1/, email.encoded
         assert_match /message 2/, email.encoded
@@ -41,7 +41,7 @@ class StoryMailerTest < ActionMailer::TestCase
         email =  StoryMailer.not_created_notification(message,"This is custom error message").deliver!
         assert !ActionMailer::Base.deliveries.empty?
         assert_equal "wojciech@example.com", email.to.first
-        assert_equal "GeePivoMailin: error creating new story", email.subject
+        assert_equal "PivGeon: error creating new story", email.subject
         assert_match /You tried to create new story. Unfortunatelly the story hasn't been created due to following errors:/, email.encoded
         assert_match /This is custom error message/, email.encoded
       end

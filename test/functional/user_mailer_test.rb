@@ -11,7 +11,7 @@ class UserMailerTest < ActionMailer::TestCase
       email =  UserMailer.created_notification(user).deliver!
       assert !ActionMailer::Base.deliveries.empty?
       assert_equal "wojciech@example.com", email.to.first
-      assert_equal "GeePivoMailin: new user confirmation", email.subject
+      assert_equal "PivGeon: new user confirmation", email.subject
       assert_match /#{ActionMailer::Base.default_url_options[:host]}\/users\/confirm\//, email.encoded
     end
     
@@ -28,8 +28,8 @@ class UserMailerTest < ActionMailer::TestCase
         email =  UserMailer.not_created_notification(user).deliver!
         assert !ActionMailer::Base.deliveries.empty?
         assert_equal "wojciech@example.com", email.to.first
-        assert_equal "GeePivoMailin: create new account error", email.subject
-        assert_match /You or somebody else tried to create new user account in GeePivoMailin application using this email: #{user.email}. Unfortunately the account couldn't be created due to following errors:/, email.encoded
+        assert_equal "PivGeon: create new account error", email.subject
+        assert_match /You or somebody else tried to create new user account in PivGeon application using this email: #{user.email}. Unfortunately the account couldn't be created due to following errors:/, email.encoded
         assert_match /message 1/, email.encoded
         assert_match /message 2/, email.encoded
       end
@@ -39,8 +39,8 @@ class UserMailerTest < ActionMailer::TestCase
         email =  UserMailer.not_created_notification(message,"This is custom error message").deliver!
         assert !ActionMailer::Base.deliveries.empty?
         assert_equal "wojciech@example.com", email.to.first
-        assert_equal "GeePivoMailin: create new account error", email.subject
-        assert_match /You or somebody else tried to create new user account in GeePivoMailin application using this email: wojciech@example.com. Unfortunately the account couldn't be created due to following errors:/, email.encoded
+        assert_equal "PivGeon: create new account error", email.subject
+        assert_match /You or somebody else tried to create new user account in PivGeon application using this email: wojciech@example.com. Unfortunately the account couldn't be created due to following errors:/, email.encoded
         assert_match /This is custom error message/, email.encoded
       end
       
