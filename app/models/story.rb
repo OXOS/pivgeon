@@ -6,7 +6,7 @@ class Story < HyperactiveResource
   self.skip_to_xml_for = [:user_id, :project_name, :owner_email]
   
   HUMAN_ATTRIBUTE_NAMES = {
-    "owned_by" => "The person"
+    "owned_by" => "A person"
   }
   
   include Pivgeon::Notification
