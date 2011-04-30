@@ -1,5 +1,5 @@
 class UserMailer < ActionMailer::Base
-  default :from => "geepivomailin@example.com"
+  default :from => "pivgeon@pivgeon.com"
   layout "application"
   helper :application
   
