@@ -52,7 +52,7 @@ class Story < HyperactiveResource
   protected
   
   def before_validate
-    self.owned_by = owner.person.name
+    self.owned_by = owner.person.name if owner
     self.prefix_options[:project_id] = project.id
   end
   

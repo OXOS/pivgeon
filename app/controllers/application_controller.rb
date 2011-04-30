@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
     headers["Content-type"] = "text/plain" 
     begin
       block.call      
-    rescue ActiveRecord::RecordNotSaved, ActiveRecord::RecordInvalid
+    rescue ActiveRecord::RecordNotSaved, ActiveRecord::RecordInvalid, RecordNotSaved
       render_and_send_notification()
     rescue ActiveResource::UnauthorizedAccess, SecurityError
       render_and_send_notification("Unauthorized access")
