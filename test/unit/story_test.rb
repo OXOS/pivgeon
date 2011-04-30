@@ -15,17 +15,39 @@ class StoryTest < ActiveSupport::TestCase
       @attrs = new_story_attrs(@user.id,"daniel@example.com")      
     end
     
-    should "valididate subject format" do
-      assert !Story.valid_subject_format?("12345")
-      assert !Story.valid_subject_format?("12345:")
-      assert !Story.valid_subject_format?("]12345")
-      assert !Story.valid_subject_format?("[]12345")
-      assert !Story.valid_subject_format?("asdada[]")      
-      assert !Story.valid_subject_format?("")
-      assert Story.valid_subject_format?("[GeePivoMailin]asdadads")
-      assert Story.valid_subject_format?("[GeePivoMailin] asdadads")
-      assert Story.valid_subject_format?(" [GeePivoMailin]asdadads")
-      assert Story.valid_subject_format?("[123]asdadads")
+    context "validation" do
+    
+      should "valididate subject format" do
+        assert !Story.valid_subject_format?("12345")
+        assert !Story.valid_subject_format?("12345:")
+        assert !Story.valid_subject_format?("]12345")
+        assert !Story.valid_subject_format?("[]12345")
+        assert !Story.valid_subject_format?("asdada[]")      
+        assert !Story.valid_subject_format?("")
+        assert Story.valid_subject_format?("[GeePivoMailin]asdadads")
+        assert Story.valid_subject_format?("[GeePivoMailin] asdadads")
+        assert Story.valid_subject_format?(" [GeePivoMailin]asdadads")
+        assert Story.valid_subject_format?("[123]asdadads")
+      end
+      
+      should "validate owned_by" do
+        story = Story.new(@attrs) 
+        story.expects(:owner).returns(nil)
+        assert_raise(RecordNotSaved) do
+          story.save!
+        end
+        assert_equal "that you try to assign to the story is not a project member.", story.errors[:owned_by].first
+      end
+      
+      should "validate project_id" do
+        story = Story.new(@attrs) 
+        story.expects(:project).at_least_once.returns(nil)
+        assert_raise(RecordNotSaved) do
+          story.save!
+        end
+        assert_equal "that you try to create this story for does not exist.", story.errors[:project].first
+      end
+      
     end
     
     should "parse subject" do      
