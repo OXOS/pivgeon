@@ -1,6 +1,11 @@
-You or somebody else tried to create new user account in GeePivoMailin application using this email: <%= @user.email %>. Unfortunately the account couldn't be created due to following errors:
-
-<ol>
-  <%= display_all_error_messages(@user,:token) %>
-  <%= display_all_error_messages(@user,:email) %>  
-</ol>
+<div class="inbox">
+  <div>You or somebody else tried to create new user account in GeePivoMailin application using this email: <%= @email %>. Unfortunately the account couldn't be created due to following errors:</div>
+  <ol>
+  <% if @error_message %>
+    <%= @error_message %>
+  <% else %>
+    <%= display_all_error_messages(@user,:token) %>
+    <%= display_all_error_messages(@user,:email) %>  
+  <% end %>
+  </ol>
+</div>

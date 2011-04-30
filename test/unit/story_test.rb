@@ -10,20 +10,44 @@ class StoryTest < ActiveSupport::TestCase
     setup do
       mock_requests()
       @incomming_message = valid_params("wojciech@example.com","daniel@example.com")['message']
-      @attrs = new_story_attrs("daniel@example.com")      
+      @user = users(:wojciech)
+      @project = Project.find_project_by_name("GeePivoMailin",@user.token)
+      @attrs = new_story_attrs(@user.id,"daniel@example.com")      
     end
     
-    should "valididate subject format" do
-      assert !Story.valid_subject_format?("12345")
-      assert !Story.valid_subject_format?("12345:")
-      assert !Story.valid_subject_format?("]12345")
-      assert !Story.valid_subject_format?("[]12345")
-      assert !Story.valid_subject_format?("asdada[]")      
-      assert !Story.valid_subject_format?("")
-      assert Story.valid_subject_format?("[GeePivoMailin]asdadads")
-      assert Story.valid_subject_format?("[GeePivoMailin] asdadads")
-      assert Story.valid_subject_format?(" [GeePivoMailin]asdadads")
-      assert Story.valid_subject_format?("[123]asdadads")
+    context "validation" do
+    
+      should "valididate subject format" do
+        assert !Story.valid_subject_format?("12345")
+        assert !Story.valid_subject_format?("12345:")
+        assert !Story.valid_subject_format?("]12345")
+        assert !Story.valid_subject_format?("[]12345")
+        assert !Story.valid_subject_format?("asdada[]")      
+        assert !Story.valid_subject_format?("")
+        assert Story.valid_subject_format?("[GeePivoMailin]asdadads")
+        assert Story.valid_subject_format?("[GeePivoMailin] asdadads")
+        assert Story.valid_subject_format?(" [GeePivoMailin]asdadads")
+        assert Story.valid_subject_format?("[123]asdadads")
+      end
+      
+      should "validate owned_by" do
+        story = Story.new(@attrs) 
+        story.expects(:owner).returns(nil)
+        assert_raise(RecordNotSaved) do
+          story.save!
+        end
+        assert_equal "that you try to assign to the story is not a project member.", story.errors[:owned_by].first
+      end
+      
+      should "validate project_id" do
+        story = Story.new(@attrs) 
+        story.expects(:project).at_least_once.returns(nil)
+        assert_raise(RecordNotSaved) do
+          story.save!
+        end
+        assert_equal "that you try to create this story for does not exist.", story.errors[:project].first
+      end
+      
     end
     
     should "parse subject" do      
@@ -56,60 +80,59 @@ class StoryTest < ActiveSupport::TestCase
       assert_false(Story.create(@attrs).new?)
     end
     
-    should "find owner" do
-      project = Project.find_project_by_name("GeePivoMailin","12345678")
-      
-      owner = Story.find_owner("daniel@example.com",project)
+    should "return owner" do
+      project = Project.find_project_by_name("GeePivoMailin","12345678")      
+      params = {:user_id=>@user.id,:owner_email=>"daniel@example.com",:project_name=>project.name,:name=>"test"}   
+      story = Story.new(params)
+      owner = story.owner()
       assert_equal "daniel", owner.person.name
-      assert_equal "DS", owner.person.initials
-      
-      owner = Story.find_owner("annonymous@example.com",project)
-      assert_equal nil, owner
+      assert_equal "DS", owner.person.initials            
     end
     
-    should "set owned_by" do
-      story = Story.new
-      story.owned_by = "daniel"
+    should "return project" do
+      project = Project.find_project_by_name("GeePivoMailin","12345678")      
+      params = {:user_id=>@user.id,:owner_email=>"daniel@example.com",:project_name=>project.name,:name=>"test"}   
+      story = Story.new(params)
+      project = story.project()
+      assert_equal "GeePivoMailin", project.name      
+    end
+    
+    should "set owned_by when saving" do
+      story = Story.new(@attrs)
+      story.save
       assert_equal "daniel", story.owned_by
+    end
+    
+    should "set prefix option :project_id when saving" do
+      story = Story.new(@attrs)
+      story.save
+      assert_equal "147449", story.prefix_options[:project_id].to_s
+    end
+    
+    should "return proper url to story in pivotal tracker" do
+      story = Story.new(@attrs)
+      story.save
+      assert_equal "https://www.pivotaltracker.com/story/show/100001", story.url
+    end
+    
+    should "send notification" do      
+      story = Story.create(@attrs)
+      
+      assert_difference("ActionMailer::Base.deliveries.count") do        
+        Story.send_notification(story,nil)
+        assert_equal "GeePivoMailin: new story created", ActionMailer::Base.deliveries.last.subject
+      end
+      
+      assert_difference("ActionMailer::Base.deliveries.count") do
+        story.errors.add(:base,"test error")
+        Story.send_notification(story,nil)
+        assert_equal "GeePivoMailin: error creating new story", ActionMailer::Base.deliveries.last.subject
+      end
     end
 
   end
   
   protected
-    
-  def mock_requests()
-    ActiveResource::HttpMock.respond_to do |mock|
-      mock.post("/services/v3/projects/147449/stories.xml", 
-                {"Content-Type"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
-                pivotal_story_response,
-                201)
-      mock.get("/services/v3/projects/147449/memberships.xml", 
-                {"Accept"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
-                pivotal_memberships_response,
-                201)     
-      mock.post("/services/v3/projects//stories.xml", 
-                {"Content-Type"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
-                nil,
-                500)
-      mock.post("/services/v3/projects/404404404/stories.xml", 
-                {"Content-Type"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
-                nil,
-                404)    
-       mock.get("/services/v3/projects/404404404/memberships.xml", 
-                {"Accept"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
-                pivotal_memberships_response,
-                201)     
-      mock.get("/services/v3/projects//memberships.xml", 
-                {"Accept"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
-                nil,
-                500)
-      mock.get("/services/v3/projects.xml", 
-                {"Accept"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
-                pivotal_projects_response,
-                200)                
-              
-    end
-  end
   
   def deb
     require "ruby-debug"

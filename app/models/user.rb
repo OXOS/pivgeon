@@ -1,12 +1,13 @@
 class User < ActiveRecord::Base
   
+  include Pivgeon::Notification
+  add_notifier(UserMailer,"created_notification")
+  
   validates(:email, :presence => true, :uniqueness => {:message => "There already exists an user account registered for this email address",:on=>:create})
   validates(:activation_code, :presence => true, :on => :create)
   validate :validate_token
   
-  before_validation(:generate_activation_code)
-  before_create(:send_registration_confirmation)  
-  after_validation(:send_notifications)
+  before_validation(:generate_activation_code)    
   
   scope :active, where(:status => "1")
   scope :inactive, where(:status => "0")
@@ -18,26 +19,13 @@ class User < ActiveRecord::Base
     end 
   end
   
-  def self.find_or_create_and_send_email(attrs={})
+  def self.find_or_build(attrs={})
     if user = User.inactive.find_by_email(attrs[:email])
-      if user.update_attributes(attrs)
-        user.send_registration_confirmation
-        return(user)
-      else
-        nil
-      end
+      user.attributes = attrs
+      user
     else
-      create(attrs)
+      new(attrs)
     end
-  end
-  
-  def send_registration_confirmation
-    UserMailer.registration_confirmation(self).deliver
-  end
-  
-  def send_notifications
-    return if self.errors.empty?
-    UserMailer.not_created_notification(self).deliver
   end
   
   def activate!

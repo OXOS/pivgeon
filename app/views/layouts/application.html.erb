@@ -29,17 +29,26 @@
         margin-bottom: 2px;
       }
       ol{
-	width:400px;
-	margin: 20px auto;
+	width:400px;	
 	text-align:left;
+        float: left;
 	}
       ol li{
-	margin: 0 0 3px 0;
-		
+	margin: 0 0 3px 5%;        
+       }
+      .inbox{
+        margin: 30px;  
+        text-align: left;
+       }
+      .errorbox{
+        margin-top: 20px;         
        }
     </style>
   </head>
   <body>
-    <%= yield %>
+    <h2>GeePivoMailin</h2>
+    <div id="box">
+      <%= yield %>
+    </div>    
   </body>
 </html>
