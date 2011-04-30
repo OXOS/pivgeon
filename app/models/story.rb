@@ -10,7 +10,10 @@ class Story < HyperactiveResource
   }
   
   include Pivgeon::Notification
+  include Pivgeon::Token
+  
   add_notifier(StoryMailer,"created_notification")
+  tokenize()
     
   validates(:name, :presence=>true)  
   
@@ -32,15 +35,7 @@ class Story < HyperactiveResource
   def self.valid_subject_format?(subject)
     !subject.match(/^\s*\[.+?\].+/).blank?
   end
-   
-  def self.token()
-    self.headers['X-TrackerToken']
-  end
-  
-  def self.token=(token)
-    self.headers['X-TrackerToken'] = (token ? token : "")
-  end
-  
+       
   def project()
     @project || Project.find_project_by_name(project_name,user.token)
   end
