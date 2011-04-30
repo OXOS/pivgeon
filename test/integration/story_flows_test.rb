@@ -109,7 +109,7 @@ class StoryFlowsTest < ActionDispatch::IntegrationTest
       should "receive email informed that story hasn't been successfully created" do
         assert_notification("GeePivoMailin: error creating new story") do
           post "/api", valid_params(@inactive_user.email,@owner.email)
-          assert_match /Unauthorized access /, ActionMailer::Base.deliveries.last.body.encoded
+          assert_match /Unauthorized access/, ActionMailer::Base.deliveries.last.body.encoded
         end
       end
       
@@ -120,7 +120,7 @@ class StoryFlowsTest < ActionDispatch::IntegrationTest
       should "receive email informed that story hasn't been successfully created" do
         assert_notification("GeePivoMailin: error creating new story") do
           post "/api", valid_params(@inactive_user.email,@owner.email,"subject with missing project name")
-          assert_match /Unauthorized access /, ActionMailer::Base.deliveries.last.body.encoded
+          assert_match /Unauthorized access/, ActionMailer::Base.deliveries.last.body.encoded
         end
       end
       
@@ -140,7 +140,7 @@ class StoryFlowsTest < ActionDispatch::IntegrationTest
       should "receive email informed that story hasn't been successfully created" do
         assert_notification("GeePivoMailin: error creating new story") do
           post "/api", valid_params("unexisting@example.com",@owner.email)
-          assert_match /Unauthorized access /, ActionMailer::Base.deliveries.last.body.encoded
+          assert_match /Unauthorized access/, ActionMailer::Base.deliveries.last.body.encoded
         end
       end
         
@@ -151,7 +151,7 @@ class StoryFlowsTest < ActionDispatch::IntegrationTest
       should "receive email informed that story hasn't been successfully created" do
         assert_notification("GeePivoMailin: error creating new story") do
           post "/api", valid_params("unexisting@example.com",@owner.email,"subject with missing project name")
-          assert_match /Unauthorized access /, ActionMailer::Base.deliveries.last.body.encoded
+          assert_match /Unauthorized access/, ActionMailer::Base.deliveries.last.body.encoded
         end
       end
       
