@@ -50,14 +50,14 @@ class UserTest < ActiveSupport::TestCase
     should "send notification" do      
       assert_difference("ActionMailer::Base.deliveries.count") do
         user = users(:wojciech)
-        User.send_notification(user,nil)
+        User.send_notification(user,nil,nil)
         assert_equal "PivGeon: new user confirmation", ActionMailer::Base.deliveries.last.subject
       end
       
       assert_difference("ActionMailer::Base.deliveries.count") do
         user = users(:wojciech)
         user.errors.add(:base,"test error")
-        User.send_notification(user,nil)
+        User.send_notification(user,nil,nil)
         assert_equal "PivGeon: create new account error", ActionMailer::Base.deliveries.last.subject
       end
     end

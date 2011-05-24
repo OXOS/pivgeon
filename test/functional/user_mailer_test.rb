@@ -8,7 +8,7 @@ class UserMailerTest < ActionMailer::TestCase
     
     should "send notification when user account is created" do
       user = users(:wojciech)
-      email =  UserMailer.created_notification(user).deliver!
+      email =  UserMailer.created_notification(user,nil,nil).deliver!
       assert !ActionMailer::Base.deliveries.empty?
       assert_equal "wojciech@example.com", email.to.first
       assert_equal "PivGeon: new user confirmation", email.subject
@@ -25,7 +25,7 @@ class UserMailerTest < ActionMailer::TestCase
         assert !user.errors[:token].empty?
         assert !user.errors[:email].empty?
 
-        email =  UserMailer.not_created_notification(user).deliver!
+        email =  UserMailer.not_created_notification(user,nil,nil).deliver!
         assert !ActionMailer::Base.deliveries.empty?
         assert_equal "wojciech@example.com", email.to.first
         assert_equal "PivGeon: create new account error", email.subject
@@ -36,7 +36,7 @@ class UserMailerTest < ActionMailer::TestCase
       
       should "send notification which contains custom error message" do        
         message =  Mail.new(valid_params("wojciech@example.com","daniel@example.com")['message'])
-        email =  UserMailer.not_created_notification(message,"This is custom error message").deliver!
+        email =  UserMailer.not_created_notification(message,"This is custom error message",nil).deliver!
         assert !ActionMailer::Base.deliveries.empty?
         assert_equal "wojciech@example.com", email.to.first
         assert_equal "PivGeon: create new account error", email.subject

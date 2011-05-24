@@ -132,13 +132,13 @@ class StoryTest < ActiveSupport::TestCase
       story = Story.create(@attrs)
       
       assert_difference("ActionMailer::Base.deliveries.count") do        
-        Story.send_notification(story,nil)
+        Story.send_notification(story,nil,nil)
         assert_equal "PivGeon: new story created", ActionMailer::Base.deliveries.last.subject
       end
       
       assert_difference("ActionMailer::Base.deliveries.count") do
         story.errors.add(:base,"test error")
-        Story.send_notification(story,nil)
+        Story.send_notification(story,nil,nil)
         assert_equal "PivGeon: error creating new story", ActionMailer::Base.deliveries.last.subject
       end
     end

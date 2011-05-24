@@ -14,7 +14,7 @@ class StoryMailerTest < ActionMailer::TestCase
     should "send notification when user account is created" do
       @story.stubs(:id).returns(12345)
       @story.stubs(:name).returns("Story nr 1")
-      email =  StoryMailer.created_notification(@story).deliver!
+      email =  StoryMailer.created_notification(@story,nil,nil).deliver!
       assert !ActionMailer::Base.deliveries.empty?
       assert_equal "wojciech@example.com", email.to.first
       assert_equal "PivGeon: new story created", email.subject
@@ -27,7 +27,7 @@ class StoryMailerTest < ActionMailer::TestCase
         @story.errors.add(:base1, "message 1")
         @story.errors.add(:base2, "message 2")
 
-        email =  StoryMailer.not_created_notification(@story).deliver!
+        email =  StoryMailer.not_created_notification(@story,nil,nil).deliver!
         assert !ActionMailer::Base.deliveries.empty?
         assert_equal "wojciech@example.com", email.to.first
         assert_equal "PivGeon: error creating new story", email.subject
@@ -38,7 +38,7 @@ class StoryMailerTest < ActionMailer::TestCase
       
       should "send notification which contains custom error message" do        
         message =  Mail.new(valid_params("wojciech@example.com","daniel@example.com")['message'])
-        email =  StoryMailer.not_created_notification(message,"This is custom error message").deliver!
+        email =  StoryMailer.not_created_notification(message,"This is custom error message",nil).deliver!
         assert !ActionMailer::Base.deliveries.empty?
         assert_equal "wojciech@example.com", email.to.first
         assert_equal "PivGeon: error creating new story", email.subject
