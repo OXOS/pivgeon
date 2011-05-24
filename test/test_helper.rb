@@ -29,7 +29,6 @@ class ActiveSupport::TestCase
 
   def new_story_attrs(user_id,owner_email)
     {:user_id=>user_id,
-     :story_type=>"chore",
      :name=>"Story 1", 
      :description=>"description", 
      :project_name=>"GeePivoMailin",
@@ -44,7 +43,7 @@ class ActiveSupport::TestCase
   
   def pivotal_request
     "<story>
-      <story-type>chore</story-type>
+      <story-type>feature</story-type>
       <name>Story 1</name>
       <requested-by>wojciech</requested-by>
       <owned-by>daniel</owned-by>
@@ -56,7 +55,7 @@ class ActiveSupport::TestCase
     <story>
       <id type="integer">100001</id>
       <project_id type="integer">147449</project_id>
-      <story_type>chore</story_type>
+      <story_type>feature</story_type>
       <url>http://www.pivotaltracker.com/story/show/100001</url>
       <estimate type="integer">-1</estimate>
       <current_state>unscheduled</current_state>
@@ -118,7 +117,7 @@ class ActiveSupport::TestCase
         <allow_attachments>true</allow_attachments>
         <public>false</public>
         <use_https>true</use_https>
-        <bugs_and_chores_are_estimatable>false</bugs_and_chores_are_estimatable>
+        <bugs_and_features_are_estimatable>false</bugs_and_features_are_estimatable>
         <commit_mode>false</commit_mode>
         <last_activity_at type="datetime">2010/01/16 17:39:10 CST</last_activity_at>
         <memberships type="array">

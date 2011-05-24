@@ -53,6 +53,10 @@ class Story < HyperactiveResource
   def url()
     "https://www.pivotaltracker.com/story/show/#{self.id}"
   end
+  
+  def set_default_attributes()
+    self.story_type = "feature"
+  end
 
   protected    
   
@@ -62,6 +66,7 @@ class Story < HyperactiveResource
   def before_validate()
     self.owned_by = owner.person.name if owner
     self.prefix_options[:project_id] = project.id if project
+    self.set_default_attributes()    
   end
   
   def validate()

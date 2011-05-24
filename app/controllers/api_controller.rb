@@ -26,7 +26,11 @@ class ApiController < ApplicationController
   end
   
   def create_story(message)    
-    attrs = {:user_id=>@user.id,:owner_email=>@message.to.first,:project_name=>@parsed_subject[:project_name],:name=>@parsed_subject[:subject],:story_type=>"chore",:description=>params[:plain]}   
+    attrs = {:user_id=>@user.id,
+             :owner_email=>@message.to.first,
+             :project_name=>@parsed_subject[:project_name],
+             :name=>@parsed_subject[:subject],             
+             :description=>params[:plain]}   
     Story.token = @user.token    
     @story = Story.new(attrs)    
     @story.save!

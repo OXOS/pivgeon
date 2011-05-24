@@ -80,6 +80,19 @@ class StoryTest < ActiveSupport::TestCase
       assert_false(Story.create(@attrs).new?)
     end
     
+    should "set default attributes" do
+      story = Story.new
+      assert story.story_type.nil?
+      story.set_default_attributes
+      assert_equal "feature", story.story_type
+    end
+    
+    should "story_type should be 'feature' by default" do
+      Story.token = "12345678"
+      story = Story.create(@attrs)
+      assert_equal "feature", story.story_type
+    end
+    
     should "return owner" do
       project = Project.find_project_by_name("GeePivoMailin","12345678")      
       params = {:user_id=>@user.id,:owner_email=>"daniel@example.com",:project_name=>project.name,:name=>"test"}   
