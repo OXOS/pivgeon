@@ -44,10 +44,10 @@ module Geepivodev
   end
 end
 
-CLOUDMAILIN_EMAIL_ADDRESS = if ENV['CLOUDMAILIN_FORWARD_ADDRESS'] == "62cf42b7bc93e69c7a5b@cloudmailin.net"
-  "pivgeon@pivgeon.com"
+
+CLOUDMAILIN_EMAIL_ADDRESS,APP_NAME = if !ENV['CLOUDMAILIN_FORWARD_ADDRESS'] || ENV['CLOUDMAILIN_FORWARD_ADDRESS'] == "62cf42b7bc93e69c7a5b@cloudmailin.net"
+  ["pivgeon@pivgeon.com","PivGeon"]
 else
-  "pivgeon@dev.pivgeon.com"
+  ["pivgeon@dev.pivgeon.com","PivGeonDev"]  
 end
 
-APP_NAME = "PivGeon"

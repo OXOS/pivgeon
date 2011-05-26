@@ -18,7 +18,7 @@ class StoryMailer < ActionMailer::Base
   end
   
   def from()
-    %{"PivGeon" <pivgeon@pivgeon.com>}
+    %{"#{APP_NAME}" <pivgeon@pivgeon.com>}
   end
   
   def set_reference_message_id(message_id)
