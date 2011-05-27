@@ -3,18 +3,20 @@ class UserMailer < ActionMailer::Base
   layout "application"
   helper :application
   
-  def created_notification(user,error_message,reference_message_id)
+  def created_notification(user,error_message,options={})
     @activation_link = user.activation_code
+    reference_message_id,received_message_subject = parse_options(options)
     set_reference_message_id(reference_message_id)
-    mail(:to => user.email, :from => from, :reply_to => "pivgeon@pivgeon.com", :subject => "#{APP_NAME}: new user confirmation")
+    mail(:to => user.email, :from => from, :reply_to => "pivgeon@pivgeon.com", :subject => "Re: #{received_message_subject}")
   end
   
-  def not_created_notification(user,error_message,reference_message_id)
+  def not_created_notification(user,error_message,options={})
     @email = ( user.is_a?(User) ? user.email : user.from.first )
     @user = user
     @error_message = error_message
+    reference_message_id,received_message_subject = parse_options(options)
     set_reference_message_id(reference_message_id)
-    mail(:to => @email, :from => from, :reply_to => "pivgeon@pivgeon.com", :subject => "#{APP_NAME}: create new account error")
+    mail(:to => @email, :from => from, :reply_to => "pivgeon@pivgeon.com", :subject => "Re: #{received_message_subject}")
   end
   
   def from()
@@ -23,6 +25,10 @@ class UserMailer < ActionMailer::Base
   
   def set_reference_message_id(message_id)
     headers["In-Reply-To"] = message_id if message_id
+  end
+  
+  def parse_options(options)
+    [options[:message_id],options[:message_subject]]   
   end
   
 end
