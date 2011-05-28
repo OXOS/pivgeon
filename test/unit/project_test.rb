@@ -6,6 +6,10 @@ class ProjectTest < ActiveSupport::TestCase
   
   context "Project" do
     
+    setup do
+      mock_request()
+    end
+    
     should "set token in headers" do
       Project.token = "12345678"
       assert_equal '12345678', Project.headers['X-TrackerToken']
@@ -14,11 +18,22 @@ class ProjectTest < ActiveSupport::TestCase
       assert Project.headers['X-TrackerToken'].blank?
     end
     
-    should "find project by name" do
-      mock_request()
+    should "case insensitive find project by name" do
       project = Project.find_project_by_name("GeePivoMailin","12345678")
       assert_equal "GeePivoMailin", project.name
       assert_equal "147449", project.id
+      
+      project = Project.find_project_by_name("geepivomailin","12345678")
+      assert_equal "GeePivoMailin", project.name
+      assert_equal "147449", project.id
+      
+      project = Project.find_project_by_name("geePivomailin","12345678")
+      assert_equal "GeePivoMailin", project.name
+      assert_equal "147449", project.id
+      
+      project = Project.find_project_by_name("geepivomailin2","12345678")
+      assert_equal "GeePivoMailin2", project.name
+      assert_equal "147450", project.id
     end
     
   end
