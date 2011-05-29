@@ -9,7 +9,25 @@
 
 
 <link href="stylesheets/style.css" rel="stylesheet" type="text/css" />
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js" type="text/javascript"></script>
 
+
+<script type="text/javascript">
+    var toggle_details = function(section){        
+        var box = jQuery(section+" .details");
+        console.log(box);
+        var link = box.find("a.header");
+        
+        if (link.html() == "Show more details"){
+            link.html("Hide details");
+            box.css("height","auto");
+        }else{
+            console.log('hidding');
+            link.html("Show more details");
+            box.css("height","25px");
+        }
+    }
+</script>
 
 <style type="text/css">
 #main #intro p { font:normal 14px/1.5em Droid Serif;color:#555555; }
@@ -49,19 +67,25 @@
             <div id="howto" class="block">
                 <h3><span>Only 3 steps to create new story</span></h3>
                 
-                <div class="how-to-panel">
+                <div class="how-to-panel" id="create">
                     <div class="header">
                         <div class="number">1</div>
                         <div class="title">Create your account assigned to your pivotal API Token:</div>
                     </div>
                     <p>
-                        To create new account you need to send an email to PivGeon address "pivgeon@pivgeon.com" containing your API Token in subject.
+                        In order to create new account you need to send an email to PivGeon address "pivgeon@pivgeon.com" containing your API Token in subject.
                         <img src="images/email-create.jpg"  alt="email"/>
+                    </p>
+                    <p class="details" id="details">
+                        <a class="header"  onclick="toggle_details('#create')" href="javascript:void(0)">Show more details</a>
+                        <span class="info">You can create many accounts for one api token.</span>
+                        <span class="info">You can create only one account for specific email address.</span>
+                        <span class="info">Api token you have chosen determines who is set as story creator.</span>
                     </p>
                     <div class="arrow"></div>
                 </div>
                 
-                <div class="how-to-panel">
+                <div class="how-to-panel" id="activate">
                     <div class="header">
                         <div class="number">2</div>
                         <div class="title">Activate your account:</div>
@@ -72,7 +96,7 @@
                     <div class="arrow"></div>
                 </div>
                 
-                <div class="how-to-panel">
+                <div class="how-to-panel" id="send">
                     <div class="header">
                         <div class="number">3</div>
                         <div class="title">Send an email to the person you want to create story for.</div>
@@ -80,6 +104,13 @@
                     <p>
                         Just send an email to the person you want to create story for and add 'cc' to pivgeon@pivgeon.com.
                         <img src="images/email-croped.jpg" alt="email"/>
+                    </p>
+                    <p class="details" id="details">
+                        <a class="header"  onclick="toggle_details('#send')" href="javascript:void(0)">Show more details</a>
+                        <span class="info">In order to specify project name the email subject has to contain project name enclosed in square brackets, for example email subject may look like this "[A new project] This is first story".</span>
+                        <span class="info">Project name is case insensitive so there is no difference whether you type "A New Project" or "a new project".</span>
+                        <span class="info">Story description is filled in from email body.</span>
+                        <span class="info">By default story type is set to 'chore'.</span>
                     </p>
                 </div>
                 
