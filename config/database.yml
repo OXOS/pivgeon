@@ -1,11 +1,10 @@
-db: &db
+
+  
+development:
   adapter: mysql
   host: localhost
   username: root
-  password: toor
-  
-development:
-  <<: *db
+  password: 
   database: geepivomailin_development
   pool: 5
   timeout: 5000
@@ -14,13 +13,19 @@ development:
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
-  <<: *db
+  adapter: mysql
+  host: localhost
+  username: root
+  password: 
   database: geepivomailin_test
   pool: 5
   timeout: 5000
 
 production:
-  <<: *db
+  adapter: mysql
+  host: localhost
+  username: root
+  password: 
   database: geepivomailin_production
   pool: 5
   timeout: 5000
