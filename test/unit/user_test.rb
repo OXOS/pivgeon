@@ -20,7 +20,7 @@ class UserTest < ActiveSupport::TestCase
     end
     
     should "parse incoming message" do
-      message = Mail.new(valid_params("wojciech@example.com","cloudmailin@example.com","12345678")['message'])
+      message = Mail.new(valid_params("wojciech@example.com","cloudmailin@example.com",nil,"12345678")['message'])
       assert_equal({:email=>"wojciech@example.com",:token=>"12345678"}, User.parse_message(message))
     end
     

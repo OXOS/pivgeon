@@ -36,6 +36,11 @@ class ProjectTest < ActiveSupport::TestCase
       assert_equal "147450", project.id
     end
     
+    should "find project by name without white spaces" do
+      project = Project.find_project_by_name("thisisgeepivomailin","12345678")
+      assert_equal "This Is Gee Pivo Mailin", project.name
+    end
+    
   end
   
   protected

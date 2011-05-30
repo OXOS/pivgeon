@@ -6,8 +6,13 @@ class Story < HyperactiveResource
   self.skip_to_xml_for = [:user_id, :project_name, :owner_email]
   
   HUMAN_ATTRIBUTE_NAMES = {
-    "owned_by" => "A person"
+    "owned_by" => "A person",
+    "name" => "Story name"
   }
+  
+  GET_PROJECT_FROM_SUBJECT_REGEXP = /^\s*\[(.+?)\](\s*Re:\s*|\s*re:\s*|\s*RE:\s*|\s*Fwd:\s*|\s*FWD:\s*|\s*fwd:\s*|\s*PD:\s*)?(.+)/
+  IS_PROJECT_IN_SUBJECT_REGEXP = /^\s*\[.+\].*/
+  EMAIL_DETOKENIZE_REGEXP = /<(.*)>/
   
   include Pivgeon::Notification
   include Pivgeon::Token
@@ -18,11 +23,37 @@ class Story < HyperactiveResource
   validates(:name, :presence=>true)  
   
   def self.parse_subject(subject)
-    match = subject.match(/^\s*\[(.+?)\](\s*Re:\s*|\s*re:\s*|\s*RE:\s*|\s*Fwd:\s*|\s*FWD:\s*|\s*fwd:\s*|\s*PD:\s*)?(.+)/)
+    return unless is_project_in_string?(subject)
+    match = subject.match(GET_PROJECT_FROM_SUBJECT_REGEXP)
+    return if match.blank?
     {}.tap do |subject|
       subject[:project_name] = match[1]
       subject[:subject] = match[3]      
     end    
+  end
+  
+  def self.is_project_in_string?(str)
+    str.match(IS_PROJECT_IN_SUBJECT_REGEXP) ? true : false
+  end
+  
+  def self.detokenize(email)
+    result = email.match(EMAIL_DETOKENIZE_REGEXP)
+    result ? result[1] : email
+  end
+  
+  def self.get_project_and_story_name(subject,email)
+    if is_project_in_string?(subject)
+      raise(ArgumentError) unless ( parsed_subject = parse_subject(subject) )
+      [parsed_subject[:project_name],parsed_subject[:subject]]
+    else
+      email = detokenize(email)
+      project_name = if( email == "pivgeon@pivgeon.com" ) 
+        ""
+      else
+        email.split('@').first
+      end
+      [project_name,subject]
+    end
   end
   
   def self.human_attribute_name(*args)
@@ -71,7 +102,7 @@ class Story < HyperactiveResource
   
   def validate()
     before_validate()
-    errors[:project] << "that you try to create this story for does not exist." and raise(RecordNotSaved) if self.prefix_options[:project_id].blank?
+    errors[:project] << "'#{project_name}' that you try to create this story for does not exist." and raise(RecordNotSaved) if self.prefix_options[:project_id].blank?
     errors[:owned_by] << "that you try to assign to the story is not a project member." and raise(RecordNotSaved) if self.owned_by.blank?     
   end
   

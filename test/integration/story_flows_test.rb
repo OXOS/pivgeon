@@ -16,7 +16,8 @@ class StoryFlowsTest < ActionDispatch::IntegrationTest
       
       should "receive email informed that story has been successfully created" do
         assert_notification("Re: [GeePivoMailin] Story 1") do
-          post "/api", valid_params(@active_user.email,@owner.email)
+          post "/api", valid_params(@active_user.email,@owner.email,nil)
+          assert_match /You have created new story/, ActionMailer::Base.deliveries.last.body.encoded
         end
       end
       
@@ -25,12 +26,50 @@ class StoryFlowsTest < ActionDispatch::IntegrationTest
         should "receive email informed that story hasn't been successfully created" do
           assert_notification("Re: [GeePivoMailin] Story 1") do
             Project.expects(:find_project_by_name).raises(ActiveResource::ServerError,'')
-            post "/api", valid_params(@active_user.email,@owner.email)
+            post "/api", valid_params(@active_user.email,@owner.email,nil)
+            assert_match /Server error/, ActionMailer::Base.deliveries.last.body.encoded
           end
         end
         
       end
       
+      context "with project name" do
+        
+        context "set in email address" do
+        
+          should "receive email informed that story has been successfully created" do
+            assert_notification("Re: subject without project name") do
+              post "/api", valid_params(@active_user.email,@owner.email,"geepivomailin@pivgeon.com","subject without project name")
+              assert_match /You have created new story/, ActionMailer::Base.deliveries.last.body.encoded
+            end
+          end
+          
+        end
+       
+        context "set in subject" do
+
+          should "receive email informed that story has been successfully created" do
+            assert_notification("Re: [geepivomailin] subject without project name") do
+              post "/api", valid_params(@active_user.email,@owner.email,"pivgeon@pivgeon.com","[geepivomailin] subject without project name")
+              assert_match /You have created new story/, ActionMailer::Base.deliveries.last.body.encoded
+            end
+          end
+
+        end
+        
+        context "matching existing project name without spaces" do
+
+          should "receive email informed that story has been successfully created" do
+            assert_notification("Re: subject without project name") do
+              post "/api", valid_params(@active_user.email,@owner.email,"thisisgeepivomailin@pivgeon.com","subject without project name")
+              assert_match /You have created new story/, ActionMailer::Base.deliveries.last.body.encoded
+            end
+          end
+
+        end
+        
+      end
+          
     end
     
     context "who creates story with invalid data" do
@@ -39,9 +78,9 @@ class StoryFlowsTest < ActionDispatch::IntegrationTest
         
         should "receive email informed that story hasn't been successfully created" do
           assert_notification("Re: [GeePivoMailin] Story 1") do
-            post "/api", valid_params(@active_user.email,"any.people@example.com")
+            post "/api", valid_params(@active_user.email,"any.people@example.com",nil)
             assert_match /A person that you try to assign to the story is not a project member./, ActionMailer::Base.deliveries.last.body.encoded
-            assert_no_match /Project that you try to create this story for does not exist./, ActionMailer::Base.deliveries.last.body.encoded
+            assert_no_match /Project '' that you try to create this story for does not exist./, ActionMailer::Base.deliveries.last.body.encoded
           end
         end
         
@@ -51,20 +90,20 @@ class StoryFlowsTest < ActionDispatch::IntegrationTest
         
         should "receive email informed that story hasn't been successfully created" do
           assert_notification("Re: [noexistingprojectname] Story name") do
-            post "/api", valid_params(@active_user.email,"daniel@example.com","[noexistingprojectname] Story name")
+            post "/api", valid_params(@active_user.email,"daniel@example.com",nil,"[noexistingprojectname] Story name")
             assert_no_match /A person that you try to assign to the story is not a project member./, ActionMailer::Base.deliveries.last.body.encoded
-            assert_match /Project that you try to create this story for does not exist./, ActionMailer::Base.deliveries.last.body.encoded
+            assert_match /Project 'noexistingprojectname' that you try to create this story for does not exist./, ActionMailer::Base.deliveries.last.body.encoded
           end
         end
         
       end
       
-      context "like missing project name in email subject" do
+      context "like missing project name in email subject and missing project name in email" do
         
         should "receive email informed that story hasn't been successfully created" do
           assert_notification("Re: subject without project name") do
-            post "/api", valid_params(@active_user.email,"any.people@example.com","subject without project name")
-            assert_match /Invalid data/, ActionMailer::Base.deliveries.last.body.encoded
+            post "/api", valid_params(@active_user.email,"daniel@example.com",nil,"subject without project name")
+            assert_match /Project '' that you try to create this story for does not exist./, ActionMailer::Base.deliveries.last.body.encoded
           end
         end
         
@@ -74,18 +113,7 @@ class StoryFlowsTest < ActionDispatch::IntegrationTest
         
         should "receive email informed that story hasn't been successfully created" do
           assert_notification("Re: [GeePivoMailin]") do
-            post "/api", valid_params(@active_user.email,"any.people@example.com","[GeePivoMailin]")
-            assert_match /Invalid data/, ActionMailer::Base.deliveries.last.body.encoded
-          end
-        end
-        
-      end
-      
-      context "like inproper formatted email subject" do
-        
-        should "receive email informed that story hasn't been successfully created" do
-          assert_notification("Re: xxx [GeePivoMailin] Story 1") do
-            post "/api", valid_params(@active_user.email,"any.people@example.com","xxx [GeePivoMailin] Story 1")
+            post "/api", valid_params(@active_user.email,"daniel@example.com",nil,"[GeePivoMailin]")
             assert_match /Invalid data/, ActionMailer::Base.deliveries.last.body.encoded
           end
         end
@@ -108,7 +136,7 @@ class StoryFlowsTest < ActionDispatch::IntegrationTest
       
       should "receive email informed that story hasn't been successfully created" do
         assert_notification("Re: [GeePivoMailin] Story 1") do
-          post "/api", valid_params(@inactive_user.email,@owner.email)
+          post "/api", valid_params(@inactive_user.email,@owner.email,nil)
           assert_match /Unauthorized access/, ActionMailer::Base.deliveries.last.body.encoded
         end
       end
@@ -119,7 +147,7 @@ class StoryFlowsTest < ActionDispatch::IntegrationTest
       
       should "receive email informed that story hasn't been successfully created" do
         assert_notification("Re: subject with missing project name") do
-          post "/api", valid_params(@inactive_user.email,@owner.email,"subject with missing project name")
+          post "/api", valid_params(@inactive_user.email,@owner.email,nil,"subject with missing project name")
           assert_match /Unauthorized access/, ActionMailer::Base.deliveries.last.body.encoded
         end
       end
@@ -139,7 +167,7 @@ class StoryFlowsTest < ActionDispatch::IntegrationTest
       
       should "receive email informed that story hasn't been successfully created" do
         assert_notification("Re: [GeePivoMailin] Story 1") do
-          post "/api", valid_params("unexisting@example.com",@owner.email)
+          post "/api", valid_params("unexisting@example.com",@owner.email,nil)
           assert_match /Unauthorized access/, ActionMailer::Base.deliveries.last.body.encoded
         end
       end
@@ -150,7 +178,7 @@ class StoryFlowsTest < ActionDispatch::IntegrationTest
       
       should "receive email informed that story hasn't been successfully created" do
         assert_notification("Re: subject with missing project name") do
-          post "/api", valid_params("unexisting@example.com",@owner.email,"subject with missing project name")
+          post "/api", valid_params("unexisting@example.com",@owner.email,nil,"subject with missing project name")
           assert_match /Unauthorized access/, ActionMailer::Base.deliveries.last.body.encoded
         end
       end

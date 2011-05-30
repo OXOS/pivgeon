@@ -9,7 +9,7 @@ class StoryTest < ActiveSupport::TestCase
     
     setup do
       mock_requests()
-      @incomming_message = valid_params("wojciech@example.com","daniel@example.com")['message']
+      @incomming_message = valid_params("wojciech@example.com","daniel@example.com",nil)['message']
       @user = users(:wojciech)
       @project = Project.find_project_by_name("GeePivoMailin",@user.token)
       @attrs = new_story_attrs(@user.id,"daniel@example.com")      
@@ -45,9 +45,20 @@ class StoryTest < ActiveSupport::TestCase
         assert_raise(RecordNotSaved) do
           story.save!
         end
-        assert_equal "that you try to create this story for does not exist.", story.errors[:project].first
+        assert_equal "'GeePivoMailin' that you try to create this story for does not exist.", story.errors[:project].first
       end
       
+    end
+    
+    should "check project in string" do
+      assert Story.is_project_in_string?("[test] Story name")
+      assert Story.is_project_in_string?("[test]story name")
+      assert !Story.is_project_in_string?("story name")
+      assert Story.is_project_in_string?("[test]")
+      assert !Story.is_project_in_string?("[story name")
+      assert !Story.is_project_in_string?("[] story name")
+      assert !Story.is_project_in_string?("[]")
+      assert Story.is_project_in_string?("[[]")
     end
     
     should "parse subject" do      
@@ -65,6 +76,17 @@ class StoryTest < ActiveSupport::TestCase
       assert_equal( {:name=>"some text",:project_id=>"GeePivoMailin"}.values.sort, Story.parse_subject("[GeePivoMailin] PD: some text").values.sort )
       assert_equal( {:name=>"[sdaadd] some text",:project_id=>"GeePivoMailin"}.values.sort, Story.parse_subject("[GeePivoMailin][sdaadd] some text").values.sort )
       assert_equal( {:name=>"[sdaadd]Fwd some text",:project_id=>"GeePivoMailin"}.values.sort, Story.parse_subject("[GeePivoMailin][sdaadd]Fwd some text").values.sort )
+    end
+    
+    should "get project and story name" do
+      assert_equal ["test"," story name"], Story.get_project_and_story_name("[test] story name","daniel@example.com")
+      assert_equal ["errands","story name"], Story.get_project_and_story_name("story name","errands@example.com")
+      assert_equal ["errands","[] story name"], Story.get_project_and_story_name("[] story name","errands@example.com")
+    end
+    
+    should "detokenize email" do
+      assert_equal "test@example.com", Story.detokenize("<test@example.com>")
+      assert_equal "test@example.com", Story.detokenize("test@example.com")
     end
        
     should "set token in headers" do

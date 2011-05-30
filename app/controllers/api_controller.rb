@@ -3,7 +3,7 @@ class ApiController < ApplicationController
     
   before_filter :parse_message
   before_filter :find_user  
-  before_filter :validate_and_parse_subject
+  before_filter :find_project_and_story_name
   
   def create      
     handle_exception do           
@@ -28,8 +28,8 @@ class ApiController < ApplicationController
   def create_story(message)    
     attrs = {:user_id=>@user.id,
              :owner_email=>@message.to.first,
-             :project_name=>@parsed_subject[:project_name],
-             :name=>@parsed_subject[:subject],             
+             :project_name=>@project_name,
+             :name=>@story_name,             
              :description=>params[:plain]}   
     Story.token = @user.token    
     @story = Story.new(attrs)    
@@ -45,11 +45,10 @@ class ApiController < ApplicationController
       @message = Mail.new(params[:message])      
   end
   
-  def validate_and_parse_subject
+  def find_project_and_story_name
     handle_exception do       
       unless direct_sent_to_cloudmailin?(@message)        
-        raise(ArgumentError) unless Story.valid_subject_format?(@message.subject)
-        @parsed_subject = Story.parse_subject(@message.subject)
+          @project_name,@story_name = Story.get_project_and_story_name(@message.subject,params[:to])
       end
     end
   end

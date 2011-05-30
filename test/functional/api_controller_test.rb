@@ -16,13 +16,12 @@ class ApiControllerTest < ActionController::TestCase
       ob_proxy = mock("object_proxy")
       ob_proxy.expects(:find_by_email).with("wojciech@example.com").returns(@user)
       User.expects(:active).returns(ob_proxy)
-      Story.expects(:valid_subject_format?).with("[GeePivoMailin] Subject").returns(true)
-      Story.expects(:parse_subject).with("[GeePivoMailin] Subject").returns({:name=>"Subject",:project_name=>"GeePivoMailin"})
+      Story.expects(:get_project_and_story_name).with("[GeePivoMailin] Subject","<pivgeon@pivgeon.com>").returns(["GeePivoMailin"," Subject"])
       Story.expects(:token=)
       Story.any_instance.expects(:save!).returns(true)
       Story.expects(:send_notification)
       
-      post :create, valid_params(@user.email,"daniel@example.com","[GeePivoMailin] Subject")     
+      post :create, valid_params(@user.email,"daniel@example.com",nil,"[GeePivoMailin] Subject")     
       assert_response 200
     end
 
@@ -30,13 +29,12 @@ class ApiControllerTest < ActionController::TestCase
       ob_proxy = mock("object_proxy")
       ob_proxy.expects(:find_by_email).with("wojciech@example.com").returns(@user)
       User.expects(:active).returns(ob_proxy)
-      Story.expects(:valid_subject_format?).with("[GeePivoMailin] Subject").returns(true)
-      Story.expects(:parse_subject).with("[GeePivoMailin] Subject").returns({:name=>"Subject",:project_name=>"GeePivoMailin"})
+      Story.expects(:get_project_and_story_name).with("[GeePivoMailin] Subject","<pivgeon@pivgeon.com>").returns(["GeePivoMailin"," Subject"])
       Story.expects(:token=)
       Story.any_instance.expects(:save!).raises(ActiveRecord::RecordNotSaved)
       Story.expects(:send_notification)
       
-      post :create, valid_params(@user.email,"daniel@example.com","[GeePivoMailin] Subject")
+      post :create, valid_params(@user.email,"daniel@example.com",nil,"[GeePivoMailin] Subject")
       assert_response 200, "Invalid data"
     end
       
@@ -46,7 +44,7 @@ class ApiControllerTest < ActionController::TestCase
       user_mock.expects(:save!).returns(true)
       User.expects(:find_or_build).with("some attrs fake").returns(user_mock)
       User.expects(:send_notification)
-      post :create, valid_params("annonymous@example.com",CLOUDMAILIN_EMAIL_ADDRESS,"123123131")
+      post :create, valid_params("annonymous@example.com",CLOUDMAILIN_EMAIL_ADDRESS,nil,"123123131")
       assert_response 200
     end
     
@@ -56,7 +54,7 @@ class ApiControllerTest < ActionController::TestCase
       user_mock.expects(:save!).raises(ActiveRecord::RecordNotSaved)
       User.expects(:find_or_build).with("some attrs fake").returns(user_mock)
       User.expects(:send_notification)
-      post :create, valid_params("annonymous@example.com",CLOUDMAILIN_EMAIL_ADDRESS,"123123131")
+      post :create, valid_params("annonymous@example.com",CLOUDMAILIN_EMAIL_ADDRESS,nil,"123123131")
       assert_response 200, "Invalid data"
     end
       

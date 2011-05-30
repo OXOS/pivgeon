@@ -15,15 +15,15 @@ class ActiveSupport::TestCase
   # Add more helper methods to be used by all tests here...
       
 
-  def valid_params(from, to, subject="[GeePivoMailin] Story 1")
+  def valid_params(from, to, cc, subject="[GeePivoMailin] Story 1")
     {"html"=>"description<br/>", 
      "plain"=>"description", 
      "disposable"=>"", 
      "from"=>"wojciech@example.com", 
      "signature"=>"60d30a03373fb7366e49920b333cf44e", 
      "subject"=>subject, 
-     "to"=>"<dfba89c3c1ec17e81304@cloudmailin.net>", 
-     "message"=>"Received: by qwj8 with SMTP id 8so3681152qwj.4\r\n        for <b06e829748e4a3c9cea9@cloudmailin.net>; Sun, 03 Apr 2011 11:48:53 -0700 (PDT)\r\nMIME-Version: 1.0\r\nReceived: by 10.224.200.195 with SMTP id ex3mr5033699qab.229.1301856533092;\r\n Sun, 03 Apr 2011 11:48:53 -0700 (PDT)\r\nReceived: by 10.224.37.81 with HTTP; Sun, 3 Apr 2011 11:48:53 -0700 (PDT)\r\nDate: Sun, 3 Apr 2011 20:48:53 +0200\r\nMessage-ID: <BANLkTimSJh85TDNCn0RNH_YH5EHggnDAfw@mail.gmail.com>\r\nSubject: #{subject}\r\nFrom: =?UTF-8?Q?Daniel_Soko=C5=82owski?= <#{from}>\r\nTo: =?UTF-8?Q?Daniel_Soko=C5=82owski?= <#{to}>\r\nCc: b06e829748e4a3c9cea9@cloudmailin.net\r\nContent-Type: multipart/alternative; boundary=20cf3010edcf3419bd04a0081821\r\n\r\n--20cf3010edcf3419bd04a0081821\r\nContent-Type: text/plain; charset=UTF-8\r\n\r\n\r\n\r\n--20cf3010edcf3419bd04a0081821\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n<br>\r\n\r\n--20cf3010edcf3419bd04a0081821--"}
+     "to"=>"<#{cc || CLOUDMAILIN_EMAIL_ADDRESS}>", 
+     "message"=>"Received: by qwj8 with SMTP id 8so3681152qwj.4\r\n        for <#{CLOUDMAILIN_EMAIL_ADDRESS}>; Sun, 03 Apr 2011 11:48:53 -0700 (PDT)\r\nMIME-Version: 1.0\r\nReceived: by 10.224.200.195 with SMTP id ex3mr5033699qab.229.1301856533092;\r\n Sun, 03 Apr 2011 11:48:53 -0700 (PDT)\r\nReceived: by 10.224.37.81 with HTTP; Sun, 3 Apr 2011 11:48:53 -0700 (PDT)\r\nDate: Sun, 3 Apr 2011 20:48:53 +0200\r\nMessage-ID: <BANLkTimSJh85TDNCn0RNH_YH5EHggnDAfw@mail.gmail.com>\r\nSubject: #{subject}\r\nFrom: =?UTF-8?Q?Daniel_Soko=C5=82owski?= <#{from}>\r\nTo: =?UTF-8?Q?Daniel_Soko=C5=82owski?= <#{to}>\r\nCc: b06e829748e4a3c9cea9@cloudmailin.net\r\nContent-Type: multipart/alternative; boundary=20cf3010edcf3419bd04a0081821\r\n\r\n--20cf3010edcf3419bd04a0081821\r\nContent-Type: text/plain; charset=UTF-8\r\n\r\n\r\n\r\n--20cf3010edcf3419bd04a0081821\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n<br>\r\n\r\n--20cf3010edcf3419bd04a0081821--"}
   end
   
 
@@ -197,7 +197,7 @@ class ActiveSupport::TestCase
       </project>
       <project>
         <id>147451</id>
-        <name>ThisIsGeePivoMailin</name>
+        <name>This Is Gee Pivo Mailin</name>
         <iteration_length type="integer">2</iteration_length>
         <week_start_day>Monday</week_start_day>
         <point_scale>0,1,2,3</point_scale>
@@ -324,10 +324,14 @@ class ActiveSupport::TestCase
                 {"Content-Type"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
                 pivotal_story_response,
                 201)
+      mock.post("/services/v3/projects/147451/stories.xml", 
+                {"Content-Type"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
+                pivotal_story_response,
+                201)        
       mock.get("/services/v3/projects/147449/memberships.xml", 
                 {"Accept"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
                 pivotal_memberships_response,
-                201)     
+                201)
       mock.post("/services/v3/projects//stories.xml", 
                 {"Content-Type"=>"application/xml", "X-TrackerToken"=>'12345678'}, 
                 nil,
