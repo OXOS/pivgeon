@@ -29,7 +29,7 @@ class UserMailerTest < ActionMailer::TestCase
         assert !ActionMailer::Base.deliveries.empty?
         assert_equal "wojciech@example.com", email.to.first
         assert_equal "Re: 12345678", email.subject
-        assert_match /You or somebody else tried to create new user account in PivGeon application using this email: #{user.email}. Unfortunately the account couldn't be created due to following errors:/, email.encoded
+        assert_match /You or somebody else tried to create new user account in Pivgeon application using this email: #{user.email}. Unfortunately the account couldn't be created due to following errors:/, email.encoded
         assert_match /message 1/, email.encoded
         assert_match /message 2/, email.encoded
       end
@@ -40,7 +40,7 @@ class UserMailerTest < ActionMailer::TestCase
         assert !ActionMailer::Base.deliveries.empty?
         assert_equal "wojciech@example.com", email.to.first
         assert_equal "Re: 12345678", email.subject
-        assert_match /You or somebody else tried to create new user account in PivGeon application using this email: wojciech@example.com. Unfortunately the account couldn't be created due to following errors:/, email.encoded
+        assert_match /You or somebody else tried to create new user account in Pivgeon application using this email: wojciech@example.com. Unfortunately the account couldn't be created due to following errors:/, email.encoded
         assert_match /This is custom error message/, email.encoded
       end
       
