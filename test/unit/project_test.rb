@@ -39,6 +39,9 @@ class ProjectTest < ActiveSupport::TestCase
     should "find project by name without white spaces" do
       project = Project.find_project_by_name("thisisgeepivomailin","12345678")
       assert_equal "This Is Gee Pivo Mailin", project.name
+      
+      project = Project.find_project_by_name("this is gee pivo mailin","12345678")
+      assert_equal "This Is Gee Pivo Mailin", project.name
     end
     
   end

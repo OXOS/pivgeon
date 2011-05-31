@@ -57,16 +57,42 @@ class StoryFlowsTest < ActionDispatch::IntegrationTest
 
         end
         
-        context "matching existing project name without spaces" do
-
-          should "receive email informed that story has been successfully created" do
-            assert_notification("Re: subject without project name") do
-              post "/api", valid_params(@active_user.email,@owner.email,"thisisgeepivomailin@pivgeon.com","subject without project name")
-              assert_match /You have created new story/, ActionMailer::Base.deliveries.last.body.encoded
+        context "with matching existing project name without spaces" do
+          
+          context "passed in email" do
+            
+            should "receive email informed that story has been successfully created" do
+              assert_notification("Re: subject without project name") do
+                post "/api", valid_params(@active_user.email,@owner.email,"thisisgeepivomailin@pivgeon.com","subject without project name")
+                assert_match /You have created new story/, ActionMailer::Base.deliveries.last.body.encoded
+              end
             end
+            
+          end
+          
+          context "passed in subject" do
+            
+            should "receive email informed that story has been successfully created" do
+              assert_notification("Re: [thisisgeepivomailin] subject without project name") do
+                post "/api", valid_params(@active_user.email,@owner.email,nil,"[thisisgeepivomailin] subject without project name")
+                assert_match /You have created new story/, ActionMailer::Base.deliveries.last.body.encoded
+              end
+            end
+            
           end
 
         end
+        
+        context "with email address that contains spaces" do
+            
+            should "receive email informed that story has been successfully created" do
+              assert_notification("Re: [this is gee pivo mailin] subject without project name") do
+                post "/api", valid_params(@active_user.email,@owner.email,nil,"[this is gee pivo mailin] subject without project name")
+                assert_match /You have created new story/, ActionMailer::Base.deliveries.last.body.encoded
+              end
+            end
+            
+          end
         
       end
           
