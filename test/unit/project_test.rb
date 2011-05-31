@@ -18,6 +18,18 @@ class ProjectTest < ActiveSupport::TestCase
       assert Project.headers['X-TrackerToken'].blank?
     end
     
+    should "standarize_name" do
+      assert_equal "thisisastoryname", Project.standarize_name("This is a STORYname")
+      assert_equal "anewstory", Project.standarize_name("aNewStory")
+    end
+    
+    should "compare_names" do
+      assert Project.compare_names("anewstory","A New story")
+      assert Project.compare_names("this is a new story","This Is A New Story")
+      assert Project.compare_names("this is a new story","ThisIsANewStory")
+      assert Project.compare_names("First story","first story")
+    end
+    
     should "case insensitive find project by name" do
       project = Project.find_project_by_name("GeePivoMailin","12345678")
       assert_equal "GeePivoMailin", project.name
