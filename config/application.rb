@@ -6,6 +6,14 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(:default, Rails.env) if defined?(Bundler)
 
+
+CLOUDMAILIN_EMAIL_ADDRESS, APP_NAME, APP_URL = if !ENV['CLOUDMAILIN_FORWARD_ADDRESS'] || ENV['CLOUDMAILIN_FORWARD_ADDRESS'] == "62cf42b7bc93e69c7a5b@cloudmailin.net"
+  ["pivgeon@pivgeon.com","Pivgeon","pivgeon.com"]
+else
+  ["pivgeon@preview.pivgeon.com","Pivgeondev","preview.pivgeon.com"]  
+end
+
+
 module Geepivodev
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
@@ -39,15 +47,9 @@ module Geepivodev
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:password]
     
-    config.action_mailer.default_url_options = { :host => 'pivgeon.com' }
+    config.action_mailer.default_url_options = { :host => APP_URL }
 
   end
 end
 
-
-CLOUDMAILIN_EMAIL_ADDRESS,APP_NAME = if !ENV['CLOUDMAILIN_FORWARD_ADDRESS'] || ENV['CLOUDMAILIN_FORWARD_ADDRESS'] == "62cf42b7bc93e69c7a5b@cloudmailin.net"
-  ["pivgeon@pivgeon.com","Pivgeon"]
-else
-  ["pivgeon@dev.pivgeon.com","Pivgeondev"]  
-end
 
