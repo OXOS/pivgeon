@@ -1,6 +1,6 @@
 class StoryMailer < ActionMailer::Base
   default :from => "pivgeon@pivgeon.com"
-  layout "application"
+  layout "mailer"
   helper :application
   
   def created_notification(story,message,options={})

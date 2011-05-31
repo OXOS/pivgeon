@@ -1,6 +1,6 @@
 class UserMailer < ActionMailer::Base
   default :from => "pivgeon@pivgeon.com"
-  layout "application"
+  layout "mailer"
   helper :application
   
   def created_notification(user,error_message,options={})
