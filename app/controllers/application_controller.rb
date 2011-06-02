@@ -40,7 +40,8 @@ class ApplicationController < ActionController::Base
   end
 
   rescue_from(Exception) do |e|
-	render_and_send_notification(e.message)
+	#TODO: consider what to do when mailer raises error but story/user is created
+	render(:text => "Success", :status => 200)
   end
 
 end
