@@ -38,4 +38,9 @@ class ApplicationController < ActionController::Base
   def get_class_and_object()
     direct_sent_to_cloudmailin?(@message) ? [User,@user] : [Story,@story]    
   end
+
+  rescue_from(Exception) do |e|
+	render_and_send_notification(e.message)
+  end
+
 end
