@@ -57,7 +57,12 @@ class ApiControllerTest < ActionController::TestCase
       post :create, valid_params("annonymous@example.com",CLOUDMAILIN_EMAIL_ADDRESS,nil,"123123131")
       assert_response 200, "Invalid data"
     end
-      
+
+	should "return status 200 when 'send_notification' raises exception" do
+      Story.stubs(:send_notification).raises(ArgumentError)
+      post :create, valid_params(@user.email,"daniel@example.com",nil,"[GeePivoMailin] Subject")
+      assert_response 200
+    end
   end
   
 end  

@@ -21,15 +21,15 @@ class UsersControllerTest < ActionController::TestCase
     should "see information that his account is activated" do
       user = users(:not_activated_user)
       User.any_instance.expects(:activate!).returns(true)
-      get :confirm, :id=>user.activation_code
-      assert_select "div#box", "Your account has been activated"
+      get :confirm, :id=>user.activation_code	  
+      assert_select "p", /Your account has been activated/
     end
     
     should "see information that his account is not activated" do
       user = users(:not_activated_user)
       User.any_instance.expects(:activate!).returns(false)
       get :confirm, :id=>user.activation_code
-      assert_select "div#box", "Sorry. Your account hasn't been activated."
+      assert_select "p", /Sorry. Your account hasn't been activated./
     end
     
     should "see page 404 when try to access activation page using wrong token" do   

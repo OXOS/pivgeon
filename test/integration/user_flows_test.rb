@@ -98,7 +98,7 @@ class UserFlowsTest < ActionDispatch::IntegrationTest
       should "see page with information that account has been activated" do        
         post "/users/confirm/#{@user.activation_code}"
         assert assigns(:user).status
-        assert_select "#box div", /Your account has been activated/
+        assert_select "p", /Your account has been activated/
       end
     end
     

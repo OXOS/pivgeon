@@ -38,4 +38,10 @@ class ApplicationController < ActionController::Base
   def get_class_and_object()
     direct_sent_to_cloudmailin?(@message) ? [User,@user] : [Story,@story]    
   end
+
+  rescue_from(Exception) do |e|
+	#TODO: consider what to do when mailer raises error but story/user is created
+	render(:text => "Success", :status => 200)
+  end
+
 end
