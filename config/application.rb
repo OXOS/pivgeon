@@ -8,9 +8,9 @@ Bundler.require(:default, Rails.env) if defined?(Bundler)
 
 
 CLOUDMAILIN_EMAIL_ADDRESS, APP_NAME, APP_URL = unless ENV['SENDGRID_USERNAME'] == "app408676@heroku.com"
-  ["pivgeon@pivgeon.com","Pivgeon","pivgeon.com"]
-else
   ["pivgeon@devel.pivgeon.com","Pivgeondev","devel.pivgeon.com"]
+else
+  ["pivgeon@pivgeon.com","Pivgeon","pivgeon.com"]
 end
 
 
