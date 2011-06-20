@@ -73,19 +73,19 @@ class ApiController < ApplicationController
   def handle_exception(&block)
     headers["Content-type"] = "text/plain"
      block.call
-    #begin
-    #  block.call
-    #rescue ActiveRecord::RecordNotSaved, ActiveRecord::RecordInvalid, RecordNotSaved
-    ##  render_and_send_notification()
-    #rescue ActiveResource::UnauthorizedAccess, SecurityError
-    #  render_and_send_notification("Unauthorized access")
-    #rescue ArgumentError
-    #  render_and_send_notification("Invalid data")
-    #rescue ActiveResource::ServerError, ActiveResource::TimeoutError
-    #  render_and_send_notification("Server error")
-    #rescue => error
-    #  render_and_send_notification("Unknown error")
-    #end
+    begin
+      block.call
+    rescue ActiveRecord::RecordNotSaved, ActiveRecord::RecordInvalid, RecordNotSaved
+      render_and_send_notification()
+    rescue ActiveResource::UnauthorizedAccess, SecurityError
+      render_and_send_notification("Unauthorized access")
+    rescue ArgumentError
+      render_and_send_notification("Invalid data")
+    rescue ActiveResource::ServerError, ActiveResource::TimeoutError
+      render_and_send_notification("Server error")
+    rescue => error
+      render_and_send_notification("Unknown error")
+    end
   end
 
   def render_and_send_notification(error_message=nil)
