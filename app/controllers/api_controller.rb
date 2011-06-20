@@ -42,7 +42,7 @@ class ApiController < ApplicationController
   end
   
   def parse_message
-      @message = Mail.new(params[:message])      
+    @message = OpenStruct.new(:to=>[params["to"]],:from=>[params["from"]],:description=>params["text"],:name=>params["subject"])
   end
   
   def find_project_and_story_name
