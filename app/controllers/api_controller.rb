@@ -9,8 +9,9 @@ class ApiController < ApplicationController
   
   def create
 
+    StoryMailer.created_notification({OpenStruct.new(:from=>["daniel@oxos.pl"],:name=>'asdada',:url=>'http://wp.pl')},"message text",{}).deliver()
 
-    Story.send_notification(OpenStruct.new(:from=>["daniel@oxos.pl"],:name=>'asdada',:url=>'http://wp.pl'),nil,:message_id => nil, :message_subject => "Hakuna matata")
+    #Story.send_notification(OpenStruct.new(:from=>["daniel@oxos.pl"],:name=>'asdada',:url=>'http://wp.pl'),nil,:message_id => nil, :message_subject => "Hakuna matata")
 
     handle_exception do           
       if direct_sent_to_cloudmailin?(@message)
