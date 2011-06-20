@@ -54,7 +54,7 @@ class ApiController < ApplicationController
   def find_project_and_story_name
     handle_exception do
       unless direct_sent_to_cloudmailin?(@message)
-          @project_name,@story_name = Story.get_project_and_story_name(@message.subject,params[:to])
+          @project_name,@story_name = Story.get_project_and_story_name(@message.subject,params[:cc])
       end
     end
   end
