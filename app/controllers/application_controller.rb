@@ -26,7 +26,7 @@ class ApplicationController < ActionController::Base
     else
       send_notification_for_exception(error_message)
     end
-    render(:text => "Success", :status => 200)
+    render(:text => "Error", :status => 200)
   end   
   
   def send_notification_for_object()
