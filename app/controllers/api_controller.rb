@@ -72,7 +72,6 @@ class ApiController < ApplicationController
 
   def handle_exception(&block)
     headers["Content-type"] = "text/plain"
-     block.call
     begin
       block.call
     rescue ActiveRecord::RecordNotSaved, ActiveRecord::RecordInvalid, RecordNotSaved
