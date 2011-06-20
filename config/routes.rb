@@ -1,6 +1,7 @@
 Geepivodev::Application.routes.draw do
   
   match 'api' => 'api#create'
+  match 'inbox' => 'inbox#create'
   
   match 'users/confirm/:id' => 'users#confirm', :as => :user_confirmation
   

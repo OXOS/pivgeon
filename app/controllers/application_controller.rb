@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
     begin
       block.call      
     rescue ActiveRecord::RecordNotSaved, ActiveRecord::RecordInvalid, RecordNotSaved
-      render_and_send_notification()
+      resnder_and_send_notification()
     end  
   end
       

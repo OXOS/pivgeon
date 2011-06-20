@@ -13,7 +13,7 @@ class Story < PivotalItem
   #GET_PROJECT_FROM_SUBJECT_REGEXP = /^\s*\[(.+?)\](\s*Re:\s*|\s*re:\s*|\s*RE:\s*|\s*Fwd:\s*|\s*FWD:\s*|\s*fwd:\s*|\s*PD:\s*)?(.+)/
   EMAIL_DETOKENIZE_REGEXP = /<(.*)>/
   
-  validates(:name, :presence=>true)  
+  validates(:name, :presence=>true)  s
   
   def self.detokenize(email)
     result = email.match(EMAIL_DETOKENIZE_REGEXP)
@@ -41,7 +41,8 @@ class Story < PivotalItem
   end
        
   def project()
-    @project || Project.find_project_by_name(project_name,user.token)
+    @project ||= Project.find_project_by_name(project_name,user.token)
+    @project
   end
   
   def owner()

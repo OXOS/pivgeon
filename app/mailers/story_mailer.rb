@@ -10,7 +10,7 @@ class StoryMailer < ActionMailer::Base
     mail(:to => story.user.email, :from => from, :reply_to => "pivgeon@pivgeon.com", :subject => "Re: #{received_message_subject}")
   end
   
-  def not_created_notification(story,message,options={})    
+  def not_created_notification(story,message,options={})
     @email = ( story.is_a?(Story) ? story.user.email : story.from.first )
     @story = story
     @error_message = message
@@ -22,7 +22,7 @@ class StoryMailer < ActionMailer::Base
   protected
   
   def from()
-    %{"#{APP_NAME}" <pivgeon@pivgeon.com>}
+    %{"#{APP_NAME}" <#{CLOUDMAILIN_EMAIL_ADDRESS}>}
   end
   
   def set_reference_message_id(message_id)
