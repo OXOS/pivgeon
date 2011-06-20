@@ -30,7 +30,7 @@ class ApiController < ApplicationController
              :owner_email=>@message.to.first,
              :project_name=>@project_name,
              :name=>@story_name,             
-             :description=>params[:plain]}   
+             :description=>params["text"]}
     Story.token = @user.token    
     @story = Story.new(attrs)    
     @story.save!
@@ -42,7 +42,8 @@ class ApiController < ApplicationController
   end
   
   def parse_message
-    @message = OpenStruct.new(:to=>[params["to"]],:from=>[params["from"]],:description=>params["text"],:name=>params["subject"])
+    @mesage = Mail.new(params[:headers])
+    #@message = OpenStruct.new(:to=>[params["to"]],:from=>[params["from"]],:body=>params["text"],:subject=>params["subject"])
   end
   
   def find_project_and_story_name
