@@ -21,7 +21,11 @@ class ApplicationController < ActionController::Base
   end
       
   def render_and_send_notification(error_message=nil)
-    error_message.blank? ? send_notification_for_object() : send_notification_for_exception(error_message)
+    if error_message.blank?
+      send_notification_for_object()
+    else
+      send_notification_for_exception(error_message)
+    end
     render(:text => "Success", :status => 200)
   end   
   
