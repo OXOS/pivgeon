@@ -68,7 +68,8 @@ class Story < HyperactiveResource
   end
        
   def project()
-    @project || Project.find_project_by_name(project_name,user.token)
+    @project ||= Project.find_project_by_name(project_name,user.token)
+    @project
   end
   
   def owner()
