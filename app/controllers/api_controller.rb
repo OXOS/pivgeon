@@ -1,4 +1,6 @@
 class ApiController < ApplicationController
+  require 'ostruct'
+
   skip_before_filter :verify_authenticity_token  
     
   before_filter :parse_message
@@ -42,10 +44,11 @@ class ApiController < ApplicationController
   end
   
   def parse_message
-    Rails.logger.info("\n\n#{params["headers"]}\n\n")
-    @mesage = Mail.new(params["headers"])
-    Rails.logger.info("\n\n#{@message.inspect}\n\n")
-    #@message = OpenStruct.new(:to=>[params["to"]],:from=>[params["from"]],:body=>params["text"],:subject=>params["subject"])
+    to = Story.detokenize(params["to"])
+    from = Story.detokenize(params["from"])
+    headers = {'Message-ID' => ""}
+    @message = OpenStruct.new({ :to => [to], :from => [from], :body => params["text"], :subject => params["subject"], :headers => headers})
+    Rails.logger.info("\nMessage params:\n#{@message.inspect}\n\n")
   end
   
   def find_project_and_story_name
@@ -91,12 +94,12 @@ class ApiController < ApplicationController
   
   def send_notification_for_object()
     _class,_object = get_class_and_object()
-    _class.send_notification(_object,nil,:message_id => @message['Message-ID'], :message_subject => @message.subject)
+    _class.send_notification(_object,nil,:message_id => @message.headers['Message-ID'], :message_subject => @message.subject)
   end
   
   def send_notification_for_exception(error_message)
     _class,_object = get_class_and_object()
-    _class.send_notification(@message,error_message,:message_id => @message['Message-ID'], :message_subject => @message.subject)
+    _class.send_notification(@message,error_message,:message_id => @message.headers['Message-ID'], :message_subject => @message.subject)
   end
   
   def get_class_and_object()

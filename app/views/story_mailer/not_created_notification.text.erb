@@ -6,7 +6,7 @@ You tried to create new story. Unfortunatelly the story hasn't been created due 
 
 <% else %>
 
-<% @story.errors.each do |error| %>
+<% @story.errors.full_messages.each do |error| %>
 - <%= error %>
 <% end %>
   
