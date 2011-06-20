@@ -1,4 +1,4 @@
-class Story < HyperactiveResource
+class Story < PivotalItem
   
   self.site = "http://www.pivotaltracker.com/services/v3/projects/:project_id"
   self.columns = [:story_type, :name, :requested_by, :owned_by, :description, :project_name, :owner_email]  
@@ -14,10 +14,8 @@ class Story < HyperactiveResource
   EMAIL_DETOKENIZE_REGEXP = /<(.*)>/
   
   include Pivgeon::Notification
-  include Pivgeon::Token
   
   add_notifier(StoryMailer,"created_notification")
-  tokenize()
     
   validates(:name, :presence=>true)  
   
