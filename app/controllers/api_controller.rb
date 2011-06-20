@@ -42,7 +42,9 @@ class ApiController < ApplicationController
   end
   
   def parse_message
-    @mesage = Mail.new(params[:headers])
+    Rails.logger.info("\n\n#{params["headers"]}\n\n")
+    @mesage = Mail.new(params["headers"])
+    Rails.logger.info("\n\n#{@message.inspect}\n\n")
     #@message = OpenStruct.new(:to=>[params["to"]],:from=>[params["from"]],:body=>params["text"],:subject=>params["subject"])
   end
   
