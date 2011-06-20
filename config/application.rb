@@ -7,10 +7,10 @@ require 'rails/all'
 Bundler.require(:default, Rails.env) if defined?(Bundler)
 
 
-CLOUDMAILIN_EMAIL_ADDRESS, APP_NAME, APP_URL = if !ENV['CLOUDMAILIN_FORWARD_ADDRESS'] || ENV['CLOUDMAILIN_FORWARD_ADDRESS'] == "62cf42b7bc93e69c7a5b@cloudmailin.net"
+CLOUDMAILIN_EMAIL_ADDRESS, APP_NAME, APP_URL = unless ENV['SENDGRID_USERNAME'] == "app408676@heroku.com"
   ["pivgeon@pivgeon.com","Pivgeon","pivgeon.com"]
 else
-  ["pivgeon@preview.pivgeon.com","Pivgeondev","preview.pivgeon.com"]  
+  ["pivgeon@devel.pivgeon.com","Pivgeondev","devel.pivgeon.com"]
 end
 
 
