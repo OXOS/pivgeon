@@ -11,8 +11,6 @@ class StoryMailer < ActionMailer::Base
   end
   
   def not_created_notification(story,message,options={})
-    Rails.logger.info "@@@@@@@@@@@ #{story.inspect}"
-    Rails.logger.info "@@@@@@@@@@@ #{story.errors.inspect}"
     @email = ( story.is_a?(Story) ? story.user.email : story.from.first )
     @story = story
     @error_message = message
