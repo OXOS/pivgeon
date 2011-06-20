@@ -15,7 +15,7 @@ class ActiveSupport::TestCase
   # Add more helper methods to be used by all tests here...
       
 
-  def valid_params(from, to, cc, subject="[GeePivoMailin] Story 1")
+  def valid_params(from, to, cc="GeePivoMailin@pivgeon.com", subject="Story 1")
     {"html"=>"description<br/>", 
      "plain"=>"description", 
      "disposable"=>"", 

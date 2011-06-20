@@ -10,8 +10,7 @@ class Story < HyperactiveResource
     "name" => "Story name"
   }
   
-  GET_PROJECT_FROM_SUBJECT_REGEXP = /^\s*\[(.+?)\](\s*Re:\s*|\s*re:\s*|\s*RE:\s*|\s*Fwd:\s*|\s*FWD:\s*|\s*fwd:\s*|\s*PD:\s*)?(.+)/
-  IS_PROJECT_IN_SUBJECT_REGEXP = /^\s*\[.+\].*/
+  #GET_PROJECT_FROM_SUBJECT_REGEXP = /^\s*\[(.+?)\](\s*Re:\s*|\s*re:\s*|\s*RE:\s*|\s*Fwd:\s*|\s*FWD:\s*|\s*fwd:\s*|\s*PD:\s*)?(.+)/
   EMAIL_DETOKENIZE_REGEXP = /<(.*)>/
   
   include Pivgeon::Notification
@@ -22,38 +21,19 @@ class Story < HyperactiveResource
     
   validates(:name, :presence=>true)  
   
-  def self.parse_subject(subject)
-    return unless is_project_in_string?(subject)
-    match = subject.match(GET_PROJECT_FROM_SUBJECT_REGEXP)
-    return if match.blank?
-    {}.tap do |subject|
-      subject[:project_name] = match[1]
-      subject[:subject] = match[3]      
-    end    
-  end
-  
-  def self.is_project_in_string?(str)
-    str.match(IS_PROJECT_IN_SUBJECT_REGEXP) ? true : false
-  end
-  
   def self.detokenize(email)
     result = email.match(EMAIL_DETOKENIZE_REGEXP)
     result ? result[1] : email
   end
   
   def self.get_project_and_story_name(subject,email)
-    if is_project_in_string?(subject)
-      raise(ArgumentError) unless ( parsed_subject = parse_subject(subject) )
-      [parsed_subject[:project_name],parsed_subject[:subject]]
+    email = detokenize(email)
+    project_name = if( email == "pivgeon@pivgeon.com" ) 
+      ""
     else
-      email = detokenize(email)
-      project_name = if( email == "pivgeon@pivgeon.com" ) 
-        ""
-      else
-        email.split('@').first
-      end
-      [project_name,subject]
+      email.split('@').first
     end
+    [project_name,subject]
   end
   
   def self.human_attribute_name(*args)
@@ -62,7 +42,6 @@ class Story < HyperactiveResource
     super
   end
 
-  
   def self.valid_subject_format?(subject)
     !subject.match(/^\s*\[.+?\].+/).blank?
   end
