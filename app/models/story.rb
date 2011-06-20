@@ -47,7 +47,7 @@ class Story < HyperactiveResource
       [parsed_subject[:project_name],parsed_subject[:subject]]
     else
       email = detokenize(email)
-      project_name = if( email == "pivgeon@pivgeon.com" ) 
+      project_name = if( email == CLOUDMAILIN_EMAIL_ADDRESS )
         ""
       else
         email.split('@').first
