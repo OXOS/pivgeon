@@ -14,17 +14,17 @@ class ApplicationController < ActionController::Base
       
   def render_and_send_notification
     send_notification_for_object
-    render(:text => "Error", :status => 200)
+    render(:text => "Done", :status => 200)
   end   
   
   def send_notification_for_object()
-    _class,_object = get_class_and_object()
-    _class.send_notification(_object,nil,:message_id => @message['Message-ID'], :message_subject => @message.subject)
-  end
-  
-  def send_notification_for_exception(error_message)
-    _class,_object = get_class_and_object()
-    _class.send_notification(@message,error_message,:message_id => @message['Message-ID'], :message_subject => @message.subject)
+    _class,_object,_mailer = get_class_and_object()
+
+    if _object.errors.empty?
+      _mailer.created_notification(_object, nil, :message_id => @message['Message-ID'], :message_subject => @message.subject).deliver
+    else
+      _mailer.not_created_notification(_object, nil, :message_id => @message['Message-ID'], :message_subject => @message.subject).deliver
+    end
   end
   
   def get_class_and_object()
