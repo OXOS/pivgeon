@@ -26,7 +26,7 @@ class StoryMailer < ActionMailer::Base
   end
   
   def set_reference_message_id(message_id)
-    headers({"In-Reply-To" => message_id, "References" => message_id}) if message_id
+    headers({"In-Reply-To" => message_id.to_s, "References" => message_id.to_s}) if message_id
   end
   
   def parse_options(options)
