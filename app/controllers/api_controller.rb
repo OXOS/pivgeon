@@ -72,25 +72,20 @@ class ApiController < ApplicationController
 
   def handle_exception(&block)
     headers["Content-type"] = "text/plain"
-    begin
-
-      begin
-        block.call
-      rescue ActiveRecord::RecordNotSaved, ActiveRecord::RecordInvalid, RecordNotSaved
-        render_and_send_notification()
-      rescue ActiveResource::UnauthorizedAccess, SecurityError
-        render_and_send_notification("Unauthorized access")
-      rescue ArgumentError
-        render_and_send_notification("Invalid data")
-      rescue ActiveResource::ServerError, ActiveResource::TimeoutError
-        render_and_send_notification("Server error")
-      rescue => error
-        render_and_send_notification("Unknown error")
-      end
-
-    rescue => ee
-      raise ee.message
-    end
+     block.call
+    #begin
+    #  block.call
+    #rescue ActiveRecord::RecordNotSaved, ActiveRecord::RecordInvalid, RecordNotSaved
+    ##  render_and_send_notification()
+    #rescue ActiveResource::UnauthorizedAccess, SecurityError
+    #  render_and_send_notification("Unauthorized access")
+    #rescue ArgumentError
+    #  render_and_send_notification("Invalid data")
+    #rescue ActiveResource::ServerError, ActiveResource::TimeoutError
+    #  render_and_send_notification("Server error")
+    #rescue => error
+    #  render_and_send_notification("Unknown error")
+    #end
   end
 
   def render_and_send_notification(error_message=nil)
@@ -112,9 +107,9 @@ class ApiController < ApplicationController
     direct_sent_to_cloudmailin?(@message) ? [User,@user] : [Story,@story]
   end
 
-  rescue_from(Exception) do |e|
+  #rescue_from(Exception) do |e|
 	#TODO: consider what to do when mailer raises error but story/user is created
-	render(:text => "Success", :status => 200)
-  end
+#	render(:text => "Success", :status => 200)
+#  end
 
 end
