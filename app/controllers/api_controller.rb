@@ -7,7 +7,11 @@ class ApiController < ApplicationController
   before_filter :find_user  
   before_filter :find_project_and_story_name
   
-  def create      
+  def create
+
+
+    Story.send_notification(OpenStruct.new(:from=>["daniel@oxos.pl"],:name=>'asdada',:url=>'http://wp.pl'),nil,:message_id => nil, :message_subject => "Hakuna matata")
+
     handle_exception do           
       if direct_sent_to_cloudmailin?(@message)
         create_user(@message)
