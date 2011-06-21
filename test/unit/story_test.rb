@@ -16,20 +16,7 @@ class StoryTest < ActiveSupport::TestCase
     end
     
     context "validation" do
-    
-      should "valididate subject format" do
-        assert !Story.valid_subject_format?("12345")
-        assert !Story.valid_subject_format?("12345:")
-        assert !Story.valid_subject_format?("]12345")
-        assert !Story.valid_subject_format?("[]12345")
-        assert !Story.valid_subject_format?("asdada[]")      
-        assert !Story.valid_subject_format?("")
-        assert Story.valid_subject_format?("[GeePivoMailin]asdadads")
-        assert Story.valid_subject_format?("[GeePivoMailin] asdadads")
-        assert Story.valid_subject_format?(" [GeePivoMailin]asdadads")
-        assert Story.valid_subject_format?("[123]asdadads")
-      end
-      
+  
       should "validate owned_by" do
         story = Story.new(@attrs) 
         story.expects(:owner).returns(nil)

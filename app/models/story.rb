@@ -10,7 +10,6 @@ class Story < HyperactiveResource
     "name" => "Story name"
   }
   
-  #GET_PROJECT_FROM_SUBJECT_REGEXP = /^\s*\[(.+?)\](\s*Re:\s*|\s*re:\s*|\s*RE:\s*|\s*Fwd:\s*|\s*FWD:\s*|\s*fwd:\s*|\s*PD:\s*)?(.+)/
   EMAIL_DETOKENIZE_REGEXP = /<(.*)>/
   
   include Pivgeon::Notification
@@ -40,10 +39,6 @@ class Story < HyperactiveResource
     attr_name = HUMAN_ATTRIBUTE_NAMES[args[0].to_s]    
     return attr_name if attr_name    
     super
-  end
-
-  def self.valid_subject_format?(subject)
-    !subject.match(/^\s*\[.+?\].+/).blank?
   end
        
   def project()
