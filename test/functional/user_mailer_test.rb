@@ -35,7 +35,7 @@ class UserMailerTest < ActionMailer::TestCase
       end
       
       should "send notification which contains custom error message" do        
-        message =  Mail.new(valid_params("wojciech@example.com","daniel@example.com",nil)['message'])
+        message = OpenStruct.new({ :to => ["pivgeon@pivgeon.com"], :from => ["wojciech@example.com"], :body => 'description', :subject => "12345678", :headers => {}})
         email =  UserMailer.not_created_notification(message,"This is custom error message",{:message_subject => "12345678"}).deliver!
         assert !ActionMailer::Base.deliveries.empty?
         assert_equal "wojciech@example.com", email.to.first

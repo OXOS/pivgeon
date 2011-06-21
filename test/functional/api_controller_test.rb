@@ -16,12 +16,12 @@ class ApiControllerTest < ActionController::TestCase
       ob_proxy = mock("object_proxy")
       ob_proxy.expects(:find_by_email).with("wojciech@example.com").returns(@user)
       User.expects(:active).returns(ob_proxy)
-      Story.expects(:get_project_and_story_name).with("[GeePivoMailin] Subject","<pivgeon@pivgeon.com>").returns(["GeePivoMailin"," Subject"])
+      Story.expects(:get_project_and_story_name).with("Subject","GeePivoMailin@pivgeon.com").returns(["GeePivoMailin"," Subject"])
       Story.expects(:token=)
       Story.any_instance.expects(:save!).returns(true)
       Story.expects(:send_notification)
       
-      post :create, valid_params(@user.email,"daniel@example.com",nil,"[GeePivoMailin] Subject")     
+      post :create, valid_params(@user.email,@owner.email,"GeePivoMailin@pivgeon.com","Subject")     
       assert_response 200
     end
 
@@ -29,12 +29,12 @@ class ApiControllerTest < ActionController::TestCase
       ob_proxy = mock("object_proxy")
       ob_proxy.expects(:find_by_email).with("wojciech@example.com").returns(@user)
       User.expects(:active).returns(ob_proxy)
-      Story.expects(:get_project_and_story_name).with("[GeePivoMailin] Subject","<pivgeon@pivgeon.com>").returns(["GeePivoMailin"," Subject"])
+      Story.expects(:get_project_and_story_name).with("Subject","GeePivoMailin@pivgeon.com").returns(["GeePivoMailin"," Subject"])
       Story.expects(:token=)
       Story.any_instance.expects(:save!).raises(ActiveRecord::RecordNotSaved)
       Story.expects(:send_notification)
       
-      post :create, valid_params(@user.email,"daniel@example.com",nil,"[GeePivoMailin] Subject")
+      post :create, valid_params(@user.email,@owner.email,"GeePivoMailin@pivgeon.com","Subject")
       assert_response 200, "Invalid data"
     end
       

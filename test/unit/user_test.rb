@@ -20,7 +20,7 @@ class UserTest < ActiveSupport::TestCase
     end
     
     should "parse incoming message" do
-      message = Mail.new(valid_params("wojciech@example.com","cloudmailin@example.com",nil,"12345678")['message'])
+      message = OpenStruct.new({ :to => ['cloudmailin@example.com'], :from => ['wojciech@example.com'], :body => 'description', :subject => '12345678', :headers => {}})
       assert_equal({:email=>"wojciech@example.com",:token=>"12345678"}, User.parse_message(message))
     end
     

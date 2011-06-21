@@ -26,7 +26,7 @@ class StoryFlowsTest < ActionDispatch::IntegrationTest
         should "receive email informed that story hasn't been successfully created" do
           assert_notification("Re: Story 1") do
             Project.expects(:find_project_by_name).raises(ActiveResource::ServerError,'')
-            post "/api", valid_params(@active_user.email,@owner.email,nil)
+            post "/api", valid_params(@active_user.email,@owner.email)
             assert_match /Server error/, ActionMailer::Base.deliveries.last.body.encoded
           end
         end
@@ -113,17 +113,6 @@ class StoryFlowsTest < ActionDispatch::IntegrationTest
         
       end
       
-      context "like missing story name in email subject" do
-        
-        should "receive email informed that story hasn't been successfully created" do
-          assert_notification("Re: ") do
-            post "/api", valid_params(@active_user.email,"daniel@example.com","GeePivoMailin@pivgeon.com", "")
-            assert_match /Story name can't be blank/, ActionMailer::Base.deliveries.last.body.encoded
-          end
-        end
-        
-      end
-      
     end
     
   end
@@ -151,7 +140,7 @@ class StoryFlowsTest < ActionDispatch::IntegrationTest
       
       should "receive email informed that story hasn't been successfully created" do
         assert_notification("Re: subject with missing project name") do
-          post "/api", valid_params(@inactive_user.email,@owner.email,nil,"subject with missing project name")
+          post "/api", valid_params(@inactive_user.email,@owner.email,"WrongProjectName@pivgeon.com","subject with missing project name")
           assert_match /Unauthorized access/, ActionMailer::Base.deliveries.last.body.encoded
         end
       end
@@ -182,7 +171,7 @@ class StoryFlowsTest < ActionDispatch::IntegrationTest
       
       should "receive email informed that story hasn't been successfully created" do
         assert_notification("Re: subject with missing project name") do
-          post "/api", valid_params("unexisting@example.com",@owner.email,nil,"subject with missing project name")
+          post "/api", valid_params("unexisting@example.com",@owner.email,"WrongProjectName@pivgeon.com","subject with missing project name")
           assert_match /Unauthorized access/, ActionMailer::Base.deliveries.last.body.encoded
         end
       end
