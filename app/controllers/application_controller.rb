@@ -31,12 +31,12 @@ class ApplicationController < ActionController::Base
   
   def send_notification_for_object()
     _class,_object = get_class_and_object()
-    _class.send_notification(_object,nil,:message_id => @message['Message-ID'], :message_subject => @message.subject)
+    _class.send_notification(_object,nil,:message_id => @message.headers['Message-ID'], :message_subject => @message.subject)
   end
   
   def send_notification_for_exception(error_message)
     _class,_object = get_class_and_object()
-    _class.send_notification(@message,error_message,:message_id => @message['Message-ID'], :message_subject => @message.subject)
+    _class.send_notification(@message,error_message,:message_id => @message.headers['Message-ID'], :message_subject => @message.subject)
   end
   
   def get_class_and_object()
