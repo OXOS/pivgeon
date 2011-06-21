@@ -96,7 +96,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  mail (= 2.2.15)
   mocha
   mysql (= 2.8.1)
   rails (= 3.0.5)

@@ -1,7 +1,6 @@
 source 'http://rubygems.org'
 
 gem 'rails', '3.0.5'
-gem 'mail', '2.2.15'
 gem 'mysql', '2.8.1'
 
 # Bundle edge Rails instead:
