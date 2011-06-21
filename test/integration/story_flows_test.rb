@@ -102,11 +102,11 @@ class StoryFlowsTest < ActionDispatch::IntegrationTest
         
       end
       
-      context "like missing project name in email subject and missing project name in email" do
+      context "like missing project name" do
         
         should "receive email informed that story hasn't been successfully created" do
-          assert_notification("Re: subject without project name") do
-            post "/api", valid_params(@active_user.email,"daniel@example.com",nil,"subject without project name")
+          assert_notification("Re: Subject") do
+            post "/api", valid_params(@active_user.email,"daniel@example.com","pivgeon@pivgeon.com","Subject")
             assert_match /Project '' that you try to create this story for does not exist./, ActionMailer::Base.deliveries.last.body.encoded
           end
         end

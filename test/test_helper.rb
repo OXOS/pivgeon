@@ -16,14 +16,18 @@ class ActiveSupport::TestCase
       
 
   def valid_params(from, to, cc="GeePivoMailin@pivgeon.com", subject="Story 1")
-    {"html"=>"description<br/>", 
-     "plain"=>"description", 
-     "disposable"=>"", 
-     "from"=>"wojciech@example.com", 
-     "signature"=>"60d30a03373fb7366e49920b333cf44e", 
-     "subject"=>subject, 
-     "to"=>"<#{cc || CLOUDMAILIN_EMAIL_ADDRESS}>", 
-     "message"=>"Received: by qwj8 with SMTP id 8so3681152qwj.4\r\n        for <#{CLOUDMAILIN_EMAIL_ADDRESS}>; Sun, 03 Apr 2011 11:48:53 -0700 (PDT)\r\nMIME-Version: 1.0\r\nReceived: by 10.224.200.195 with SMTP id ex3mr5033699qab.229.1301856533092;\r\n Sun, 03 Apr 2011 11:48:53 -0700 (PDT)\r\nReceived: by 10.224.37.81 with HTTP; Sun, 3 Apr 2011 11:48:53 -0700 (PDT)\r\nDate: Sun, 3 Apr 2011 20:48:53 +0200\r\nMessage-ID: <BANLkTimSJh85TDNCn0RNH_YH5EHggnDAfw@mail.gmail.com>\r\nSubject: #{subject}\r\nFrom: =?UTF-8?Q?Daniel_Soko=C5=82owski?= <#{from}>\r\nTo: =?UTF-8?Q?Daniel_Soko=C5=82owski?= <#{to}>\r\nCc: b06e829748e4a3c9cea9@cloudmailin.net\r\nContent-Type: multipart/alternative; boundary=20cf3010edcf3419bd04a0081821\r\n\r\n--20cf3010edcf3419bd04a0081821\r\nContent-Type: text/plain; charset=UTF-8\r\n\r\n\r\n\r\n--20cf3010edcf3419bd04a0081821\r\nContent-Type: text/html; charset=UTF-8\r\n\r\n<br>\r\n\r\n--20cf3010edcf3419bd04a0081821--"}
+  	{"charsets"=>"{\"to\":\"UTF-8\",\"cc\":\"UTF-8\",\"html\":\"UTF-8\",\"subject\":\"UTF-8\",\"from\":\"UTF-8\",\"text\":\"UTF-8\"}", 
+	"html"=>"description<br>\n", 
+	"cc"=>cc, 
+	"dkim"=>"none", 
+	"from"=>"Example User <#{from}>", 
+	"text"=>"description\n", 
+	"envelope"=>"{\"to\":[\"#{to}\"],\"from\":\"#{from}\"}", 
+	"to"=>"Example User <#{to}>", 
+	"subject"=>subject, 
+	"SPF"=>"none", 
+	"attachments"=>"0", 
+	"headers"=>"Received: by 127.0.0.1 with SMTP id EA7JIXOkt5 Tue, 21 Jun 2011 06:34:01 -0500 (CDT)\nReceived: from mail-qw0-f41.google.com (mail-qw0-f41.google.com [209.85.216.41]) by mx2.sendgrid.net (Postfix) with ESMTPS id C592D178F56E for <test@devel.pivgeon.com>; Tue, 21 Jun 2011 06:34:01 -0500 (CDT)\nReceived: by qwa26 with SMTP id 26so2627832qwa.14 for <test@devel.pivgeon.com>; Tue, 21 Jun 2011 04:34:01 -0700 (PDT)\nMIME-Version: 1.0\nReceived: by 10.224.173.72 with SMTP id o8mr4610539qaz.377.1308656040862; Tue, 21 Jun 2011 04:34:00 -07 00 (PDT)\nReceived: by 10.224.74.20 with HTTP; Tue, 21 Jun 2011 04:34:00 -0700 (PDT)\nDate: Tue, 21 Jun 2011 13:34:00 +0200\nMessage-ID: <BANLkTi=aun99eo1S2Gfz6=vNOeZUKo4ePw@mail.gmail.com>\nSubject: lalamido 002\nFrom: =?UTF-8?Q?Daniel_Soko=C5=82owski?= <daniel@oxos.pl>\nTo: =?UTF-8?Q?Daniel_Soko=C5=82owski?= <daniel@oxos.pl>\nCc: test@devel.pivgeon.com\nContent-Type: multipart/alternative; boundary=485b397dd71372e3bf04a6373a77\n"}
   end
   
 
@@ -365,7 +369,8 @@ module ActionController
         assert_difference("ActionMailer::Base.deliveries.count") do  
           block.call
           assert_response 200
-          assert_equal subject, ActionMailer::Base.deliveries.last.subject
+		  assert !ActionMailer::Base.deliveries.blank?, "Delivery should be sent"
+          assert_equal subject, ActionMailer::Base.deliveries.last.subject, "Delivery should have proper subject"
         end    
       end
     end
@@ -379,7 +384,8 @@ module ActionDispatch
         assert_difference("ActionMailer::Base.deliveries.count") do  
           block.call                    
           assert_equal 200, status
-          assert_equal subject, ActionMailer::Base.deliveries.last.subject
+		  assert !ActionMailer::Base.deliveries.blank?, "Delivery should be sent"
+          assert_equal subject, ActionMailer::Base.deliveries.last.subject, "Delivery should have proper subject"
         end    
       end
     end
