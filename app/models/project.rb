@@ -14,9 +14,7 @@ class Project < PivotalItem
   def self.find_project_by_name(name,token)
     Project.token = token
     
-    p = Project.find(:all).select{|p| Project.compare_names(p.name,name) }.first
-    Rails.logger.info "@@@@@@@@@ found project = #{p.inspect}"
-    p
+    Project.find(:all).select{|p| Project.compare_names(p.name,name) }.first
   end
   
 end
