@@ -81,11 +81,9 @@ class ApiController < ApplicationController
     rescue ArgumentError
       render_and_send_notification("Invalid data")
     rescue ActiveResource::ServerError, ActiveResource::TimeoutError
-	puts "1"
       render_and_send_notification("Server error")
     rescue => error
-      puts "2"
-	  render_and_send_notification("Unknown error")
+      render_and_send_notification("Unknown error")
     end  
   end
       
