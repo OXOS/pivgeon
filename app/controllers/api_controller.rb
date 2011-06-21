@@ -82,7 +82,8 @@ class ApiController < ApplicationController
       render_and_send_notification("Invalid data")
     rescue ActiveResource::ServerError, ActiveResource::TimeoutError
       render_and_send_notification("Server error")
-    rescue => error
+    rescue => e
+      Rails.logger.info("Raised Exception: #{e.message} | \n#{e.backtrace}")
       render_and_send_notification("Unknown error")
     end  
   end
