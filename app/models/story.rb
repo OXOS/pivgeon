@@ -13,7 +13,11 @@ class Story < PivotalItem
   #GET_PROJECT_FROM_SUBJECT_REGEXP = /^\s*\[(.+?)\](\s*Re:\s*|\s*re:\s*|\s*RE:\s*|\s*Fwd:\s*|\s*FWD:\s*|\s*fwd:\s*|\s*PD:\s*)?(.+)/
   EMAIL_DETOKENIZE_REGEXP = /<(.*)>/
   
-  validates(:name, :presence=>true)
+  include Pivgeon::Notification
+  
+  add_notifier(StoryMailer,"created_notification")
+    
+  validates(:name, :presence=>true)  
   
   def self.detokenize(email)
     result = email.match(EMAIL_DETOKENIZE_REGEXP)

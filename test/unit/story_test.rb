@@ -121,7 +121,7 @@ class StoryTest < ActiveSupport::TestCase
       assert_equal "https://www.pivotaltracker.com/story/show/100001", story.url
     end
     
-    should_eventually "send notification" do      
+    should "send notification" do      
       story = Story.create(@attrs)
       
       assert_difference("ActionMailer::Base.deliveries.count") do        

@@ -19,8 +19,7 @@ class ApiControllerTest < ActionController::TestCase
       Story.expects(:get_project_and_story_name).with("[GeePivoMailin] Subject","<pivgeon@pivgeon.com>").returns(["GeePivoMailin"," Subject"])
       Story.expects(:token=)
       Story.any_instance.expects(:save!).returns(true)
-
-      #Story.expects(:send_notification) #TODO: test this
+      Story.expects(:send_notification)
       
       post :create, valid_params(@user.email,"daniel@example.com",nil,"[GeePivoMailin] Subject")     
       assert_response 200
@@ -33,7 +32,7 @@ class ApiControllerTest < ActionController::TestCase
       Story.expects(:get_project_and_story_name).with("[GeePivoMailin] Subject","<pivgeon@pivgeon.com>").returns(["GeePivoMailin"," Subject"])
       Story.expects(:token=)
       Story.any_instance.expects(:save!).raises(ActiveRecord::RecordNotSaved)
-      StoryMailer.expects(:not_created_notification)
+      Story.expects(:send_notification)
       
       post :create, valid_params(@user.email,"daniel@example.com",nil,"[GeePivoMailin] Subject")
       assert_response 200, "Invalid data"
@@ -44,7 +43,7 @@ class ApiControllerTest < ActionController::TestCase
       user_mock = mock("user")
       user_mock.expects(:save!).returns(true)
       User.expects(:find_or_build).with("some attrs fake").returns(user_mock)
-      UserMailer.any_instance.expects(:not_created_notification)
+      User.expects(:send_notification)
       post :create, valid_params("annonymous@example.com",CLOUDMAILIN_EMAIL_ADDRESS,nil,"123123131")
       assert_response 200
     end
