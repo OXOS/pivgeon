@@ -16,7 +16,7 @@ class StoryMailer < ActionMailer::Base
     @error_message = message
     reference_message_id,received_message_subject = parse_options(options)
     set_reference_message_id(reference_message_id)
-    mail(:to => @email, :from => from, :reply_to => "pivgeon@pivgeon.com", :subject => "Re: #{received_message_subject}")
+    mail(:to => @email, :from => from, :reply_to => CLOUDMAILIN_EMAIL_ADDRESS, :subject => "Re: #{received_message_subject}")
   end
   
   protected
