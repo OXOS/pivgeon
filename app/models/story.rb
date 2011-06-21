@@ -79,10 +79,5 @@ class Story < PivotalItem
     errors[:project] << "'#{project_name}' that you try to create this story for does not exist." and raise(RecordNotSaved) if self.prefix_options[:project_id].blank?
     errors[:owned_by] << "that you try to assign to the story is not a project member." and raise(RecordNotSaved) if self.owned_by.blank?     
   end
-
-  def self.mailer_class
-    StoryMailer
-  end
-      
   
 end

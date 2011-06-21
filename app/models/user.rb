@@ -47,9 +47,5 @@ class User < ActiveRecord::Base
   def generate_activation_code
     self.activation_code = (0..16).map{ rand(36).to_s(36) }.join
   end
-
-  def self.mailer_class
-    UserMailer
-  end
       
 end
