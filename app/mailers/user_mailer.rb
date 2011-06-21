@@ -1,5 +1,5 @@
 class UserMailer < ActionMailer::Base
-  default :from => "pivgeon@pivgeon.com"
+  default :from => CLOUDMAILIN_EMAIL_ADDRESS
   layout "mailer"
   helper :application
   
@@ -20,7 +20,7 @@ class UserMailer < ActionMailer::Base
   end
   
   def from()
-    %{"#{APP_NAME}" <pivgeon@pivgeon.com>}
+    %{"#{APP_NAME}" <#{CLOUDMAILIN_EMAIL_ADDRESS}>}
   end
   
   def set_reference_message_id(message_id)
