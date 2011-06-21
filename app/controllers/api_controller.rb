@@ -113,8 +113,9 @@ class ApiController < ApplicationController
   end
 
   rescue_from(Exception) do |e|
-	#TODO: consider what to do when mailer raises error but story/user is created
-	render(:text => "Success", :status => 200)
+    #TODO: consider what to do when mailer raises error but story/user is created
+    Rails.logger.info("Raised Exception: #{e.message} | \n#{e.backtrace}")
+    render(:text => "Success", :status => 200)
   end
   
 end
