@@ -33,6 +33,7 @@ class ApiController < ApplicationController
              :project_name=>@project_name,
              :name=>@story_name,
              :description=>params["text"]}
+    Rails.logger.info "\nStory params\n#{attrs.inspect}\n\n"
     Story.token = @user.token
     @story = Story.new(attrs)
     @story.save!
@@ -44,6 +45,7 @@ class ApiController < ApplicationController
   end
   
   def parse_message
+    Rails.logger.info "\nIncomming params:\n#{params.inspect}\n\n"
     @message = Mail.new(params['headers'])
   end
   
