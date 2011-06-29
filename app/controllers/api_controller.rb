@@ -1,5 +1,7 @@
 class ApiController < ApplicationController
   require 'ostruct'
+  require 'iconv'
+  
 
   skip_before_filter :verify_authenticity_token
 
@@ -28,11 +30,16 @@ class ApiController < ApplicationController
   end
   
   def create_story(message)    
+    
+    charset = ActiveSupport::JSON.decode(params['charsets'])['text']
+    mail_body = Iconv.conv('UTF-8',charset,params['text'])
+    #mail_body = params["text"].encode('UTF-8',charset)
+
     attrs = {:user_id=>@user.id,
              :owner_email=>@message.to.first,
              :project_name=>@project_name,
              :name=>@story_name,
-             :description=>params["text"]}
+             :description=>mail_body}
     Rails.logger.info "\nStory params\n#{attrs.inspect}\n\n"
     Story.token = @user.token
     @story = Story.new(attrs)
