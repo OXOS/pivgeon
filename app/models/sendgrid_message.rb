@@ -1,4 +1,5 @@
 class SendgridMessage
+  require 'iconv'
   extend ActiveModel::Naming
   
   attr_accessor :from, :to, :cc, :subject, :body, :message_id  
@@ -19,7 +20,7 @@ class SendgridMessage
   protected
 
   def decode(orig_charset,str)
-    return str
+    Iconv.conv('UTF-8//IGNORE',orig_charset,str)
   end
 
   def detokenize(str)
