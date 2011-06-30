@@ -20,7 +20,7 @@ class SendgridMessage
   protected
 
   def decode(orig_charset,str)
-    Iconv.conv('UTF-8//IGNORE',orig_charset,str)
+    Iconv.conv('UTF-8//IGNORE',orig_charset,str).encode
   end
 
   def detokenize(str)
