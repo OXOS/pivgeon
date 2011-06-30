@@ -49,6 +49,7 @@ class ApiController < ApplicationController
   def parse_message
     Rails.logger.info "\nIncomming params:\n#{params.inspect}\n\n"
     @message = SendmailMessage.new(params)
+    Rails.logger.info "\n@message = \n#{@message.inspect}\n\n"
   end
   
   def find_project_and_story_name
