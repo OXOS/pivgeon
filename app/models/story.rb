@@ -30,7 +30,7 @@ class Story < HyperactiveResource
     project_name = if( email == "pivgeon@pivgeon.com" ) 
       ""
     else
-      email.split('@').first
+      email.split('@')
     end
     [project_name,subject]
   end

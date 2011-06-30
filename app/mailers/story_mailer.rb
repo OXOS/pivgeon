@@ -11,7 +11,7 @@ class StoryMailer < ActionMailer::Base
   end
   
   def not_created_notification(story,message,options={})    
-    @email = ( story.is_a?(Story) ? story.user.email : story.from.first )
+    @email = ( story.is_a?(Story) ? story.user.email : story.from )
     @story = story
     @error_message = message
     reference_message_id,received_message_subject = parse_options(options)

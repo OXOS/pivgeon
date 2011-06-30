@@ -14,7 +14,7 @@ class User < ActiveRecord::Base
          
   def self.parse_message(message)
     {}.tap do |params| 
-      params[:email] = message.from.first
+      params[:email] = message.from
       params[:token] = message.subject
     end 
   end
