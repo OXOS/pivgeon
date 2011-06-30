@@ -43,7 +43,7 @@ class ApiController < ApplicationController
   end
   
   def direct_sent_to_cloudmailin?(message)
-    return message.to.first == CLOUDMAILIN_EMAIL_ADDRESS
+    return message.to == CLOUDMAILIN_EMAIL_ADDRESS
   end
   
   def parse_message
