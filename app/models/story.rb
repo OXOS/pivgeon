@@ -10,8 +10,6 @@ class Story < HyperactiveResource
     "name" => "Story name"
   }
   
-  EMAIL_DETOKENIZE_REGEXP = /<(.*)>/
-  
   include Pivgeon::Notification
   include Pivgeon::Token
   
@@ -20,13 +18,7 @@ class Story < HyperactiveResource
     
   validates(:name, :presence=>true)  
   
-  def self.detokenize(email)
-    result = email.match(EMAIL_DETOKENIZE_REGEXP)
-    result ? result[1] : email
-  end
-  
   def self.get_project_and_story_name(subject,email)
-    email = detokenize(email)
     project_name = if( email == "pivgeon@pivgeon.com" ) 
       ""
     else
