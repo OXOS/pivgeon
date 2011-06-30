@@ -29,8 +29,8 @@ class SendgridMessage
   end
 
   def get_message_id(headers)
-    headers = ActiveSupport::JSON.decode(headers)
-    headers['Message-ID']
+    mail = Mail.new(headers)
+    return mail['Message-ID']
   end
 
 end
