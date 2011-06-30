@@ -30,7 +30,7 @@ class SendgridMessage
 
   def get_message_id(headers)
     mail = Mail.new(headers)
-    return mail['Message-ID']
+    return mail['Message-ID'].to_s
   end
 
 end
