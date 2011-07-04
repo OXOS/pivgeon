@@ -11,7 +11,7 @@ class SendgridMessage
     charsets = ActiveSupport::JSON.decode(attrs['charsets'])
     @from = detokenize(attrs['from'])
     @to = detokenize(attrs['to'])
-    @cc = detocenize(attrs['cc'])
+    @cc = (attrs['cc'])
     @subject = decode(charsets['subject'], attrs['subject'])
     @body = decode(charsets['text'], attrs['text'])
     @message_id = get_message_id(attrs['headers'])
