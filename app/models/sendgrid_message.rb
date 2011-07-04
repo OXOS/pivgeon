@@ -11,7 +11,7 @@ class SendgridMessage
     charsets = ActiveSupport::JSON.decode(attrs['charsets'])
     @from = detokenize(attrs['from'])
     @to = detokenize(attrs['to'])
-    @cc = detokenize(attrs['cc'])
+    @cc = detocenize(attrs['cc'])
     @subject = decode(charsets['subject'], attrs['subject'])
     @body = decode(charsets['text'], attrs['text'])
     @message_id = get_message_id(attrs['headers'])
@@ -20,17 +20,17 @@ class SendgridMessage
   protected
 
   def decode(orig_charset,str)
-    Iconv.conv('UTF-8//IGNORE',orig_charset,str)
+    Iconv.conv('UTF-8',orig_charset,str)
   end
 
   def detokenize(str)
     result = str.match(EMAIL_DETOKENIZE_REGEXP)
-    result ? result[1] : str
+    result ? str[1] : str
   end
 
   def get_message_id(headers)
-    mail = Mail.new(headers)
-    return mail['Message-ID'].to_s
+    headers = ActiveSupport::JSON.decode(headers)
+    headers['Message-ID']
   end
 
 end
