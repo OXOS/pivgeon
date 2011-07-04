@@ -1,10 +1,10 @@
 class PivotalItem < HyperactiveResource
 
-  def token()
+  def self.token()
     self.headers['X-TrackerToken']
   end
 
-  def token=(token)
+  def self.token=(token)
      self.headers['X-TrackerToken'] = (token || "")
   end
 end

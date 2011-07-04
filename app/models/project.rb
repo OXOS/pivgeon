@@ -1,9 +1,7 @@
-class Project < HyperactiveResource
+class Project < PivotalItem
   self.site = "http://www.pivotaltracker.com/services/v3"
   
-  include Pivgeon::Token
-  tokenize()
-  
+
   def self.compare_names(name1,name2)
     str1 = standarize_name(name1)
     str2 = standarize_name(name2)
