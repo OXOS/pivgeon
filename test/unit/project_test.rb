@@ -18,9 +18,11 @@ class ProjectTest < ActiveSupport::TestCase
       assert Project.headers['X-TrackerToken'].blank?
     end
     
-    should "standarize_name" do
+    should "standarize_name" do      
       assert_equal "thisisastoryname", Project.standarize_name("This is a STORYname")
       assert_equal "anewstory", Project.standarize_name("aNewStory")
+      #assert_equal "mrwkawdoku", Project.standarize_name("mrówka w dołku")
+      #assert_equal "yhyoleal_ ", Project.standarize_name("äyhyëoleïaleö_ü")
     end
     
     should "compare_names" do
