@@ -41,7 +41,9 @@ class ApiController < ApplicationController
   end
   
   def direct_sent_to_cloudmailin?(message)
-    return message.to.first == CLOUDMAILIN_EMAIL_ADDRESS
+    Rails.logger.info "\nAddress to: #{ message.to.first.downcase } \nApplication email address: #{ CLOUDMAILIN_EMAIL_ADDRESS.downcase }"
+    Rails.logger.info "Direct sent to pivgeon? #{ message.to.first.downcase == CLOUDMAILIN_EMAIL_ADDRESS.downcase }\n"
+    return message.to.first.downcase == CLOUDMAILIN_EMAIL_ADDRESS.downcase
   end
   
   def parse_message
