@@ -34,7 +34,7 @@ class ProjectTest < ActiveSupport::TestCase
       assert Project.compare_names("this is a new story","ThisIsANewStory")
       assert Project.compare_names("First story","first story")
       assert Project.compare_names("projectnameno007|15|11","Project Name No 007|15|11")
-      assert Project.compare_names("firstprojectformatti!(beta)","First project for Matti! (beta)")
+      assert Project.compare_names("firstprojectformatti!beta","First project for Matti! (beta)")
       assert Project.compare_names("projecttestbeta","Project test [beta]")
       assert Project.compare_names("projecttestaaa/bbb","Project test AAA/BBB")
       assert Project.compare_names("projecttommy&jerry100","Project Tommy&Jerry #100")
