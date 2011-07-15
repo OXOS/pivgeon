@@ -61,17 +61,6 @@ class StoryFlowsTest < ActionDispatch::IntegrationTest
           
         end
         
-        context "with email address that contains spaces" do
-            
-            should "receive email informed that story has been successfully created" do
-              assert_notification("Re: subject without project name") do
-                post "/api", valid_params(@active_user.email,@owner.email,"this is gee pivo mailin@pivgeon.com","subject without project name")
-                assert_match /You have created new story/, ActionMailer::Base.deliveries.last.body.encoded
-              end
-            end
-            
-          end
-        
       end
           
     end

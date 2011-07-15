@@ -18,9 +18,14 @@ class ProjectTest < ActiveSupport::TestCase
       assert Project.headers['X-TrackerToken'].blank?
     end
     
-    should "standarize_name" do
+    should "standarize_name" do      
       assert_equal "thisisastoryname", Project.standarize_name("This is a STORYname")
       assert_equal "anewstory", Project.standarize_name("aNewStory")
+      assert_equal "thisisnewname", Project.standarize_name("(thisIsNew)name")
+      assert_equal "thisisnew-name007", Project.standarize_name("thisIsNew-name007")
+      assert_equal "thisisnewname", Project.standarize_name("[thisIsNew]name")
+      assert_equal "this/isnew/story", Project.standarize_name("this/isnew/story")
+      assert_equal "{thisisnew}name|old", Project.standarize_name("{thisIsNew}name|old")
     end
     
     should "compare_names" do
@@ -28,6 +33,11 @@ class ProjectTest < ActiveSupport::TestCase
       assert Project.compare_names("this is a new story","This Is A New Story")
       assert Project.compare_names("this is a new story","ThisIsANewStory")
       assert Project.compare_names("First story","first story")
+      assert Project.compare_names("projectnameno007|15|11","Project Name No 007|15|11")
+      assert Project.compare_names("firstprojectformatti!beta","First project for Matti! (beta)")
+      assert Project.compare_names("projecttestbeta","Project test [beta]")
+      assert Project.compare_names("projecttestaaa/bbb","Project test AAA/BBB")
+      assert Project.compare_names("projecttommy&jerry100","Project Tommy&Jerry #100")
     end
     
     should "case insensitive find project by name" do
