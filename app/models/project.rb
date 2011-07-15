@@ -8,7 +8,7 @@ class Project < PivotalItem
   def self.compare_names(name1,name2)
     str1 = standarize_name(name1)
     str2 = standarize_name(name2)
-    Rails.logger.info "@@@@@@ Normalized names: #{str1_c} == #{str2_c} #{str1_c==str2_c}"
+    Rails.logger.info "@@@@@@ Normalized names: #{str1} == #{str2}"
     str1 == str2
   end
   
