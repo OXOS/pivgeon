@@ -25,7 +25,7 @@ class SendgridMessage
 
   def detokenize(str)
     result = str.match(EMAIL_DETOKENIZE_REGEXP)
-    result ? str[1] : str
+    result ? result[1] : str
   end
 
   def get_message_id(headers)
