@@ -20,7 +20,8 @@ class UserTest < ActiveSupport::TestCase
     end
     
     should "parse incoming message" do
-      message = OpenStruct.new({ :to => ['cloudmailin@example.com'], :from => ['wojciech@example.com'], :body => 'description', :subject => '12345678', :headers => {}})
+      params = valid_params('wojciech@example.com','cloudmailin@example.com','','12345678')
+      message = SendgridMessage.new(params)
       assert_equal({:email=>"wojciech@example.com",:token=>"12345678"}, User.parse_message(message))
     end
     

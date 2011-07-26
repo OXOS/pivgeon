@@ -1,5 +1,7 @@
 class ApiController < ApplicationController
   require 'ostruct'
+  require 'iconv'
+  
 
   skip_before_filter :verify_authenticity_token
 
@@ -29,10 +31,10 @@ class ApiController < ApplicationController
   
   def create_story(message)    
     attrs = {:user_id=>@user.id,
-             :owner_email=>@message.to.first,
+             :owner_email=>@message.to,
              :project_name=>@project_name,
              :name=>@story_name,
-             :description=>params["text"]}
+             :description=>@message.body}
     Rails.logger.info "\nStory params\n#{attrs.inspect}\n\n"
     Story.token = @user.token
     @story = Story.new(attrs)
@@ -46,13 +48,14 @@ class ApiController < ApplicationController
   
   def parse_message
     Rails.logger.info "\nIncomming params:\n#{params.inspect}\n\n"
-    @message = Mail.new(params['headers'])
+    @message = SendgridMessage.new(params)
+    Rails.logger.info "\n@message = \n#{@message.inspect}\n\n"
   end
   
   def find_project_and_story_name
     handle_exception do       
       unless direct_sent_to_cloudmailin?(@message)        
-          @project_name,@story_name = Story.get_project_and_story_name(@message.subject,@message.cc.first)
+          @project_name,@story_name = Story.get_project_and_story_name(@message.subject,@message.cc)
       end
     end
   end
@@ -60,7 +63,7 @@ class ApiController < ApplicationController
   def find_user
     handle_exception do
       unless direct_sent_to_cloudmailin?(@message)
-        @user = User.active.find_by_email(@message.from.first)
+        @user = User.active.find_by_email(@message.from)
         raise(SecurityError) if @user.blank?
       end
     end
@@ -97,12 +100,12 @@ class ApiController < ApplicationController
   
   def send_notification_for_object()
     _class,_object = get_class_and_object()
-    _class.send_notification(_object,nil,:message_id => @message['Message-ID'], :message_subject => @message.subject)
+    _class.send_notification(_object,nil,:message_id => @message.message_id, :message_subject => @message.subject)
   end
   
   def send_notification_for_exception(error_message)
     _class,_object = get_class_and_object()
-    _class.send_notification(@message,error_message,:message_id => @message['Message-ID'], :message_subject => @message.subject)
+    _class.send_notification(@message,error_message,:message_id => @message.message_id, :message_subject => @message.subject)
   end
   
   def get_class_and_object()
@@ -112,7 +115,7 @@ class ApiController < ApplicationController
   rescue_from(Exception) do |e|
     #TODO: consider what to do when mailer raises error but story/user is created
     Rails.logger.info("Raised Exception: #{e.message} | \n#{e.backtrace}")
-    render(:text => "Success", :status => 200)
+    render(:text => "Error", :status => 200)
   end
   
 end

@@ -11,7 +11,7 @@ class UserMailer < ActionMailer::Base
   end
   
   def not_created_notification(user,error_message,options={})
-    @email = ( user.is_a?(User) ? user.email : user.from.first )
+    @email = ( user.is_a?(User) ? user.email : user.from )
     @user = user
     @error_message = error_message
     reference_message_id,received_message_subject = parse_options(options)

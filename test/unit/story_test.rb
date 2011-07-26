@@ -40,12 +40,7 @@ class StoryTest < ActiveSupport::TestCase
     should "get project and story name" do
       assert_equal ["errands","story name"], Story.get_project_and_story_name("story name","errands@example.com")
       assert_equal ["errands","[] story name"], Story.get_project_and_story_name("[] story name","errands@example.com")
-    end
-    
-    should "detokenize email" do
-      assert_equal "test@example.com", Story.detokenize("<test@example.com>")
-      assert_equal "test@example.com", Story.detokenize("test@example.com")
-    end
+    end 
        
     should "set token in headers" do
       Story.token = "12345678"
