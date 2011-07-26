@@ -29,8 +29,9 @@ class SendgridMessage
   end
 
   def get_message_id(headers)
-    headers = ActiveSupport::JSON.decode(headers)
-    headers['Message-ID']
+    #headers = ActiveSupport::JSON.decode(headers)
+    #headers['Message-ID']
+    ""
   end
 
 end
