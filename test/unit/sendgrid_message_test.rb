@@ -13,9 +13,9 @@ class SendgridMessageTest < ActiveSupport::TestCase
   
     
     should "detokenize email" do
-      assert_equal "test@example.com", @message.detokenize("<test@example.com>")
-      assert_equal "test@example.com", @message.detokenize("test@example.com")
-      assert_equal "test@example.com", @message.detokenize("Test Example <test@example.com>")            
+      assert_equal "test@example.com", @message.send(:detokenize,"<test@example.com>")
+      assert_equal "test@example.com", @message.send(:detokenize,"test@example.com")
+      assert_equal "test@example.com", @message.send(:detokenize,"Test Example <test@example.com>")            
     end
  
 
