@@ -15,7 +15,7 @@ class UserFlowsTest < ActionDispatch::IntegrationTest
       should "receive email with confirmation link" do
         assert_difference("User.count") do
           assert_notification("Re: 123123131") do
-            post "/api", valid_params("a.man@example.com",CLOUDMAILIN_EMAIL_ADDRESS,nil,"123123131")
+            post "/api", valid_params("a.man@example.com",CLOUDMAILIN_EMAIL_ADDRESS,"","123123131")
             assert !assigns(:user).status
           end
         end
@@ -30,7 +30,7 @@ class UserFlowsTest < ActionDispatch::IntegrationTest
         should "receive email informed that new account hasn't been created" do
           assert_no_difference("User.count") do
             assert_notification("Re: 999999999999") do
-              post "/api", valid_params("a.man@example.com",CLOUDMAILIN_EMAIL_ADDRESS,nil,"999999999999")
+              post "/api", valid_params("a.man@example.com",CLOUDMAILIN_EMAIL_ADDRESS,"","999999999999")
             end
           end
         end
@@ -42,7 +42,7 @@ class UserFlowsTest < ActionDispatch::IntegrationTest
         should "receive email informed that new account hasn't been created" do
           assert_no_difference("User.count") do
             assert_notification("Re: ") do
-              post "/api", valid_params("a.man@example.com",CLOUDMAILIN_EMAIL_ADDRESS,nil,"")
+              post "/api", valid_params("a.man@example.com",CLOUDMAILIN_EMAIL_ADDRESS,"","")
             end
           end
         end
@@ -64,7 +64,7 @@ class UserFlowsTest < ActionDispatch::IntegrationTest
       should "receive email with confirmation link" do
         assert_no_difference("User.count") do
           assert_notification("Re: 111111111") do
-            post "/api", valid_params(@user.email,CLOUDMAILIN_EMAIL_ADDRESS,nil,"111111111")          
+            post "/api", valid_params(@user.email,CLOUDMAILIN_EMAIL_ADDRESS,"","111111111")          
             assert !assigns(:user).status
           end
         end
@@ -75,7 +75,7 @@ class UserFlowsTest < ActionDispatch::IntegrationTest
       should "receive email with confirmation link" do
         assert_no_difference("User.count") do
           assert_notification("Re: 12345678") do
-            post "/api", valid_params(@user.email,CLOUDMAILIN_EMAIL_ADDRESS,nil,"12345678")
+            post "/api", valid_params(@user.email,CLOUDMAILIN_EMAIL_ADDRESS,"","12345678")
             assert !assigns(:user).status
             assert_equal "12345678", assigns(:user).token            
           end
@@ -87,7 +87,7 @@ class UserFlowsTest < ActionDispatch::IntegrationTest
       should "receive email informed that new account hasn't been created" do
         assert_no_difference("User.count") do
           assert_notification("Re: 999999999") do
-            post "/api", valid_params(@user.email,CLOUDMAILIN_EMAIL_ADDRESS,nil,"999999999")
+            post "/api", valid_params(@user.email,CLOUDMAILIN_EMAIL_ADDRESS,"","999999999")
             assert !assigns(:user).status
           end
         end
@@ -115,7 +115,7 @@ class UserFlowsTest < ActionDispatch::IntegrationTest
       should "receive email informed that he can't create another account using this email address" do
         assert_no_difference("User.count") do
           assert_notification("Re: 123123131") do
-            post "/api", valid_params(@user.email,CLOUDMAILIN_EMAIL_ADDRESS,nil,"123123131")
+            post "/api", valid_params(@user.email,CLOUDMAILIN_EMAIL_ADDRESS,"","123123131")
             assert_match /There already exists an user account registered for this email address/, ActionMailer::Base.deliveries.last.body.encoded
           end
         end
@@ -126,7 +126,7 @@ class UserFlowsTest < ActionDispatch::IntegrationTest
       should "receive email informed that he can't create another account using this email address" do
         assert_no_difference("User.count") do
           assert_notification("Re: 999999999999") do
-            post "/api", valid_params(@user.email,CLOUDMAILIN_EMAIL_ADDRESS,nil,"999999999999")
+            post "/api", valid_params(@user.email,CLOUDMAILIN_EMAIL_ADDRESS,"","999999999999")
             assert_match /There already exists an user account registered for this email address/, ActionMailer::Base.deliveries.last.body.encoded
           end
         end
