@@ -1,7 +1,4 @@
 class ApiController < ApplicationController
-  require 'ostruct'
-  require 'iconv'
-  
 
   skip_before_filter :verify_authenticity_token
 
@@ -49,7 +46,6 @@ class ApiController < ApplicationController
   
   def parse_message
     handle_exception do
-      Rails.logger.info "\nIncomming params:\n#{params.inspect}\n\n"
       @message = SendgridMessage.new(params)
       Rails.logger.info "\n@message = \n#{@message.inspect}\n\n"
     end
@@ -71,8 +67,6 @@ class ApiController < ApplicationController
       end
     end
   end
-  
-  protected
   
   def handle_exception(&block)
     headers["Content-type"] = "text/plain" 
