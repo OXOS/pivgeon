@@ -9,7 +9,7 @@ class ApiController < ApplicationController
   before_filter :find_user  
   before_filter :find_project_and_story_name
   
-  def create      
+  def create     
     handle_exception do           
       if direct_sent_to_cloudmailin?(@message)
         create_user(@message)
@@ -43,7 +43,7 @@ class ApiController < ApplicationController
   end
   
   def direct_sent_to_cloudmailin?(message)
-    return message.to.first.downcase == CLOUDMAILIN_EMAIL_ADDRESS.downcase
+    return message.to.downcase == CLOUDMAILIN_EMAIL_ADDRESS.downcase
   end
   
   def parse_message
