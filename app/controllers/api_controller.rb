@@ -43,6 +43,7 @@ class ApiController < ApplicationController
   end
   
   def direct_sent_to_cloudmailin?(message)
+    Rails.logger.info "\nChecking direct sending to pivgeon: #{message.to.downcase} == #{CLOUDMAILIN_EMAIL_ADDRESS.downcase} \n\n"
     return message.to.downcase == CLOUDMAILIN_EMAIL_ADDRESS.downcase
   end
   
