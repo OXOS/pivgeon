@@ -24,6 +24,7 @@ class SendgridMessage
   end
 
   def detokenize(str)
+    return str if str.blank?
     result = str.match(EMAIL_DETOKENIZE_REGEXP)
     result ? result[1] : str
   end

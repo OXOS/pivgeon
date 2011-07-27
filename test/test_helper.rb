@@ -16,9 +16,8 @@ class ActiveSupport::TestCase
       
 
   def valid_params(from, to, cc="GeePivoMailin@pivgeon.com", subject="Story 1")
-  	{"charsets"=>"{\"to\":\"UTF-8\",\"cc\":\"UTF-8\",\"html\":\"UTF-8\",\"subject\":\"UTF-8\",\"from\":\"UTF-8\",\"text\":\"UTF-8\"}", 
+    params = {"charsets"=>"{\"to\":\"UTF-8\",\"cc\":\"UTF-8\",\"html\":\"UTF-8\",\"subject\":\"UTF-8\",\"from\":\"UTF-8\",\"text\":\"UTF-8\"}", 
 	"html"=>"description<br>\n", 
-	"cc"=>cc, 
 	"dkim"=>"none", 
 	"from"=>"Example User <#{from}>", 
 	"text"=>"description\n", 
@@ -28,6 +27,8 @@ class ActiveSupport::TestCase
 	"SPF"=>"none", 
 	"attachments"=>"0", 
 	"headers"=>"Received: by 127.0.0.1 with SMTP id EA7JIXOkt5 Tue, 21 Jun 2011 06:34:01 -0500 (CDT)\nReceived: from mail-qw0-f41.google.com (mail-qw0-f41.google.com [209.85.216.41]) by mx2.sendgrid.net (Postfix) with ESMTPS id C592D178F56E for <test@devel.pivgeon.com>; Tue, 21 Jun 2011 06:34:01 -0500 (CDT)\nReceived: by qwa26 with SMTP id 26so2627832qwa.14 for <test@devel.pivgeon.com>; Tue, 21 Jun 2011 04:34:01 -0700 (PDT)\nMIME-Version: 1.0\nReceived: by 10.224.173.72 with SMTP id o8mr4610539qaz.377.1308656040862; Tue, 21 Jun 2011 04:34:00 -07 00 (PDT)\nReceived: by 10.224.74.20 with HTTP; Tue, 21 Jun 2011 04:34:00 -0700 (PDT)\nDate: Tue, 21 Jun 2011 13:34:00 +0200\nMessage-ID: <BANLkTi=aun99eo1S2Gfz6=vNOeZUKo4ePw@mail.gmail.com>\nSubject: #{subject}\nFrom: =?UTF-8?Q?Daniel_Soko=C5=82owski?= <#{from}>\nTo: =?UTF-8?Q?Daniel_Soko=C5=82owski?= <#{to}>\nCc: #{cc}\nContent-Type: multipart/alternative; boundary=485b397dd71372e3bf04a6373a77\n"}
+    params[:cc] = cc unless cc.blank?
+    params
   end
   
 
