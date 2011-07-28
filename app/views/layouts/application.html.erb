@@ -7,53 +7,29 @@
 <meta name="description" content="Pivgeon - Pivotal Tracker integration" />
 <meta name="keywords" content="pivotal,tracekr,pivotaltracker,pivotal-tracker,story" />
 
- <style type="text/css">
-  body{
-    background-color: gray;
-    color: black;
-    margin: 0px;
-    padding: 20px;        
-   text-align: center;
-  }
-  #box{
-    width: 65%;
-    height: 300px;
-    border: 3px solid orange;
-    background: #eee;
-    text-align: center;
-    margin: auto;
-    -moz-border-radius: 15px;
-    border-radius: 15px;
-    font-size: 14px;
-  }
-  h2{
-    width: 65%;
-    text-align: left;
-    margin: auto; 
-    margin-bottom: 2px;
-  }
-  ol{
-    width:400px;	
-    text-align:left;
-    float: left;
-    }
-  ol li{
-    margin: 0 0 3px 5%;        
-   }
-  .inbox{
-    margin: 30px;  
-    text-align: left;
-   }
-  .errorbox{
-    margin-top: 20px;         
-   }
-</style>
 
 <link href="/stylesheets/style.css" rel="stylesheet" type="text/css" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js" type="text/javascript"></script>
+
+
+<script type="text/javascript">
+    var toggle_details = function(section){
+        var box = jQuery(section+" .details");
+        var link = box.find("a.header");
+
+        if (link.html() == "Show more details"){
+            link.html("Hide details");
+            box.css("height","auto");
+        }else{
+            link.html("Show more details");
+            box.css("height","25px");
+        }
+    }
+</script>
 
 <style type="text/css">
-  #main #intro p { font:normal 14px/1.5em Droid Serif;color:#555555; }
-  #footer p { font:normal 14px/1em Lobster;color:#999; }
+#main #intro p { font:normal 14px/1.5em Droid Serif;color:#555555; }
+#footer p { font:normal 14px/1em Lobster;color:#999; }
 </style>
 
 
@@ -62,32 +38,36 @@
 <body class="home blog gecko">
 
 <div id="wrapper">
-           
+
     <div id="header" class="col-full">
 
         <div id="logo">
 
             <h1 class="site-title">
-                <a href="http://demo.woothemes.com/placeholder" class="last">Pivgeon</a>
+                <a href="/" class="last">Pivgeon</a>
             </h1>
-            <span class="site-description">Pivotal Tracker Integration</span>
+            <span class="site-description">Pivotal Tracker email integration</span>
 
         </div>
 
-    </div>       
-    
+        <div id="new-account-link">
+	    <a href="/users/new">Create new account</a>
+	</div>
+
+    </div>
+
     <div id="content" class="col-full">
 
-    	<div id="main">
-            <%= yield%>
-        </div>
-        
+      <div id="main">
+        <%= yield %>
+      </div>
+
     </div>
-		
+
     <div id="footer" class="col-full">
 
         <div id="copyright">
-            <p>&copy; 2011 Pivgeon. All Rights Reserved.</p> 
+            <p>&copy; 2011 Pivgeon. All Rights Reserved.</p>
         </div>
 
     </div>

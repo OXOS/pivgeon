@@ -174,3 +174,36 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover  {text-de
     height: 20px;
     padding: 3px 0 0 35px;
 }
+
+.form p{
+    text-align: left;
+    margin-bottom: 10px;
+    padding-left: 100px;
+}
+
+.form p label{
+    display: inline-block;
+    width: 75px;
+    margin-right: 20px;
+}
+
+.form p input[type=text]{
+    width: 240px;
+}
+
+
+.form p input[type=submit]{
+    width: 60px;
+    margin-left: 290px;
+}
+
+#new-account-link{
+    position: absolute;
+    top: 10px;
+    right: 0px;    
+}
+
+#new-account-link a{
+    color: black;
+}
+

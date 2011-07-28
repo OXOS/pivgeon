@@ -1,21 +1,18 @@
 class UsersController < ApplicationController
+
+  layout "application"
   
-  before_filter :find_user
-  
-  def confirm    
-    if @user.activate!
-      @message = "Your account has been activated"
-    else
-      @message = "Sorry. Your account hasn't been activated."
-    end
+  def new
+    @user = User.new
+  end 
+
+  def create
+    @user = User.create params[:user]
+    redirect_to user_path(@user)
   end
-  
-  protected
-  
-  def find_user
-    unless @user = User.inactive.find_by_activation_code(params[:id])          
-      render('public/404.html', :layout=>false, :status => 404)
-    end
+    
+  def show
+    @message = "Congratulations, your account has been created."
   end
   
 end
