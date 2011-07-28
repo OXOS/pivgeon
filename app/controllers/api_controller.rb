@@ -8,42 +8,22 @@ class ApiController < ApplicationController
   
   def create     
     handle_exception do           
-      if direct_sent_to_cloudmailin?(@message)
-        create_user(@message)
-      else
-        create_story(@message)
-      end
+      attrs = {:user_id=>@user.id,
+             :owner_email=>@message.to,
+             :project_name=>@project_name,
+             :name=>@story_name,
+             :description=>@message.body}
+      Rails.logger.info "\nStory params\n#{attrs.inspect}\n\n"
+      Story.token = @user.token
+      @story = Story.new(attrs)
+      @story.save!
+      render_and_send_notification()  
     end
   end
   
   
   protected
-    
-  def create_user(message)    
-    attrs = User.parse_message(message)  
-    @user = User.find_or_build(attrs)      
-    @user.save!
-    render_and_send_notification()
-  end
-  
-  def create_story(message)    
-    attrs = {:user_id=>@user.id,
-             :owner_email=>@message.to,
-             :project_name=>@project_name,
-             :name=>@story_name,
-             :description=>@message.body}
-    Rails.logger.info "\nStory params\n#{attrs.inspect}\n\n"
-    Story.token = @user.token
-    @story = Story.new(attrs)
-    @story.save!
-    render_and_send_notification()    
-  end
-  
-  def direct_sent_to_cloudmailin?(message)
-    Rails.logger.info "\nChecking direct sending to pivgeon: #{message.to.downcase} == #{CLOUDMAILIN_EMAIL_ADDRESS.downcase} \n\n"
-    return message.to.downcase == CLOUDMAILIN_EMAIL_ADDRESS.downcase
-  end
-  
+          
   def parse_message
     handle_exception do
       @message = SendgridMessage.new(params)
@@ -53,18 +33,14 @@ class ApiController < ApplicationController
   
   def find_project_and_story_name
     handle_exception do       
-      unless direct_sent_to_cloudmailin?(@message)        
-          @project_name,@story_name = Story.get_project_and_story_name(@message.subject,@message.cc)
-      end
+      @project_name,@story_name = Story.get_project_and_story_name(@message.subject,@message.cc)
     end
   end
   
   def find_user
     handle_exception do
-      unless direct_sent_to_cloudmailin?(@message)
-        @user = User.active.find_by_email(@message.from)
-        raise(SecurityError) if @user.blank?
-      end
+      @user = User.active.find_by_email(@message.from)
+      raise(SecurityError) if @user.blank?
     end
   end
   
