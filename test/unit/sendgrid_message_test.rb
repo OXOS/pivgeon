@@ -22,10 +22,19 @@ class SendgridMessageTest < ActiveSupport::TestCase
     should_eventually "decode" do
     end
 
+    should "parse headers" do
+      headers = valid_params("daniel@example.com","wojciech@example.com","pivgeon@devel.pivgeon.com","xyz abc")['headers']
+      parsed_headers = @message.send(:parse_headers,headers)
+      assert_equal " =?UTF-8?Q?Daniel_Soko=C5=82owski?= <daniel@example.com>", parsed_headers["From"]
+      assert_equal " =?UTF-8?Q?Daniel_Soko=C5=82owski?= <wojciech@example.com>", parsed_headers["To"]
+      assert_equal " pivgeon@devel.pivgeon.com", parsed_headers["Cc"]
+      assert_equal " <BANLkTi=aun99eo1S2Gfz6=vNOeZUKo4ePw@mail.gmail.com>", parsed_headers["Message-ID"]
+    end
+
     should "get message id" do
       headers = @params['headers']
       message_id = @message.send(:get_message_id,headers)
-      assert "BANLkTi=aun99eo1S2Gfz6=vNOeZUKo4ePw@mail.gmail.com", message_id
+      assert_equal " <BANLkTi=aun99eo1S2Gfz6=vNOeZUKo4ePw@mail.gmail.com>", message_id
     end
  
 

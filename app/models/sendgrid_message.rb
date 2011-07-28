@@ -33,13 +33,12 @@ class SendgridMessage
   end
 
   def parse_headers(headers)
-    Hash[*heders.gsub(/\n|\r\n|\r/) { "\r\n" }.gsub(/#{CRLF}#{WSP}+/,' ').gsub(/#{WSP}+/,' ').split(CRLF).map{|e| e.split(":",2)}.flatten]
+    Hash[*headers.gsub(/\n|\r\n|\r/) { "\r\n" }.gsub(/#{CRLF}#{WSP}+/,' ').gsub(/#{WSP}+/,' ').split(CRLF).map{|e| e.split(":",2)}.flatten]
   end
 
   def get_message_id(headers)
-    #headers = ActiveSupport::JSON.decode(headers)
-    #headers['Message-ID']
-    ""
+    headers = parse_headers(headers)
+    headers['Message-ID'] || "" 
   end
 
 end
