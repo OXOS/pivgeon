@@ -1,0 +1,16 @@
+<div id="intro" class="block form">
+    <h3><span>Create new account</span></h3>
+    <% form_for  @user do |form|%>
+      <p>
+        <%= form.label :email, "Email" %>
+        <%= form.text_field :email %>
+      </p>
+      <p>
+        <%= form.label :token, "Pivotal token" %>
+        <%= form.text_field :token %>
+      </p>
+      <p>
+        <%= form.submit "Create" %>
+      </p>
+    <% end%>
+</div>
