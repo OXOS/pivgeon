@@ -39,7 +39,7 @@ class ApiController < ApplicationController
   
   def find_user
     handle_exception do
-      @user = User.active.find_by_email(@message.from)
+      @user = User.find_by_email(@message.from)
       raise(SecurityError) if @user.blank?
     end
   end
@@ -82,7 +82,7 @@ class ApiController < ApplicationController
   end
   
   def get_class_and_object()
-    direct_sent_to_cloudmailin?(@message) ? [User,@user] : [Story,@story]    
+    [Story,@story]    
   end
 
   rescue_from(Exception) do |e|
