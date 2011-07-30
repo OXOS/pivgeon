@@ -1,4 +1,10 @@
 GIT
+  remote: git://github.com/alexdunae/validates_email_format_of.git
+  revision: aac44ee052724fcd4e11be49332a1c52f8ef944e
+  specs:
+    validates_email_format_of (1.4.7)
+
+GIT
   remote: git://github.com/thoughtbot/shoulda.git
   revision: 36ef11123b454a6eca60c6e5d2fc2fd98ddf72b0
   specs:
@@ -107,3 +113,4 @@ DEPENDENCIES
   ruby-debug19
   shoulda!
   test-unit
+  validates_email_format_of!

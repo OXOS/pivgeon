@@ -2,6 +2,7 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.0.5'
 gem 'mysql', '2.8.1'
+gem 'validates_email_format_of', :git => 'git://github.com/alexdunae/validates_email_format_of.git'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
