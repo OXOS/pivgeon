@@ -1,16 +1,19 @@
 <div id="intro" class="block form">
     <h3><span>Create new account</span></h3>
-    <% form_for  @user do |form|%>
-      <p>
+    
+    <% form_for  @user do |form| %>
+      <div>
         <%= form.label :email, "Email" %>
         <%= form.text_field :email %>
-      </p>
-      <p>
+        <%= error_message_on @user, :email %>
+      </div>
+      <div>
         <%= form.label :token, "Pivotal token" %>
         <%= form.text_field :token %>
-      </p>
-      <p>
+        <%= error_message_on @user, :token %>
+      </div>
+      <div>
         <%= form.submit "Create" %>
-      </p>
-    <% end%>
+      </div>
+    <% end %>
 </div>
