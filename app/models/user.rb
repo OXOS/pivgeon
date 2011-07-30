@@ -1,8 +1,5 @@
 class User < ActiveRecord::Base
   
-  include Pivgeon::Notification
-  add_notifier(UserMailer,"created_notification")
-  
   validates(:email, :presence => {:message => "Email can't be blank"}, :uniqueness => {:message => "Email address is already taken",:on=>:create})
   validates :email, :email_format => {:message => 'Email is incorrect'}
   validates(:token, :presence => {:message => "Token can't be blank"})
@@ -11,13 +8,6 @@ class User < ActiveRecord::Base
   HUMAN_ATTRIBUTE_NAMES = {
     "token" => "Pivotal token:",
   }
-
- 
-  def self.parse_message(message)
-  end
-  
-  def activate!
-  end
 
   def self.human_attribute_name(*args)
     attr_name = HUMAN_ATTRIBUTE_NAMES[args[0].to_s]    
@@ -36,6 +26,4 @@ class User < ActiveRecord::Base
     end
   end
     
-  
-  
 end

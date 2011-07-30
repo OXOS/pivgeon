@@ -106,38 +106,6 @@ class StoryFlowsTest < ActionDispatch::IntegrationTest
     
   end
   
-  context "Existing but inactive user" do
-    
-    setup do
-      mock_requests()
-      @inactive_user = users(:not_activated_user)
-      @owner = users(:daniel)
-    end
-    
-    context "who creates story with valid data" do
-      
-      should "receive email informed that story hasn't been successfully created" do
-        assert_notification("Re: Story 1") do
-          post "/api", valid_params(@inactive_user.email,@owner.email)
-          assert_match /Unauthorized access/, ActionMailer::Base.deliveries.last.body.encoded
-        end
-      end
-      
-    end
-    
-    context "who creates story with invalid data" do
-      
-      should "receive email informed that story hasn't been successfully created" do
-        assert_notification("Re: subject with missing project name") do
-          post "/api", valid_params(@inactive_user.email,@owner.email,"WrongProjectName@pivgeon.com","subject with missing project name")
-          assert_match /Unauthorized access/, ActionMailer::Base.deliveries.last.body.encoded
-        end
-      end
-      
-    end
-    
-  end
-  
   context "Unexisting user" do
     
     setup do

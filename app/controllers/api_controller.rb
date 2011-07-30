@@ -9,10 +9,10 @@ class ApiController < ApplicationController
   def create     
     handle_exception do           
       attrs = {:user_id=>@user.id,
-             :owner_email=>@message.to,
-             :project_name=>@project_name,
-             :name=>@story_name,
-             :description=>@message.body}
+               :owner_email=>@message.to,
+               :project_name=>@project_name,
+               :name=>@story_name,
+               :description=>@message.body}
       Rails.logger.info "\nStory params\n#{attrs.inspect}\n\n"
       Story.token = @user.token
       @story = Story.new(attrs)
@@ -72,17 +72,11 @@ class ApiController < ApplicationController
   end   
   
   def send_notification_for_object()
-    _class,_object = get_class_and_object()
-    _class.send_notification(_object,nil,:message_id => @message.message_id, :message_subject => @message.subject)
+    Story.send_notification(@story,nil,:message_id => @message.message_id, :message_subject => @message.subject)
   end
   
   def send_notification_for_exception(error_message)
-    _class,_object = get_class_and_object()
-    _class.send_notification(@message,error_message,:message_id => @message.message_id, :message_subject => @message.subject)
-  end
-  
-  def get_class_and_object()
-    [Story,@story]    
+    Story.send_notification(@message,error_message,:message_id => @message.message_id, :message_subject => @message.subject)
   end
 
   rescue_from(Exception) do |e|
