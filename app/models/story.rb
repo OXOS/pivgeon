@@ -10,10 +10,6 @@ class Story < PivotalItem
     "name" => "Story name"
   }
   
-  include Pivgeon::Notification
-  
-  add_notifier(StoryMailer,"created_notification")
-    
   validates(:name, :presence=>true)  
   
   def self.get_project_and_story_name(subject,email)
@@ -23,6 +19,14 @@ class Story < PivotalItem
       email.split('@').first
     end
     [project_name,subject]
+  end
+
+  def self.send_notification(obj,error_message,options)
+    if( error_message or ( obj.respond_to?(:errors) and !obj.errors.blank? ) )
+      StoryMailer.not_created_notification(obj,error_message,options).deliver
+    else 
+      StoryMailer.created_notification(obj,error_message,options).deliver
+    end
   end
   
   def self.human_attribute_name(*args)

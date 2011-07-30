@@ -1,13 +1,18 @@
 class ApiController < ApplicationController
 
   skip_before_filter :verify_authenticity_token
-
-  before_filter :parse_message
-  before_filter :find_user  
-  before_filter :find_project_and_story_name
+  rescue_from Exception, :with => :handle_exceptions
   
   def create     
-    handle_exception do           
+
+      @message = SendgridMessage.new(params)
+      Rails.logger.info "\n@message = \n#{@message.inspect}\n\n"
+      
+      @user = User.find_by_email(@message.from)
+      raise(SecurityError) if @user.blank?
+  
+      @project_name,@story_name = Story.get_project_and_story_name(@message.subject,@message.cc)
+
       attrs = {:user_id=>@user.id,
                :owner_email=>@message.to,
                :project_name=>@project_name,
@@ -17,49 +22,35 @@ class ApiController < ApplicationController
       Story.token = @user.token
       @story = Story.new(attrs)
       @story.save!
-      render_and_send_notification()  
-    end
-  end
-  
-  
-  protected
-          
-  def parse_message
-    handle_exception do
-      @message = SendgridMessage.new(params)
-      Rails.logger.info "\n@message = \n#{@message.inspect}\n\n"
-    end
-  end
-  
-  def find_project_and_story_name
-    handle_exception do       
-      @project_name,@story_name = Story.get_project_and_story_name(@message.subject,@message.cc)
-    end
-  end
-  
-  def find_user
-    handle_exception do
-      @user = User.find_by_email(@message.from)
-      raise(SecurityError) if @user.blank?
-    end
-  end
-  
-  def handle_exception(&block)
-    headers["Content-type"] = "text/plain" 
-    begin
-      block.call      
-    rescue ActiveRecord::RecordNotSaved, ActiveRecord::RecordInvalid, RecordNotSaved
+
       render_and_send_notification()
-    rescue ActiveResource::UnauthorizedAccess, SecurityError
-      render_and_send_notification("Unauthorized access")
-    rescue ArgumentError
-      render_and_send_notification("Invalid data")
-    rescue ActiveResource::ServerError, ActiveResource::TimeoutError
-      render_and_send_notification("Server error")
+  
+  end
+  
+  protected         
+   
+  def handle_exceptions(e)
+
+    begin
+     headers["Content-type"] = "text/plain"
+      case e
+      when ActiveRecord::RecordNotSaved, ActiveRecord::RecordInvalid, RecordNotSaved
+        render_and_send_notification()
+      when ActiveResource::UnauthorizedAccess, SecurityError
+        render_and_send_notification("Unauthorized access")
+      when ArgumentError
+        render_and_send_notification("Invalid data")
+      when ActiveResource::ServerError, ActiveResource::TimeoutError
+        render_and_send_notification("Server error")
+      else 
+        Rails.logger.info("Raised Exception: #{e.message} | \n#{e.backtrace}")
+        render_and_send_notification("Unknown error")
+      end
     rescue => e
       Rails.logger.info("Raised Exception: #{e.message} | \n#{e.backtrace}")
-      render_and_send_notification("Unknown error")
-    end  
+      render(:text => "Error", :status => 200)
+    end
+
   end
       
   def render_and_send_notification(error_message=nil)
@@ -77,12 +68,6 @@ class ApiController < ApplicationController
   
   def send_notification_for_exception(error_message)
     Story.send_notification(@message,error_message,:message_id => @message.message_id, :message_subject => @message.subject)
-  end
-
-  rescue_from(Exception) do |e|
-    #TODO: consider what to do when mailer raises error but story/user is created
-    Rails.logger.info("Raised Exception: #{e.message} | \n#{e.backtrace}")
-    render(:text => "Error", :status => 200)
   end
   
 end
