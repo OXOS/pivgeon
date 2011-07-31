@@ -1,9 +1,5 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-not_activated_user:
-  token: 111111111
-  email: inactive@example.com
-
 wojciech:
   token: 12345678
   email: wojciech@example.com

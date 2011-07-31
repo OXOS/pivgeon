@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
   
   validates(:email, :presence => {:message => "Email can't be blank"}, :uniqueness => {:message => "Email address is already taken",:on=>:create})
-  validates :email, :email_format => {:message => 'Email is incorrect'}
+  validates :email, :email_format => {:message => 'Email is incorrect'}, :unless => Proc.new{|u| u.email.blank? }
   validates(:token, :presence => {:message => "Token can't be blank"})
   validate :validate_token
         
@@ -18,6 +18,7 @@ class User < ActiveRecord::Base
   protected
 
   def validate_token
+    return if self.token.blank?
     begin
       Project.token = self.token
       Project.find(:all)
