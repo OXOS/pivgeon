@@ -60,11 +60,8 @@ class Story < PivotalItem
 
   protected    
   
-  #TODO: validations are not well done for activeresource so this is why it looks so ugly! 
-  #It should be rewrite when it will be improved in next rails releases.
-  
   def before_validate()
-    self.owned_by = owner.person.name if owner
+    self.owned_by = owner.person.name if owner_email != CLOUDMAILIN_EMAIL_ADDRESS && owner
     self.prefix_options[:project_id] = project.id if project
     self.set_default_attributes()    
   end
