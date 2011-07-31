@@ -120,11 +120,4 @@ class StoryTest < ActiveSupport::TestCase
 
   end
   
-  protected
-  
-  def deb
-    require "ruby-debug"
-    debugger
-  end
-  
 end
