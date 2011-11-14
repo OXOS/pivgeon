@@ -47,6 +47,10 @@ class Story < PivotalItem
     memberships = _project.memberships
     return nil if memberships.blank?
     
+    memberships.each do |m|
+      puts "\n\n @@@@@@@@@@@@@@@ #{m.inspect} \n\n"
+    end
+    
     memberships.select{|m| m.person.email == owner_email}.first 
   end
   
