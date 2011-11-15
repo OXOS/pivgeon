@@ -19,7 +19,8 @@ class ApiController < ApplicationController
         response = http.request(req).body
         RAILS_DEFAULT_LOGGER.info "/n/n/n/n" + response.inspect + "/n/n/n/n"       
       end
-  
+      
+      render(:text => "Ok", :status => 200)
   end
   
   protected         
