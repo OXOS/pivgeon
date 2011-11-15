@@ -1,5 +1,6 @@
 class ApiController < ApplicationController
-
+  require 'net/http/post/multipart'
+  
   skip_before_filter :verify_authenticity_token
   rescue_from Exception, :with => :handle_exceptions
   
@@ -14,10 +15,7 @@ class ApiController < ApplicationController
       uri = URI.parse("http://book-order-pivgeon.herokuapp.com")
       
       response = Net::HTTP.start(uri.host, uri.port) do |http|
-        req = Net::HTTP::Post.new("/stories/new")
-        RAILS_DEFAULT_LOGGER.info "/n/n/n/n request.raw_post: " + request.body.read  + "/n/n/n/n" 
-        req.body = request.raw_post
-        #JSON.parse( http.request(req).body )
+        req = Net::HTTP::Post::Multipart.new("/stories/new",params)
         response = http.request(req).body
         RAILS_DEFAULT_LOGGER.info "/n/n/n/n" + response.inspect + "/n/n/n/n"       
       end
