@@ -11,19 +11,14 @@ class ApiController < ApplicationController
       @user = User.find_by_email(@message.from)
       raise(SecurityError) if @user.blank?
   
-      @project_name,@story_name = Story.get_project_and_story_name(@message.subject,@message.cc)
-
-      attrs = {:user_id=>@user.id,
-               :owner_email=>@message.to,
-               :project_name=>@project_name,
-               :name=>@story_name,
-               :description=>@message.body}
-      Rails.logger.info "\nStory params\n#{attrs.inspect}\n\n"
-      Story.token = @user.token
-      @story = Story.new(attrs)
-      @story.save!
-
-      render_and_send_notification()
+      uri = URI.parse("http://book-order-sendmail.heroku.com")
+      response = Net::HTTP.start(uri.host, uri.port) do |http|
+        req = Net::HTTP::Post.new("/stories/new")
+        req.body = request.raw_post
+        #JSON.parse( http.request(req).body )
+        response = http.request(req).body
+        ap response        
+      end
   
   end
   
