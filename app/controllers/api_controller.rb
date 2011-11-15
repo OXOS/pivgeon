@@ -11,7 +11,7 @@ class ApiController < ApplicationController
       @user = User.find_by_email(@message.from)
       raise(SecurityError) if @user.blank?
   
-      uri = URI.parse("http://book-order-sendmail.heroku.com")
+      uri = URI.parse("http://book-order-pivgeon.herokuapp.com")
       response = Net::HTTP.start(uri.host, uri.port) do |http|
         req = Net::HTTP::Post.new("/stories/new")
         req.body = request.raw_post
