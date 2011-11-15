@@ -17,7 +17,7 @@ class ApiController < ApplicationController
         req.body = request.raw_post
         #JSON.parse( http.request(req).body )
         response = http.request(req).body
-        ap response        
+        RAILS_DEFAULT_LOGGER.info "/n/n/n/n" + response.inspect + "/n/n/n/n"       
       end
   
   end
