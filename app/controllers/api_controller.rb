@@ -10,12 +10,17 @@ class ApiController < ApplicationController
       
       @user = User.find_by_email(@message.from)
       raise(SecurityError) if @user.blank?
+  
+      uri = URI.parse("http://book-order-pivgeon.herokuapp.com")
       
-      RAILS_DEFAULT_LOGGER.info "/n/n/n/n" + params.inspect + "/n/n/n/n"   
-              
-      url = "http://book-order-pivgeon.herokuapp.com/stories/new"
-      response = Net::HTTP.post_form(URI.parse(url), params)
-      RAILS_DEFAULT_LOGGER.info "/n/n/n/n" + response.inspect + "/n/n/n/n"   
+      response = Net::HTTP.start(uri.host, uri.port) do |http|
+        req = Net::HTTP::Post.new("/stories/new")
+        RAILS_DEFAULT_LOGGER.info "/n/n/n/n request.raw_post: " + request.body.read  + "/n/n/n/n" 
+        req.body = request.raw_post
+        #JSON.parse( http.request(req).body )
+        response = http.request(req).body
+        RAILS_DEFAULT_LOGGER.info "/n/n/n/n" + response.inspect + "/n/n/n/n"       
+      end
       
       render(:text => "Ok", :status => 200)
   end
