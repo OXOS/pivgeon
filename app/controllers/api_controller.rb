@@ -15,7 +15,14 @@ class ApiController < ApplicationController
       uri = URI.parse("http://book-order-pivgeon.herokuapp.com")
       
       response = Net::HTTP.start(uri.host, uri.port) do |http|
-        req = Net::HTTP::Post::Multipart.new("/stories/new",params)
+        
+        params_ = {}
+        params.each_pair do |k,v|
+          v = v.read if v.is_a?(ActionDispatch::Http::UploadedFile)
+          params_[k] = v
+        end
+      
+        req = Net::HTTP::Post::Multipart.new("/stories/new",params_)
         response = http.request(req).body
         RAILS_DEFAULT_LOGGER.info "/n/n/n/n" + response.inspect + "/n/n/n/n"       
       end
