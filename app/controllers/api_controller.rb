@@ -8,9 +8,9 @@ class ApiController < ApplicationController
       unless @user
         Notifier.unauthorized_access(@message, @message.message_id).deliver
       else
-        uri = URI.parse("http://book-order-pivgeon.herokuapp.com")
+        uri   = URI.parse("http://book-order-pivgeon.herokuapp.com")        
         Net::HTTP.start(uri.host, uri.port) do |http|
-          req      = Net::HTTP::Post::Multipart.new("/stories/new",params)
+          req      = Net::HTTP::Post::Multipart.new("/stories/new/#{@user.token}",params)
           response = http.request(req).body
         end
       end
