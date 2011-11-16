@@ -6,7 +6,6 @@ class ApiController < ApplicationController
   
   Net::HTTP::Post::Multipart::Parts::FilePart.class_eval do
     def initialize(boundary, name, io)
-      raise 'goomka'
       file_length = io.respond_to?(:length) ? io.length : File.size(io.path)
       @head = build_head(boundary, name, io.original_filename, io.content_type, file_length,
                          io.respond_to?(:opts) ? io.opts : {})
