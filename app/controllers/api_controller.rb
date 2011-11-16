@@ -2,8 +2,8 @@ class ApiController < ApplicationController
   require 'net/http/post/multipart'
   
   skip_before_filter :verify_authenticity_token
-  rescue_from Exception, :with => :handle_exceptions
   
+  #TODO: for this gem, fix the issue and publish in github
   Net::HTTP::Post::Multipart::Parts::FilePart.class_eval do
     def initialize(boundary, name, io)
       file_length = io.respond_to?(:length) ? io.length : File.size(io.path)
@@ -16,8 +16,10 @@ class ApiController < ApplicationController
   end
   
   def create     
+      @message = SendgridMessage.new(params)
       @user = User.find_by_email(@message.from)
-      raise(SecurityError) if @user.blank?
+      
+      render_and_send_notification("Unauthorized access") if @user.blank?
   
       uri = URI.parse("http://book-order-pivgeon.herokuapp.com")
       response = Net::HTTP.start(uri.host, uri.port) do |http|
@@ -31,45 +33,9 @@ class ApiController < ApplicationController
   
   protected         
    
-  def handle_exceptions(e)
-
-    begin
-     headers["Content-type"] = "text/plain"
-      case e
-      when ActiveRecord::RecordNotSaved, ActiveRecord::RecordInvalid, RecordNotSaved
-        render_and_send_notification()
-      when ActiveResource::UnauthorizedAccess, SecurityError
-        render_and_send_notification("Unauthorized access")
-      when ArgumentError
-        render_and_send_notification("Invalid data")
-      when ActiveResource::ServerError, ActiveResource::TimeoutError
-        render_and_send_notification("Server error")
-      else 
-        Rails.logger.info("Raised Exception: #{e.message} | \n#{e.backtrace}")
-        render_and_send_notification("Unknown error")
-      end
-    rescue => e
-      Rails.logger.info("Raised Exception: #{e.message} | \n#{e.backtrace}")
-      render(:text => "Error", :status => 200)
-    end
-
-  end
-      
   def render_and_send_notification(error_message=nil)
-    if error_message.blank?
-      send_notification_for_object()
-    else
-      send_notification_for_exception(error_message)
-    end
-    render(:text => "Error", :status => 200)
+    Notifier.unauthorized_access(@message, @message.message_id).deliver
+    render(:text => "Error", :status => 200) and return
   end   
-  
-  def send_notification_for_object()
-    Story.send_notification(@story,nil,:message_id => @message.message_id, :message_subject => @message.subject)
-  end
-  
-  def send_notification_for_exception(error_message)
-    Story.send_notification(@message,error_message,:message_id => @message.message_id, :message_subject => @message.subject)
-  end
   
 end
