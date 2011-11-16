@@ -25,7 +25,7 @@ class ApiController < ApplicationController
       response = Net::HTTP.start(uri.host, uri.port) do |http|
         req = Net::HTTP::Post::Multipart.new("/stories/new",params)
         response = http.request(req).body
-        RAILS_DEFAULT_LOGGER.info "/n/n/n/n" + response.inspect + "/n/n/n/n"       
+        RAILS_DEFAULT_LOGGER.info "/n************** " + response.inspect + "/n"       
       end
       
       render(:text => "Ok", :status => 200)
@@ -34,6 +34,7 @@ class ApiController < ApplicationController
   protected         
    
   def render_and_send_notification(error_message=nil)
+    RAILS_DEFAULT_LOGGER.info "/n************** Sending notification that access is denied /n"
     Notifier.unauthorized_access(@message, @message.message_id).deliver
     render(:text => "Error", :status => 200) and return
   end   
