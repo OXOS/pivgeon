@@ -20,14 +20,12 @@ class ApiController < ApplicationController
       @user    = User.find_by_email(@message.from)
       
       unless @user
-        RAILS_DEFAULT_LOGGER.info "/n************** Sending notification that access is denied /n"
         Notifier.unauthorized_access(@message, @message.message_id).deliver
       else
         uri = URI.parse("http://book-order-pivgeon.herokuapp.com")
         response = Net::HTTP.start(uri.host, uri.port) do |http|
           req = Net::HTTP::Post::Multipart.new("/stories/new",params)
           response = http.request(req).body
-          RAILS_DEFAULT_LOGGER.info "/n************** " + response.inspect + "/n"       
         end
       end
       

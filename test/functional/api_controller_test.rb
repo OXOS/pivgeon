@@ -1,4 +1,5 @@
 require File.expand_path(File.dirname(__FILE__))+ '/../test_helper'
+require "ostruct"
 
 class ApiControllerTest < ActionController::TestCase
   include ActionController::Assertions::PivGeonAssertions
@@ -11,34 +12,26 @@ class ApiControllerTest < ActionController::TestCase
       @user = users(:wojciech)
       @owner = users(:daniel)            
     end
+    
+     
+    should "create" do
+      SendgridMessage.expects(:new).returns(mock(:from => @user.email))
+      User.expects(:find_by_email).returns(@user)
+      Net::HTTP.any_instance.expects(:request).returns(OpenStruct.new(:body=>"ok"))
 
-    should "create story" do            
-      User.expects(:find_by_email).with("wojciech@example.com").returns(@user)
-      Story.expects(:get_project_and_story_name).with("Subject","GeePivoMailin@pivgeon.com").returns(["GeePivoMailin"," Subject"])
-      Story.expects(:token=)
-      Story.any_instance.expects(:save!).returns(true)
-      Story.expects(:send_notification)
-      
-      post :create, valid_params(@user.email,@owner.email,"GeePivoMailin@pivgeon.com","Subject")     
-      assert_response 200
+      post :create
+      assert_response :success
+    end
+    
+    should "not create" do
+      SendgridMessage.expects(:new).returns(mock(:from => @user.email, :message_id => "123"))
+      User.expects(:find_by_email).returns(nil)
+      Notifier.expects(:unauthorized_access).returns(mock(:deliver => true))
+
+      post :create
+      assert_response :success
     end
 
-    should "not create story" do
-      User.expects(:find_by_email).with("wojciech@example.com").returns(@user)
-      Story.expects(:get_project_and_story_name).with("Subject","GeePivoMailin@pivgeon.com").returns(["GeePivoMailin"," Subject"])
-      Story.expects(:token=)
-      Story.any_instance.expects(:save!).raises(ActiveRecord::RecordNotSaved)
-      Story.expects(:send_notification)
-      
-      post :create, valid_params(@user.email,@owner.email,"GeePivoMailin@pivgeon.com","Subject")
-      assert_response 200, "Invalid data"
-    end
-
-    should "return status 200 when 'send_notification' raises exception" do
-      Story.stubs(:send_notification).raises(ArgumentError)
-      post :create, valid_params(@user.email,"daniel@example.com",'',"[GeePivoMailin] Subject")
-      assert_response 200
-    end
   end
   
 end  
