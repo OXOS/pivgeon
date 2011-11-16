@@ -1,6 +1,4 @@
-class UsersController < ApplicationController
-  require 'net/http/post/multipart'
-
+class UsersController < ApplicationController  
   layout "application"    
   
   def new

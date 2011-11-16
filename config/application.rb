@@ -48,8 +48,11 @@ module Geepivodev
     config.filter_parameters += [:password]
     
     config.action_mailer.default_url_options = { :host => APP_URL }
+    
+    config.after_initialize do
+      require 'net/http/post/multipart'
+      require "fixes"
+    end
 
   end
 end
-
-
