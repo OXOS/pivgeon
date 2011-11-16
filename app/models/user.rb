@@ -19,12 +19,12 @@ class User < ActiveRecord::Base
 
   def validate_token
     return if self.token.blank?
-    begin
-      Project.token = self.token
-      Project.find(:all)
-    rescue
-      self.errors.add(:token, "Token is invalid")
-    end
+    
+    uri = URI.parse("http://www.pivotaltracker.com")
+    http = Net::HTTP.new(uri.host,uri.port)
+    response = http.request(Net::HTTP::Get.new("/services/v3/projects",{"X-TrackerToken" => self.token}))
+    
+    self.errors.add(:token, "Token is invalid") if response.code.to_s == "401"
   end
     
 end
