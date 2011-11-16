@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   require 'net/http/post/multipart'
 
-  layout "application"
+  layout "application"    
   
   def new
               
@@ -13,12 +13,12 @@ class UsersController < ApplicationController
                    :html => '<br>\n',
                    :charsets => '{"to":"UTF-8","cc":"UTF-8","html":"ISO-8859-1","subject":"UTF-8","from":"UTF-8","text":"ISO-8859-1"}',
                    :dkim => 'none',
-                   :from => 'Daniel Sokołowski <daniel@oxos.pl>',
+                   :from => 'Daniel Sokolowski <daniel@oxos.pl>',
                    :action => 'create',
                   'attachment-info' => '{"attachment1":{"filename":"file.tar","name":"file.tar","type":"application/x-tar"}}',
                    :text => '\n',
                    :subject => 'dora 6',
-                   :to => 'Daniel Sokołowski <daniel@oxos.pl>',
+                   :to => 'Daniel Sokolowski <daniel@oxos.pl>',
                    :envelope => '{"to":["test@devel.pivgeon.com"],"from":"daniel@oxos.pl"}',
                    :attachment1 => UploadIO.new(jpg, "image/jpeg", "#{RAILS_ROOT}/file.txt"), 
                    :attachments => 1}

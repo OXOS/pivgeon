@@ -4,6 +4,18 @@ class ApiController < ApplicationController
   skip_before_filter :verify_authenticity_token
   rescue_from Exception, :with => :handle_exceptions
   
+  Net::HTTP::Post::Multipart::Parts::FilePart.class_eval do
+    def initialize(boundary, name, io)
+      raise 'goomka'
+      file_length = io.respond_to?(:length) ? io.length : File.size(io.path)
+      @head = build_head(boundary, name, io.original_filename, io.content_type, file_length,
+                         io.respond_to?(:opts) ? io.opts : {})
+      @foot = "\r\n"
+      @length = @head.length + file_length + @foot.length
+      @io = CompositeReadIO.new(StringIO.new(@head), io, StringIO.new(@foot))
+    end
+  end
+  
   def create     
 
       @message = SendgridMessage.new(params)
@@ -15,14 +27,7 @@ class ApiController < ApplicationController
       uri = URI.parse("http://book-order-pivgeon.herokuapp.com")
       
       response = Net::HTTP.start(uri.host, uri.port) do |http|
-        
-        params_ = {}
-        params.each_pair do |k,v|
-          v = v.read if v.is_a?(ActionDispatch::Http::UploadedFile)
-          params_[k] = v
-        end
-      
-        req = Net::HTTP::Post::Multipart.new("/stories/new",params_)
+        req = Net::HTTP::Post::Multipart.new("/stories/new",params)
         response = http.request(req).body
         RAILS_DEFAULT_LOGGER.info "/n/n/n/n" + response.inspect + "/n/n/n/n"       
       end
