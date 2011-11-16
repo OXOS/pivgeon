@@ -1,4 +1,5 @@
 require File.expand_path(File.dirname(__FILE__))+ '/../test_helper'
+require "ostruct"
 
 class UserTest < ActiveSupport::TestCase
   
@@ -26,7 +27,7 @@ class UserTest < ActiveSupport::TestCase
     end
 
     should "validate if given token is correct pivotal token" do
-      Project.stubs(:find).raises(ActiveResource::UnauthorizedAccess)
+      Net::HTTP.stubs(:request).returns(OpenStruct.new(:code => "401"))
       user = User.create :email => nil, :token => "12345678"
       assert_equal "Token is invalid", user.errors['token'].first
     end
