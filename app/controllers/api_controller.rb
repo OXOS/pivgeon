@@ -16,15 +16,10 @@ class ApiController < ApplicationController
   end
   
   def create     
-
-      @message = SendgridMessage.new(params)
-      Rails.logger.info "\n@message = \n#{@message.inspect}\n\n"
-      
       @user = User.find_by_email(@message.from)
       raise(SecurityError) if @user.blank?
   
       uri = URI.parse("http://book-order-pivgeon.herokuapp.com")
-      
       response = Net::HTTP.start(uri.host, uri.port) do |http|
         req = Net::HTTP::Post::Multipart.new("/stories/new",params)
         response = http.request(req).body
