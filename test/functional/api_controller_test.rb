@@ -14,8 +14,7 @@ class ApiControllerTest < ActionController::TestCase
 
     should "create story" do            
       ob_proxy = mock("object_proxy")
-      ob_proxy.expects(:find_by_email).with("wojciech@example.com").returns(@user)
-      User.expects(:active).returns(ob_proxy)
+      User.expects(:find_by_email).with("wojciech@example.com").returns(@user)
       Story.expects(:get_project_and_story_name).with("Subject","GeePivoMailin@pivgeon.com").returns(["GeePivoMailin"," Subject"])
       Story.expects(:token=)
       Story.any_instance.expects(:save!).returns(true)
@@ -27,8 +26,7 @@ class ApiControllerTest < ActionController::TestCase
 
     should "not create story" do
       ob_proxy = mock("object_proxy")
-      ob_proxy.expects(:find_by_email).with("wojciech@example.com").returns(@user)
-      User.expects(:active).returns(ob_proxy)
+      User.expects(:find_by_email).with("wojciech@example.com").returns(@user)
       Story.expects(:get_project_and_story_name).with("Subject","GeePivoMailin@pivgeon.com").returns(["GeePivoMailin"," Subject"])
       Story.expects(:token=)
       Story.any_instance.expects(:save!).raises(ActiveRecord::RecordNotSaved)

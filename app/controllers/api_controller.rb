@@ -42,7 +42,7 @@ class ApiController < ApplicationController
   
   def find_user
     handle_exception do
-      @user = User.active.find_by_email(@message.from.first)
+      @user = User.find_by_email(@message.from.first)
       raise(SecurityError) if @user.blank?
     end
   end
