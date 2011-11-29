@@ -30,6 +30,7 @@
 <style type="text/css">
 #main #intro p { font:normal 14px/1.5em Droid Serif;color:#555555; }
 #footer p { font:normal 14px/1em Lobster;color:#999; }
+a.new-account-link{ color: #6D3D04; }
 </style>
 
 
@@ -71,14 +72,14 @@
                 <div class="how-to-panel" id="create">
                     <div class="header">
                         <div class="number">1</div>
-                        <div class="title">Send Pivgeon your Pivotal Tracker API token:</div>
+                        <div class="title">Create new account:</div>
                     </div>
                     <p>
-                        To create account in Pivgeon send an email containing API Token you want to use for this email address.
-                        <img src="images/email-create.jpg"  alt="email"/>
+                        Go to <a href='/users/new' class='new-account-link'>create new account</a> page and fill in required fields 'email' and 'token'.
                     </p>
                     <p class="details">
                         <a class="header"  onclick="toggle_details('#create')" href="javascript:void(0)">Show more details</a>
+                        <span class="info">Email is the address that you will use to create new stories. Token is the privotal tracker token.</span>
                         <span class="info">Next time when you send Pivgeon emails from your address it'll use this API token to access projects.</span>
 			<!--
                         <span class="info">You can create many accounts for one api token.</span>
@@ -88,20 +89,9 @@
                     <div class="arrow"></div>
                 </div>
                 
-                <div class="how-to-panel" id="activate">
-                    <div class="header">
-                        <div class="number">2</div>
-                        <div class="title">Activate your account:</div>
-                    </div>
-                    <p>
-                        You should receive a confirmation email. Click the activation link.
-                    </p>
-                    <div class="arrow"></div>
-                </div>
-                
                 <div class="how-to-panel" id="send">
                     <div class="header">
-                        <div class="number">3</div>
+                        <div class="number">2</div>
                         <div class="title">Send an email to the person you want to create story for.</div>
                     </div>
                     <p>
