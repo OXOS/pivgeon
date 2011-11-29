@@ -38,27 +38,7 @@ class ApiControllerTest < ActionController::TestCase
       assert_response 200, "Invalid data"
     end
       
-    should "create user" do
-      User.expects(:parse_message).returns("some attrs fake")
-      user_mock = mock("user")
-      user_mock.expects(:save!).returns(true)
-      User.expects(:find_or_build).with("some attrs fake").returns(user_mock)
-      User.expects(:send_notification)
-      post :create, valid_params("annonymous@example.com",CLOUDMAILIN_EMAIL_ADDRESS,nil,"123123131")
-      assert_response 200
-    end
-    
-    should "not create user" do
-      User.expects(:parse_message).returns("some attrs fake")
-      user_mock = mock("user")
-      user_mock.expects(:save!).raises(ActiveRecord::RecordNotSaved)
-      User.expects(:find_or_build).with("some attrs fake").returns(user_mock)
-      User.expects(:send_notification)
-      post :create, valid_params("annonymous@example.com",CLOUDMAILIN_EMAIL_ADDRESS,nil,"123123131")
-      assert_response 200, "Invalid data"
-    end
-
-	should "return status 200 when 'send_notification' raises exception" do
+    should "return status 200 when 'send_notification' raises exception" do
       Story.stubs(:send_notification).raises(ArgumentError)
       post :create, valid_params(@user.email,"daniel@example.com",nil,"[GeePivoMailin] Subject")
       assert_response 200

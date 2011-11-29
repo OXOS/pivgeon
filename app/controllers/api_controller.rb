@@ -9,23 +9,12 @@ class ApiController < ApplicationController
   
   def create      
     handle_exception do           
-      if direct_sent_to_cloudmailin?(@message)
-        create_user(@message)
-      else
-        create_story(@message)
-      end
+      create_story(@message)
     end
   end
   
   
   protected
-    
-  def create_user(message)    
-    attrs = User.parse_message(message)  
-    @user = User.find_or_build(attrs)      
-    @user.save!
-    render_and_send_notification()
-  end
   
   def create_story(message)    
     attrs = {:user_id=>@user.id,
@@ -40,10 +29,6 @@ class ApiController < ApplicationController
     render_and_send_notification()    
   end
   
-  def direct_sent_to_cloudmailin?(message)
-    return message.to.first.downcase == CLOUDMAILIN_EMAIL_ADDRESS.downcase
-  end
-  
   def parse_message
     Rails.logger.info "\nIncomming params:\n#{params.inspect}\n\n"
     @message = Mail.new(params['headers'])
@@ -51,18 +36,14 @@ class ApiController < ApplicationController
   
   def find_project_and_story_name
     handle_exception do       
-      unless direct_sent_to_cloudmailin?(@message)        
-          @project_name,@story_name = Story.get_project_and_story_name(@message.subject,params[:cc])
-      end
+      @project_name,@story_name = Story.get_project_and_story_name(@message.subject,params[:cc])
     end
   end
   
   def find_user
     handle_exception do
-      unless direct_sent_to_cloudmailin?(@message)
-        @user = User.active.find_by_email(@message.from.first)
-        raise(SecurityError) if @user.blank?
-      end
+      @user = User.active.find_by_email(@message.from.first)
+      raise(SecurityError) if @user.blank?
     end
   end
   
@@ -106,11 +87,11 @@ class ApiController < ApplicationController
   end
   
   def get_class_and_object()
-    direct_sent_to_cloudmailin?(@message) ? [User,@user] : [Story,@story]    
+    [Story,@story]    
   end
 
   rescue_from(Exception) do |e|
-    #TODO: consider what to do when mailer raises error but story/user is created
+    #TODO: consider what to do when mailer raises error but story is created
     Rails.logger.info("Raised Exception: #{e.message} | \n#{e.backtrace}")
     render(:text => "Success", :status => 200)
   end
