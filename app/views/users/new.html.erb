@@ -1,6 +1,15 @@
 <div id="intro" class="block form">
     <h3><span>Create new account</span></h3>
-    
+
+    <div id="howto" class="block"  style="height: 150px !important;">
+      <div class="how-to-panel">
+        <p>
+            <span class="info">Email is the address that you will use to create new stories. Token is the privotal tracker token.</span>
+            <span class="info">Next time when you send Pivgeon emails from your address it'll use this API token to access projects.</span>
+        </p>
+      </div>
+    </div>
+
     <% form_for  @user do |form| %>
       <div>
         <%= form.label :email, "Email" %>
@@ -16,4 +25,5 @@
         <%= form.submit "Create" %>
       </div>
     <% end %>
+    
 </div>

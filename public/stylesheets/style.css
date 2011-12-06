@@ -87,6 +87,10 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover  {text-de
 #footer span{display:none;}
 #footer .divider { padding:0 8px; }
 
+#howto{
+    padding: 0px;
+}
+
 #howto .how-to-panel{
     position: relative;
     width: 100%;
@@ -94,6 +98,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover  {text-de
     height: auto !important;
     height: 100px;
     margin-bottom: 55px;
+    padding: 0px;
     border: 1px solid #ddd;
     -webkit-border-radius: 15px;
     -moz-border-radius: 15px;
