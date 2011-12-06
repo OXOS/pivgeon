@@ -1,9 +1,10 @@
 class ApiController < ApplicationController  
-  skip_before_filter :verify_authenticity_token
+  skip_before_filter :verify_authenticity_token      
       
-  def create     
+  def create
+
       @message = SendgridMessage.new(params)
-      @user    = User.find_by_email(@message.from)
+      @user    = User.active.find_by_email(@message.from)
       
       unless @user
         Notifier.unauthorized_access(@message, @message.message_id).deliver

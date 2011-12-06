@@ -3,7 +3,14 @@
 wojciech:
   token: 12345678
   email: wojciech@example.com
+  status: true
 
 daniel:
   token: 87654321
   email: daniel@example.com
+  status: true
+
+inactive:
+  token: 19283746
+  email: inactive@example.com
+  status: false

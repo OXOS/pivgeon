@@ -34,5 +34,22 @@ class ApiTest < ActionDispatch::IntegrationTest
     end
     
   end
+
+  context "Inactive user" do
+
+    setup do
+      mock_requests()
+      @inactive = users(:inactive)
+      @owner = users(:daniel)
+    end
+
+    should "receive email informed that access is denied" do
+      assert_notification("Re: Story 1") do
+        post "/api", valid_params(@inactive.email,@owner.email)
+        assert_match /Unauthorized access/, ActionMailer::Base.deliveries.last.body.encoded
+      end
+    end
+
+  end
   
 end
