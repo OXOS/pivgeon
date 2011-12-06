@@ -3,7 +3,7 @@ Geepivodev::Application.routes.draw do
   match 'api' => 'api#create'
 
   resources :users
-  #match 'users/confirm/:id' => 'users#confirm', :as => :user_confirmation
+  match 'users/confirm/:id' => 'users#confirm', :as => :user_confirmation
   
   # The priority is based upon order of creation:
   # first created -> highest priority.
