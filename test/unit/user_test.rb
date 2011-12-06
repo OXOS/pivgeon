@@ -11,6 +11,27 @@ class UserTest < ActiveSupport::TestCase
       mock_requests()
     end
 
+    should "status should default to false" do
+      user = User.create :email => "some.user.1@example.com", :token => "12345678"
+      assert !user.new_record?
+      assert_equal false, user.status
+    end
+
+    should "activate" do
+      user = User.create :email => "some.user.2@example.com", :token => "12345678"
+      assert !user.new_record?
+      assert_equal false, user.status
+
+      user.activate!
+      assert_equal true, user.status
+    end
+
+    should "send activation email on create" do
+      user = User.new :email => "some.user.3@example.com", :token => "12345678"
+      user.expects(:send_activation_link)
+      assert user.save
+    end
+
     should "validate email presence" do
       user = User.create :email => nil, :token => "12345678"
       assert_equal "Email can't be blank", user.errors['email'].first
