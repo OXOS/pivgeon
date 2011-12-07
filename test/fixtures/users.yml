@@ -4,13 +4,16 @@ wojciech:
   token: 12345678
   email: wojciech@example.com
   status: true
+  activation_code: sdasdasfag
 
 daniel:
   token: 87654321
   email: daniel@example.com
   status: true
+  activation_code: ubsjdvatkfa
 
 inactive:
   token: 19283746
   email: inactive@example.com
   status: false
+  activation_code: mniwjerhwefy

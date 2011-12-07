@@ -34,7 +34,7 @@ class UsersControllerTest < ActionController::TestCase
     end
 
     should "activate his account" do
-      user = users(:not_activated_user)
+      user = users(:inactive)
       User.any_instance.stubs(:check_token!).returns(nil)
 
       assert !user.status
@@ -45,14 +45,14 @@ class UsersControllerTest < ActionController::TestCase
     end
 
     should "see information that his account is activated" do
-      user = users(:not_activated_user)
+      user = users(:inactive)
       User.any_instance.expects(:activate!).returns(true)
       get :confirm, :id=>user.activation_code
       assert_select "p", /Your account has been activated/
     end
 
     should "see information that his account is not activated" do
-      user = users(:not_activated_user)
+      user = users(:inactive)
       User.any_instance.expects(:activate!).returns(false)
       get :confirm, :id=>user.activation_code
       assert_select "p", /Sorry. Your account hasn't been activated./
