@@ -8,7 +8,7 @@ class UserTest < ActiveSupport::TestCase
   context "User" do
 
     setup do
-      mock_requests()
+      Net::HTTP.any_instance.stubs(:request).returns(OpenStruct.new(:code => "200"))
     end
 
     should "status should default to false" do
@@ -19,6 +19,7 @@ class UserTest < ActiveSupport::TestCase
 
     should "activate" do
       user = User.create :email => "some.user.2@example.com", :token => "12345678"
+      puts user.errors.full_messages
       assert !user.new_record?
       assert_equal false, user.status
 
@@ -48,7 +49,7 @@ class UserTest < ActiveSupport::TestCase
     end
 
     should "validate if given token is correct pivotal token" do
-      Net::HTTP.stubs(:request).returns(OpenStruct.new(:code => "401"))
+      Net::HTTP.any_instance.stubs(:request).returns(OpenStruct.new(:code => "401"))
       user = User.create :email => nil, :token => "12345678"
       assert_equal "Token is invalid", user.errors['token'].first
     end
