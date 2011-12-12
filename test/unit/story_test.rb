@@ -57,7 +57,7 @@ class StoryTest < ActiveSupport::TestCase
        
     should "be successfully saved" do
       Story.token = "12345678"
-      assert_false(Story.create(@attrs).new?)
+      assert !Story.create(@attrs).new?
     end
     
     should "set default attributes" do

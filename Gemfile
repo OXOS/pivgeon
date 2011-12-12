@@ -36,7 +36,6 @@ gem 'validates_email_format_of', :git => 'git://github.com/alexdunae/validates_e
 group :test do
   gem 'shoulda', :git => "git://github.com/thoughtbot/shoulda.git"
   gem 'mocha'
-  gem 'test-unit'
   gem 'ruby-debug19'
   gem 'rspec', '1.3.1'
   gem 'rspec-rails', '1.3.3'

@@ -40,10 +40,10 @@ class ActiveSupport::TestCase
      }
   end
   
-  def test_presence_of(elem,param)
-    elem.send("#{param}=",nil)
-    assert_false elem.save
-  end
+#  def test_presence_of(elem,param)
+#    elem.send("#{param}=",nil)
+#    assert_false elem.save
+#  end
   
   def pivotal_request
     "<story>
