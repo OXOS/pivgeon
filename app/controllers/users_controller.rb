@@ -11,7 +11,7 @@ class UsersController < ApplicationController
   def create
     @user = User.new params[:user]
     if @user.save
-      flash[:notice] = "Your account has been created. We require you to activate your account by email, just click the link we have sent you."
+      flash[:notice] = "Thank you! Please confirm your email by clicking the link we've just sent you."
       render :action => :show
     else
       render :action => :new
