@@ -101,9 +101,8 @@ a.new-account-link{ color: #6D3D04; }
                         <img src="images/email-croped.jpg" alt="email"/>
                     </p>
                     <p class="details">
-                        <a class="header"  onclick="toggle_details('#send')" href="javascript:void(0)">Show more details</a>
-                         <span class="info">In order to specify your project name you can use following characters in CC email address: english letters (a–z, A–Z), digits 0 to 9 and ! # $ % & ' * + - / = ? ^ _ ` { | } ~ .</span>
-			<span class="info">If your project name contains characters other than these listed above then you should not include them in the address. For example, if your project is "Web project (Beta)", CC your emails to webprojectbeta@pivgeon.com. It's also case insensitive.</span>
+                        <a class="header" href="javascript:void(0)" onclick="toggle_details('#send')">Show more details</a>
+                        <span class="info">If your project name contains spaces, don't include them in the address. For example, if your project is "Web Project", CC your emails to webproject@pivgeon.com. It's also case insensitive.</span>
                         <span class="info">Story description is filled in from email body.</span>
                         <span class="info">Pivgeon will look at To: field of email it was CC-ed and will assign the story to project member with this email address.</span>
                     </p>
