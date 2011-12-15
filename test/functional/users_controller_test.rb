@@ -22,7 +22,7 @@ class UsersControllerTest < ActionController::TestCase
       user.expects(:save).returns(true)
       post :create, :email => "name@example.com", :token => "12345678"
       assert_template :show
-      assert_equal "Your account has been created. We require you to activate your account by email, just click the link we have sent you.", flash[:notice]
+      assert_equal "Thank you! Please confirm your email by clicking the link we've just sent you.", flash[:notice]
     end
 
     should "not create new account" do
