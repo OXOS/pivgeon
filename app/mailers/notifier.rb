@@ -8,6 +8,12 @@ class Notifier < ActionMailer::Base
     set_reference_message_id(message_id)
     mail(:to => @email, :from => from, :reply_to => CLOUDMAILIN_EMAIL_ADDRESS, :subject => "Re: #{message.subject}")
   end
+
+  def internal_error(message,message_id)
+    @email = message.from
+    set_reference_message_id(message_id)
+    mail(:to => @email, :from => from, :reply_to => CLOUDMAILIN_EMAIL_ADDRESS, :subject => "Re: #{message.subject}")
+  end
   
   protected
   

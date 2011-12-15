@@ -3,6 +3,7 @@ class ApiController < ApplicationController
       
   def create
 
+    begin
       @message = SendgridMessage.new(params)
       @user    = User.active.find_by_email(@message.from)
       
@@ -15,8 +16,11 @@ class ApiController < ApplicationController
           response = http.request(req).body
         end
       end
-      
-      render(:text => "Ok", :status => 200)
+    rescue Exception => e
+      Notifier.internal_error(@message, @message.message_id).deliver
+    end
+
+    render(:text => "Ok", :status => 200)
   end
     
 end
