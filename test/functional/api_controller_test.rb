@@ -32,6 +32,15 @@ class ApiControllerTest < ActionController::TestCase
       assert_response :success
     end
 
+    should "send email to the user when exception raised" do
+      SendgridMessage.expects(:new).returns(mock(:from => @user.email, :message_id => "123"))
+      User.expects(:find_by_email).raises(Exception, 'message')
+      Notifier.expects(:internal_error).returns(mock(:deliver => true))
+
+      post :create
+      assert_response :success
+    end
+
   end
   
 end  
