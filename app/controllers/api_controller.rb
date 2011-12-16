@@ -22,5 +22,10 @@ class ApiController < ApplicationController
 
     render(:text => "Ok", :status => 200)
   end
+
+  rescue_from(Exception) do |e|
+    Rails.logger.info("Raised Exception: #{e.message} | \n#{e.backtrace}")
+    render(:text => "Ok", :status => 200)
+  end
     
 end
