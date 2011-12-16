@@ -8,7 +8,7 @@ class ApiController < ApplicationController
       @user    = User.active.find_by_email(@message.from)
       
       unless @user
-        Notifier.unauthorized_access(@message, @message.message_id).deliver
+        Notifier.unauthorized_access(@message).deliver
       else
         uri   = URI.parse("http://book-order-pivgeon.herokuapp.com")        
         Net::HTTP.start(uri.host, uri.port) do |http|
@@ -17,7 +17,7 @@ class ApiController < ApplicationController
         end
       end
     rescue Exception => e
-      Notifier.internal_error(@message, @message.message_id).deliver
+      Notifier.internal_error(@message).deliver
     end
 
     render(:text => "Ok", :status => 200)

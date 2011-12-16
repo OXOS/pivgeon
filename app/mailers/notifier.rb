@@ -3,15 +3,15 @@ class Notifier < ActionMailer::Base
   layout "mailer"
   helper :application
   
-  def unauthorized_access(message,message_id)    
+  def unauthorized_access(message)    
     @email = message.from    
-    set_reference_message_id(message_id)
+    set_reference_message_id(message.message_id)
     mail(:to => @email, :from => from, :reply_to => CLOUDMAILIN_EMAIL_ADDRESS, :subject => "Re: #{message.subject}")
   end
 
-  def internal_error(message,message_id)
+  def internal_error(message)
     @email = message.from
-    set_reference_message_id(message_id)
+    set_reference_message_id(message.message_id)
     mail(:to => @email, :from => from, :reply_to => CLOUDMAILIN_EMAIL_ADDRESS, :subject => "Re: #{message.subject}")
   end
   
