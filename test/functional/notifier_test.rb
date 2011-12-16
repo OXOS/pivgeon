@@ -13,7 +13,7 @@ class NotifierTest < ActionMailer::TestCase
     should "send notification" do        
       params = valid_params  "wojciech@example.com", "daniel@example.com", "", "Story name"
       message = SendgridMessage.new(params)
-      email =  Notifier.unauthorized_access(message,"123").deliver!
+      email =  Notifier.unauthorized_access(message).deliver!
       assert !ActionMailer::Base.deliveries.empty?
       assert_equal "wojciech@example.com", email.to.first
       assert_equal "Re: Story name", email.subject

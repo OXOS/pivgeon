@@ -24,7 +24,7 @@ class ApiControllerTest < ActionController::TestCase
     end
     
     should "not create" do
-      SendgridMessage.expects(:new).returns(mock(:from => @user.email, :message_id => "123"))
+      SendgridMessage.expects(:new).returns(mock(:from => @user.email))
       User.expects(:find_by_email).returns(nil)
       Notifier.expects(:unauthorized_access).returns(mock(:deliver => true))
 
@@ -33,7 +33,7 @@ class ApiControllerTest < ActionController::TestCase
     end
 
     should "send email to the user when exception raised" do
-      SendgridMessage.expects(:new).returns(mock(:from => @user.email, :message_id => "123"))
+      SendgridMessage.expects(:new).returns(mock(:from => @user.email))
       User.expects(:find_by_email).raises(Exception, 'message')
       Notifier.expects(:internal_error).returns(mock(:deliver => true))
 
@@ -42,7 +42,7 @@ class ApiControllerTest < ActionController::TestCase
     end
 
     should "return status 200 even when mailer raises exception" do
-      SendgridMessage.expects(:new).returns(mock(:from => @user.email, :message_id => "123"))
+      SendgridMessage.expects(:new).returns(mock(:from => @user.email))
       User.expects(:find_by_email).raises(Exception, 'message')
       Notifier.expects(:internal_error).raises(Exception, 'message')
       

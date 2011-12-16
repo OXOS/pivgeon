@@ -15,7 +15,7 @@ class SendgridMessage
     @from = detokenize(attrs['from'])
     @to = detokenize(attrs['to'])
     @cc = detokenize(attrs['cc'])
-    @subject = charsets['subject'], attrs['subject']
+    @subject = attrs['subject']
     @message_id = get_message_id(attrs['headers'])
   end
 
