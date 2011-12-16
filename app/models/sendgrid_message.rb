@@ -15,17 +15,11 @@ class SendgridMessage
     @from = detokenize(attrs['from'])
     @to = detokenize(attrs['to'])
     @cc = detokenize(attrs['cc'])
-    @subject = decode(charsets['subject'], attrs['subject'])
-    @body = decode(charsets['text'], attrs['text'])
+    @subject = charsets['subject'], attrs['subject']
     @message_id = get_message_id(attrs['headers'])
   end
 
   protected
-
-  def decode(orig_charset,str)
-    #Iconv.conv('UTF-8',orig_charset,str)
-    str
-  end
 
   def detokenize(str)
     return str if str.blank?
