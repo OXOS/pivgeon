@@ -1,3 +1,5 @@
 ##Pivgeon-proxy
 
-This application re-sends every incoming request to address http://book-order-pivgeon.herokuapp.com/stories/new/:token
+This application accepts emails notifications from SendGrid and relays requests to our fork of BookOrder:
+
+https://github.com/oxos/book-order-pivgeon
