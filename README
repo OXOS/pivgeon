@@ -1,5 +1,6 @@
 ##Pivgeon-proxy
 
-This application accepts emails notifications from SendGrid and relays requests to our fork of BookOrder:
+This application accepts emails notifications from SendGrid and relays requests to our fork of BookOrder: https://github.com/oxos/book-order-pivgeon
 
-https://github.com/oxos/book-order-pivgeon
+Yes, this simple service consists of two apps. You can check out older version that created stories directly using Pivotal Tracker API: https://github.com/oxos/pivgeon-proxy/tree/57c144da4cf88812c4057ec4f0051d94ebb81b10
+or head directly to https://github.com/nwp/book-order.
